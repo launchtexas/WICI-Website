@@ -1,0 +1,5 @@
+{
+  "route": "/wici-one",
+  "bodyClass": "page--product",
+  "mainAttrs": "id=\"top\""
+}

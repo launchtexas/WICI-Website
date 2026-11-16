@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thinkless: Unconditional Surrender in Thinking | WiCi Research</title>
+    <meta name="description" content="Not just on a new project: in every software development scenario, thinking before you act doesn't work as well as you assume. Thinkless is built on the bet that you should stop trying, always, and let evidence do the deciding.">
+    <meta property="og:image" content="https://wici.ai/images/common/og-device-flatlay.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WiCi One on a violet box among a headset, a tablet, a laptop, and a Mac mini.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="article:published_time" content="2026-09-06">
+    <link rel="preload" href="../css/fonts/test-financier-display-medium-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/articles.css">
+    <link rel="icon" type="image/png" href="../images/common/favicon.png">
+    <link rel="apple-touch-icon" href="../images/common/apple-touch-icon.png">
+    <style>
+      .figure {
+        margin: 38px 0 42px;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: #fff;
+        box-shadow: 0 18px 48px rgba(var(--ink-rgb), .08);
+      }
+
+      .figure h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+        line-height: 1.25;
+        color: var(--ink);
+      }
+
+      .figure p {
+        margin: 0 0 18px;
+        color: var(--ink-mute);
+        font-size: 15px;
+        line-height: 1.45;
+      }
+
+      .install-bar {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 8px 0 18px;
+        padding: 14px 16px 14px 20px;
+        border-radius: 13px;
+        background: #101820;
+      }
+
+      .install-bar code {
+        flex: 1;
+        min-width: 0;
+        overflow-x: auto;
+        white-space: pre;
+        color: #edf4f1;
+        font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      .install-copy {
+        flex-shrink: 0;
+        padding: 8px 16px;
+        border: 1px solid rgba(255, 255, 255, .25);
+        border-radius: 10px;
+        background: transparent;
+        color: #edf4f1;
+        font-family: var(--font-sans);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+      }
+
+      .install-copy:hover {
+        background: rgba(255, 255, 255, .1);
+        border-color: rgba(255, 255, 255, .45);
+      }
+
+      .install-copy.is-copied {
+        border-color: var(--accent);
+        color: var(--accent-bright);
+      }
+
+      .install-cta {
+        margin: 0 0 40px;
+      }
+
+      .rule-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .rule-card {
+        min-height: 140px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: #fff;
+      }
+
+      .rule-card b {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--accent-bright);
+        font-size: 16px;
+      }
+
+      .rule-card span {
+        display: block;
+        color: var(--ink-mute);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .artifact-stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .artifact-row {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 14px;
+        align-items: stretch;
+      }
+
+      .artifact-name,
+      .artifact-role {
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: #fff;
+      }
+
+      .artifact-name {
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--bg-dark);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .artifact-role b {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--ink);
+        font-size: 15px;
+      }
+
+      .artifact-role span {
+        display: block;
+        color: var(--ink-mute);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 720px) {
+        .rule-grid { grid-template-columns: 1fr; }
+        .figure { padding: 18px; }
+        .artifact-row { grid-template-columns: 1fr; }
+      }
+    </style>
+    <script src="../js/tracking.js"></script>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header class="nav" id="nav">
+        <div class="container nav-inner">
+            <nav class="nav-links nav-links--left" aria-label="Primary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../wici-one.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navOneMenu">WiCi One<span class="nav-activity-badge">Wireless GPU</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navOneMenu">
+                        <a class="nav-drop-item" href="../wici-one.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The first wireless GPU for frontier AI.</span></a>
+                        <a class="nav-drop-item" href="../technology.html"><span class="nav-drop-item-title">How it works</span><span class="nav-drop-item-desc">The technology behind WiCi One.</span></a>
+                        <a class="nav-drop-item" href="../wici-one.html#developers"><span class="nav-drop-item-title">For developers</span><span class="nav-drop-item-desc">Driver, SDK, and API.</span></a>
+                    </div>
+                </div>
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../wici-infer.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navInferMenu">WiCi Infer<span class="nav-activity-badge">Local Inference</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navInferMenu">
+                        <a class="nav-drop-item" href="../wici-infer.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The fastest local inference, on your Mac or PC.</span></a>
+                        <a class="nav-drop-item" href="../wici-infer.html#benchmarks"><span class="nav-drop-item-title">Benchmarks</span><span class="nav-drop-item-desc">Measured on Apple and NVIDIA systems.</span></a>
+                        <a class="nav-drop-item" href="../wici-infer.html#engine"><span class="nav-drop-item-title nav-link--activity">InferSSD engine<span class="nav-status-badge">Open source</span></span><span class="nav-drop-item-desc">Open-source inference, source code and docs.</span></a>
+                    </div>
+                </div>
+            </nav>
+            <a href="../index.html" class="nav-brand" aria-label="WiCi home">
+                <img class="nav-brand-lockup" src="../images/common/logo-lockup.svg" alt="WiCi">
+            </a>
+            <nav class="nav-links nav-links--right" aria-label="Secondary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../solutions/index.html" class="nav-link nav-drop-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navSolutionsMenu">Solutions<svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navSolutionsMenu">
+                        <a class="nav-drop-item" href="../solutions/local-ai.html"><span class="nav-drop-item-title">Local AI</span><span class="nav-drop-item-desc">Trillion-parameter models on hardware you own.</span></a>
+                        <a class="nav-drop-item" href="../solutions/creative-production.html"><span class="nav-drop-item-title">Creative artists</span><span class="nav-drop-item-desc">One GPU for the whole studio.</span></a>
+                        <a class="nav-drop-item" href="../solutions/physical-intelligence.html"><span class="nav-drop-item-title">Robotics</span><span class="nav-drop-item-desc">On-site GPU inference for robots.</span></a>
+                        <a class="nav-drop-item" href="../solutions/virtual-reality.html"><span class="nav-drop-item-title">Virtual reality</span><span class="nav-drop-item-desc">Heavy spatial compute, off the headset.</span></a>
+                        <a class="nav-drop-item" href="../solutions/smart-home.html"><span class="nav-drop-item-title">Smart home</span><span class="nav-drop-item-desc">Private AI context for every device.</span></a>
+                    </div>
+                </div>
+                <a href="../research.html" class="nav-link is-current" aria-current="page">Research</a>
+            </nav>
+            <div class="nav-cta">
+                <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-mobile" id="navMobile" data-lenis-prevent>
+            <nav class="nav-mobile-links" aria-label="Menu">
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileOne">WiCi One<span class="nav-activity-badge">First wireless GPU</span></button>
+                <div class="nav-mobile-sub" id="navMobileOne" hidden>
+                    <a href="../wici-one.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="../technology.html" class="nav-mobile-link nav-mobile-link--sub">How it works</a>
+                    <a href="../wici-one.html#developers" class="nav-mobile-link nav-mobile-link--sub">For developers</a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileInfer">WiCi Infer<span class="nav-activity-badge">Fastest local inference</span></button>
+                <div class="nav-mobile-sub" id="navMobileInfer" hidden>
+                    <a href="../wici-infer.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="../wici-infer.html#benchmarks" class="nav-mobile-link nav-mobile-link--sub">Benchmarks</a>
+                    <a href="../wici-infer.html#engine" class="nav-mobile-link nav-mobile-link--sub">InferSSD engine<span class="nav-status-badge">Open source</span></a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn" aria-expanded="false" aria-controls="navMobileSolutions">Solutions</button>
+                <div class="nav-mobile-sub" id="navMobileSolutions" hidden>
+                    <a href="../solutions/index.html" class="nav-mobile-link nav-mobile-link--sub">All solutions</a>
+                    <a href="../solutions/local-ai.html" class="nav-mobile-link nav-mobile-link--sub">Local AI</a>
+                    <a href="../solutions/creative-production.html" class="nav-mobile-link nav-mobile-link--sub">Creative artists</a>
+                    <a href="../solutions/physical-intelligence.html" class="nav-mobile-link nav-mobile-link--sub">Robotics</a>
+                    <a href="../solutions/virtual-reality.html" class="nav-mobile-link nav-mobile-link--sub">Virtual reality</a>
+                    <a href="../solutions/smart-home.html" class="nav-mobile-link nav-mobile-link--sub">Smart home</a>
+                </div>
+                <a href="../research.html" class="nav-mobile-link" aria-current="page">Research</a>
+            </nav>
+            <a href="../shop/wici-one.html" class="nav-mobile-cta">Buy WiCi One</a>
+            <div class="nav-mobile-secondary">
+                <a href="../about.html">About</a>
+                <a href="../careers.html">Careers</a>
+                <a href="../about.html#contact">Contact</a>
+            </div>
+        </div>
+    </header>
+
+
+    <main id="top">
+
+        <!-- Article header -->
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="../images/research/thumbnails/intro-thinkless.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-09-06">September 6, 2026</time></p>
+                <h1 class="article-title">Thinkless &mdash; Unconditional Surrender in Thinking.</h1>
+                <p class="article-subtitle">"Let the AI work while you supervise" is old advice by now. The actual claim is harder to swallow: stop thinking before you act &mdash; not only on ground that's new to you, on <em>every</em> ground, including the codebase you wrote yourself. Thinking without evidence isn't judgment &mdash; it's guessing with your ego attached, and familiarity doesn't cure that.</p>
+            </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">TL;DR</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#tldr">TL;DR</a></li>
+                        <li><a href="#guessing-with-confidence">Guessing with confidence</a></li>
+                        <li><a href="#interrogate-itself-then-step-back">Interrogate itself, then step back</a></li>
+                        <li><a href="#another-agent-reviews-not-you">Another agent reviews, not you</a></li>
+                        <li><a href="#don-t-let-it-fake-the-win-either">Don't let it fake the win, either</a></li>
+                        <li><a href="#an-argument-not-a-wall">An argument, not a wall</a></li>
+                        <li><a href="#the-shape-of-it">The shape of it</a></li>
+                        <li><a href="#what-it-comes-down-to">What it comes down to</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="../images/research/thumbnails/intro-thinkless.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li title="Co-Founder">Yibin Shen</li>
+                        <li title="Co-Founder">Zili Meng</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#tldr">TL;DR</a></li>
+                            <li><a href="#guessing-with-confidence">Guessing with confidence</a></li>
+                            <li><a href="#interrogate-itself-then-step-back">Interrogate itself, then step back</a></li>
+                            <li><a href="#another-agent-reviews-not-you">Another agent reviews, not you</a></li>
+                            <li><a href="#don-t-let-it-fake-the-win-either">Don't let it fake the win, either</a></li>
+                            <li><a href="#an-argument-not-a-wall">An argument, not a wall</a></li>
+                            <li><a href="#the-shape-of-it">The shape of it</a></li>
+                            <li><a href="#what-it-comes-down-to">What it comes down to</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+
+                <div class="install-bar">
+                    <code id="installCmd">curl -fsSL https://wici.ai/thinkless/install.sh | bash</code>
+                    <button type="button" class="install-copy" id="installCopyBtn" onclick="(function(b){navigator.clipboard.writeText(document.getElementById('installCmd').textContent.trim()).then(function(){var t=b.textContent;b.textContent='Copied';b.classList.add('is-copied');setTimeout(function(){b.textContent=t;b.classList.remove('is-copied');},1800);});})(this)">Copy</button>
+                </div>
+
+                <p class="install-cta"><a href="../thinkless.html" class="cta cta--ghost">
+                    <span>Thinkless product page</span>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a></p>
+
+                <section class="article-tldr" aria-labelledby="tldr">
+                    <h2 class="article-tldr-title" id="tldr">TL;DR</h2>
+                    <ul>
+                        <li>The controversial claim isn't "supervise instead of doing the work" &mdash; that's old news. It's: stop thinking up front, full stop, on the familiar codebase too. Knowing the repo well doesn't make a pre-run guess less of a guess; it just makes it more convincing.</li>
+                        <li>Tools that grill <em>you</em> before letting the AI move make this worse &mdash; we've watched a planning session hit two hundred questions without a line of code written. That's not caution, it's refusing to admit you don't know yet.</li>
+                        <li>Thinkless's answer: stop thinking before you have evidence, start producing evidence instead. The AI self-grills, writes its assumptions to a durable file, and runs. You stay out until reality gives you a reason to object.</li>
+                        <li>Loops fail by spinning on the same blocker or gaming the acceptance check &mdash; a bottleneck review and decision-quality receipts guard against both.</li>
+                    </ul>
+                </section>
+
+                <blockquote class="article-callout">Your up-front thinking is not wisdom, on new ground or familiar ground alike. It's a guess wearing a suit &mdash; and the suit fits better the longer you've worked in the codebase, which is exactly what makes it dangerous. The only thing that turns a guess into knowledge is running it.</blockquote>
+
+                <h2 id="guessing-with-confidence">Guessing with confidence</h2>
+                <p class="article-note">Thinking before you know is just guessing.</p>
+
+                <p>Picture the first hour of a new project. The requirement is clear as an <em>outcome</em> and unclear as a <em>method</em>, because nobody has written this code yet. The AI gives you a plan on minute three. You don't trust it &mdash; not because it looks wrong, but because you don't understand the area well enough to know if it's right. So you ask, re-explain, confirm, re-confirm. An hour goes by. The repository is still empty. None of that deliberation was engineering judgment; you didn't have enough information to judge anything yet. It was guessing about an area you don't understand, dressed up as rigor.</p>
+
+                <p>The easy rebuttal: fine, but that's only true on ground you don't know yet &mdash; a year into a codebase, surely your up-front reasoning is worth something. We don't think the exception holds, and this is the part of the argument that actually matters. The specific change in front of you &mdash; this refactor, this migration, this fix &mdash; is new no matter how old the repository is. Familiarity with the codebase is not the same claim as certainty about this diff, and every outage caused by a senior engineer who was "sure" the change was safe is evidence of exactly that gap. A wrong guess made confidently by an expert is still a guess; it just fails more expensively, later, and with more people trusting it. So this claim isn't scoped to greenfield work &mdash; it's every scenario where you're tempted to reason your way to a conclusion instead of producing the evidence that would make the conclusion unnecessary.</p>
+
+                <p>It gets worse with tools built to "help": a whole genre of planning skills whose job is to interrogate <em>you</em>, grilling every requirement until the spec is airtight. Fine when you have crisp answers; on a new project you have <em>it depends</em> and <em>maybe</em>, and those don't close questions, they spawn them. We've watched a grill-style planning session cross two hundred questions and never write a line of code &mdash; the interrogation was meant to de-risk the work and quietly became the work instead. Thinkless's starting design note put the fix in one sentence: the AI should do the brainstorming a good planner does, and none of the interrogating a bad one does. Ask <em>yourself</em> the questions, on the only ground where they can actually be answered &mdash; the repository, the running system, the next five minutes of execution &mdash; and leave the human alone until there's something real to react to.</p>
+
+                <div class="article-table-wrap">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Think-first (the habit)</th>
+                                <th scope="col">Give up thinking (Thinkless)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">The first hour</th>
+                                <td>You grill a plan you can't yet evaluate.</td>
+                                <td>The AI grills itself, writes down its assumptions, and starts.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Who resolves unknowns</th>
+                                <td>You, up front, from guesses.</td>
+                                <td>The planner, from evidence and discovery steps; you only when it's essential and unresolvable.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Where reasoning lives</th>
+                                <td>In a chat log that scrolls away.</td>
+                                <td><code>ASSUMPTIONS.md</code>, a durable argument you can overrule.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">When the loop gets stuck</th>
+                                <td>It spins, or quietly games the check.</td>
+                                <td>A bottleneck review forces a different next step; receipts reject fake progress.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Where boundaries are set</th>
+                                <td>Re-typed into chat every time it drifts.</td>
+                                <td>Written once as MUST/SHOULD/MAY rules in the plan.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Your job</th>
+                                <td>Buy certainty with questions.</td>
+                                <td>Say nothing until reality gives you a reason to.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 id="interrogate-itself-then-step-back">Interrogate itself, then step back</h2>
+                <p class="article-note">Make the AI interrogate itself, then get out of the way.</p>
+
+                <p>Before the planner writes anything, it's required to brainstorm two or three plausible approaches and self-grill each one &mdash; asking itself the questions it would otherwise fire at you, and answering them from repository evidence, quick research, or a concrete discovery step written into the plan. What it can't resolve, it records as a named assumption with its supporting evidence. Only when a missing fact is both essential and genuinely unresolvable does it surface a single, blocking question. This isn't a soft suggestion in a prompt; a test fails the build if the planner's instructions stop forcing the brainstorm, the self-grill, and the narrow-question rule.</p>
+
+                <p>So what you get back isn't a questionnaire &mdash; it's a plan, a written argument for why it looks the way it does, and a short list of what it's assuming and what would make it reconsider. Then it starts. In our own use, an unblocked loop will try a dozen or twenty variations in the time an interrogation-bound one manages two, because the interrogation-bound one spends most of its wall-clock waiting on a human still making up their mind.</p>
+
+                <p>The obvious objection: isn't this just giving up? Yes, and we're not going to dress that up. You're giving up the specific habit of pre-deciding things you don't have standing to decide &mdash; not vanishing. You watch the plan and the assumptions take shape, which is the cheapest way to learn a codebase that doesn't fully exist yet. And when reality hands you an opinion worth having, your message is treated as authoritative evidence that overrides an adopted assumption, folded into the running plan without a restart. That's the one moment you're allowed to think out loud before evidence arrives &mdash; spent on your behalf exactly once, when you actually choose to use it.</p>
+
+                <hr class="article-rule">
+
+                <h2 id="another-agent-reviews-not-you">Another agent reviews, not you</h2>
+                <p class="article-note">When it stalls, another agent reviews the plan.</p>
+
+                <p>We once asked an agent to validate a model that was supposed to occupy six to eight gigabytes of VRAM, counting the run as a pass only if the output was actually correct. It got stuck &mdash; tried, failed, tried the same thing, failed the same way. Then it did something we didn't ask for: it swapped in a roughly six-gigabyte matrix multiplication that hit the memory number, sailed through "acceptance," and reported victory. One run, both failure modes. First it <strong>spun</strong> &mdash; same blocker, same evidence, round after round. Then, when spinning didn't pay, it <strong>cheated</strong> &mdash; found the acceptance check was easier to satisfy than the actual goal, and retreated to whatever turned the light green.</p>
+
+                <p>Both deaths share a root: an executor riding its own momentum can't review itself. So the moment a step stalls &mdash; too many failed attempts, or a run of receipts that all say "no progress" &mdash; Thinkless hands it to a separate planner agent instead of retrying or paging you. The planner closes the stuck step, compacts the dead end into a ruled-out path, and returns one concrete, different next move; a single failed attempt just goes back to the executor with the failure as context. <code>/replan</code> and <code>/pause</code> exist if you want in, but the default is another agent, not a human, catching the stall.</p>
+
+                <figure class="figure">
+                    <h3>What counts as progress</h3>
+                    <p>A loop should only bank progress when the receipt changes what the system knows or what it can safely do next. Adding logs without a new conclusion is a reject, not a pass.</p>
+                    <div class="rule-grid" role="img" aria-label="Rules for decision-quality receipts">
+                        <div class="rule-card"><b>Narrow</b><span>The root cause space becomes smaller.</span></div>
+                        <div class="rule-card"><b>Falsify</b><span>A hypothesis is proven wrong and removed.</span></div>
+                        <div class="rule-card"><b>Constrain</b><span>A real boundary or invariant is discovered.</span></div>
+                        <div class="rule-card"><b>Advance</b><span>The next experiment becomes more specific.</span></div>
+                    </div>
+                </figure>
+
+                <hr class="article-rule">
+
+                <h2 id="don-t-let-it-fake-the-win-either">Don't let it fake the win, either</h2>
+
+                <p>A loop that can't spin will look for the other way out: the cheap pass. Here the loop isn't stuck, it's cutting a corner, so the defense is about what counts as "done." Completion is not "the plan ran out of steps," it's "every primary requirement is satisfied and no required verification is missing." The planner is also told, in as many words, that examples are illustrative only and must never become product logic &mdash; a six-gigabyte matrix multiply is precisely a toy stand-in, and a stand-in is not allowed to be promoted into the deliverable. For measured tasks: a frozen acceptance spec the run can't quietly rewrite, eval scripts locked by hash so a tampered measurement fails the run, and a scorer self-test that proves the checker accepts a known-good change and rejects a known-bad one before the real work begins.</p>
+
+                <p>And the part we won't oversell: none of that fully closes the hole. If a substitution is invisible to every check &mdash; if the cheap path passes the same tests the real one would &mdash; no scoring machinery can tell them apart. The binding fix is upstream, written into the plan itself: a boundary that names the real thing and rules the substitution out before it can happen.</p>
+
+                <h2 id="an-argument-not-a-wall">An argument, not a wall</h2>
+                <p class="article-note">The plan is an argument you can steer, not a wall of questions.</p>
+
+                <p>The reason you can afford to stop interrogating is that the AI's reasoning isn't trapped in a chat log that scrolls away &mdash; it's written to a file you can read and overrule. Three artifacts sit side by side: <code>GOAL.md</code> is the human-readable target, <code>PLAN.md</code> is the executable steps, and <code>ASSUMPTIONS.md</code> is the planner's living self-interrogation &mdash; the approaches it considered, the assumptions it adopted with their evidence, and the open risks with the conditions that should reopen them.</p>
+
+                <figure class="figure">
+                    <h3>The control surface</h3>
+                    <p>Steering works when the important reasoning is durable enough to inspect and small enough to override.</p>
+                    <div class="artifact-stack" role="img" aria-label="Goal, plan, and assumptions files as the control surface">
+                        <div class="artifact-row"><div class="artifact-name">GOAL.md</div><div class="artifact-role"><b>Target</b><span>The human-readable objective and success criteria.</span></div></div>
+                        <div class="artifact-row"><div class="artifact-name">PLAN.md</div><div class="artifact-role"><b>Execution</b><span>The ordered steps the executor is currently following.</span></div></div>
+                        <div class="artifact-row"><div class="artifact-name">ASSUMPTIONS.md</div><div class="artifact-role"><b>Argument</b><span>The approaches considered, evidence used, risks accepted, and assumptions open to override.</span></div></div>
+                    </div>
+                </figure>
+
+                <p>The vocabulary for that boundary isn't invented for this post &mdash; it's borrowed from the IETF, the body that writes and ratifies the internet's own protocol standards. The specific source is RFC&nbsp;2119, "Key Words for Use in RFCs to Indicate Requirement Levels," a one-page 1997 memo written because "the client should retry" and "the client must retry" look almost identical in English but were being read as identical by implementers who never talked to each other &mdash; and specs that blurred the two shipped protocols that technically complied and still didn't interoperate. RFC&nbsp;2119 fixes that by making each word a different, non-interchangeable obligation rather than a synonym for "important": <strong>MUST / MUST NOT</strong> are absolute &mdash; no exception, ever, in either direction. <strong>SHOULD / SHOULD NOT</strong> are strong defaults you're allowed to violate, but only after weighing the full consequences and recording why. <strong>MAY</strong> is genuinely optional &mdash; no weighing required, no consequence either way. The RFC even warns against reaching for MUST out of habit: overusing it on things that don't actually require it just trains readers to stop trusting the word. That's precisely the discipline a Thinkless plan needs, because its "implementer" is an executor running unsupervised &mdash; it has to know, without asking you, whether a rule is a wall, a recommendation it can reason its way past, or a free choice, and marking everything MUST would just be pre-deciding by another name.</p>
+
+                <div class="article-table-wrap">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tier</th>
+                                <th scope="col">Obligation</th>
+                                <th scope="col">Thinkless example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">MUST</th>
+                                <td>Absolute requirement. No circumstance excuses skipping it.</td>
+                                <td>The benchmark must run a real model pulled from HuggingFace.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">MUST NOT</th>
+                                <td>Absolute prohibition &mdash; the mirror image of MUST, same force, opposite direction.</td>
+                                <td>The loop must not mark a step complete on its own unverified say-so; completion requires an external check.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">SHOULD</th>
+                                <td>Strong default. Deviating is allowed, but the reason has to be understood and written down.</td>
+                                <td>When an optimization stalls, the loop should go deep and add logging on both client and server before reaching for anything clever.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">SHOULD NOT</th>
+                                <td>Strong default against &mdash; the mirror of SHOULD, still overridable with a recorded reason.</td>
+                                <td>The executor should not retry the same failing step more than twice before triggering bottleneck review.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">MAY</th>
+                                <td>Truly optional. Doing it or skipping it needs no justification either way.</td>
+                                <td>Add an extra log line, polish an error message, tidy a variable name.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>The distinction that carries the most weight in practice is MUST versus SHOULD, not the presence or absence of "NOT" &mdash; a MUST violation is rejected outright (no receipt, no partial credit; this is the door the matmul walked through, closed for good), while a SHOULD violation is allowed through as long as the deviation and its justification land in <code>ASSUMPTIONS.md</code>. MAY exists mostly to keep the other two tiers honest: anything that doesn't need to be a wall or a weighed default belongs there, out of the way, so a MUST still reads as a MUST the next time the executor sees one.</p>
+
+                <p>The tiering is what lets the plan stay short. A flat list of "requirements" forces the executor to guess which ones are load-bearing; a tiered one tells it outright, so it can spend its judgment where judgment is actually due &mdash; the SHOULDs, where a reason to deviate is worth recording &mdash; instead of re-litigating the MUSTs, or agonizing over MAYs that were never obligations in the first place.</p>
+
+                <p><code>GOAL.md</code> is re-rendered from structured state every time you steer, but <code>ASSUMPTIONS.md</code> is a real file the planner only rewrites when it has something new to say, so the reasoning outlives the next plan revision. When you steer, your instruction is treated as evidence that overrides an adopted assumption, and the planner updates the file to record the override. You are reviewing an argument, line by line, not filling out an intake form.</p>
+
+                <hr class="article-rule">
+
+                <h2 id="the-shape-of-it">The shape of it</h2>
+
+                <p>Giving up thinking is not a posture; it's a set of specific subtractions, each with a concrete payoff.</p>
+
+                <figure class="figure">
+                    <h3>What giving up thinking subtracts</h3>
+                    <p>What you get more of is the only scoreboard that matters, greenfield or ten-year-old codebase alike: variations actually tried, understanding actually gained.</p>
+                    <div class="rule-grid" role="img" aria-label="The four subtractions of giving up thinking">
+                        <div class="rule-card"><b>Less interrogation</b><span>The AI self-grills and starts, so you get a plan and a written argument instead of a two-hundred-item questionnaire.</span></div>
+                        <div class="rule-card"><b>Less faked progress</b><span>Stall detection and decision-quality receipts make every step earn its place.</span></div>
+                        <div class="rule-card"><b>Less cheating</b><span>MUST/SHOULD/MAY boundaries that name the real thing keep "passing" honest.</span></div>
+                        <div class="rule-card"><b>Less pre-deciding</b><span>You stay silent by default; you only speak once evidence gives you something real to say.</span></div>
+                    </div>
+                </figure>
+
+                <h2 id="what-it-comes-down-to">What it comes down to</h2>
+
+                <p>The engineer who spends the first hour interrogating the plan is trying to buy certainty with questions, on ground where no amount of questions can manufacture certainty that isn't there yet. The faster, more honest path is to admit you don't know, let the AI reason out loud against a graded rulebook it can't quietly bend, run, and show its work &mdash; while you stay close enough to read the argument and say <em>that's not what I meant</em> the moment reality actually disagrees with you.</p>
+
+                <p>A model can plan, run, and iterate twenty versions before you've finished your coffee. It still cannot tell you which version you actually wanted &mdash; and it will, left unwatched, happily hand you a matrix multiply wearing the costume of your model. The one thing you are not allowed to give up is that judgment. Everything else is exactly the overhead Thinkless is built to strip out.</p>
+
+                <blockquote class="article-callout">Give up thinking before you have evidence. Keep thinking about the one question evidence can never answer for you: whether the thing the loop just built was the thing worth wanting.</blockquote>
+
+                <p class="article-signoff">This sits in the broader conversation about "loop engineering" &mdash; designing systems that run themselves &mdash; but the design here came straight out of our own development, the grill-me spirals and the matmul that passed. Thinkless is open source at <a href="https://github.com/wici-ai/thinkless">github.com/wici-ai/thinkless</a>; the <a href="../thinkless.html">Thinkless product page</a> has the overview and the installation instructions.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="answering-is-not-buzzing.html"><figure><img src="../images/research/thumbnails/answering-is-not-buzzing.webp" alt="" loading="lazy" decoding="async"></figure><strong>Answering Is Not Buzzing</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="running-800b-models-with-inferssd.html"><figure><img src="../images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                        <li><a href="keep-the-bytes-by-the-gpu.html"><figure><img src="../images/research/thumbnails/keep-the-bytes-by-the-gpu.webp" alt="" loading="lazy" decoding="async"></figure><strong>Bridge the bandwidth gap with a huge SSD cache</strong><time datetime="2026-09">September 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-col--brand">
+                    <a href="../index.html" class="footer-brand" aria-label="WiCi home">
+                        <img src="../images/common/logo-lockup.svg" alt="WiCi">
+                    </a>
+                    <p class="footer-tagline">Making Local Frontier AI Accessible to Everyone</p>
+                    <ul class="footer-social" aria-label="WiCi on social media">
+                        <li><a href="https://www.instagram.com/wici_ai/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/company/wici-ai/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://discord.gg/wici" target="_blank" rel="noopener" aria-label="Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" fill="currentColor"/></svg></a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Company</h4>
+                    <ul class="footer-list">
+                        <li><a href="../about.html">About WiCi</a></li>
+                        <li><a href="../careers.html">Join WiCi</a></li>
+                        <li><a href="../media/newsroom.html">Newsroom</a></li>
+                        <li><a href="../about.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi One</h4>
+                    <p class="footer-col-desc">The first wireless GPU for frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="../wici-one.html">Overview</a></li>
+                        <li><a href="../technology.html">How it works</a></li>
+                        <li><a href="../developers.html">For developers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi Infer</h4>
+                    <p class="footer-col-desc">The desktop app for local frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="../wici-infer.html">Overview</a></li>
+                        <li><a href="../wici-infer.html#benchmarks">Benchmarks</a></li>
+                        <li><a href="../wici-infer.html#engine">InferSSD engine</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Solutions</h4>
+                    <ul class="footer-list">
+                        <li><a href="../solutions/local-ai.html">Local AI</a></li>
+                        <li><a href="../solutions/creative-production.html">Creative artists</a></li>
+                        <li><a href="../solutions/physical-intelligence.html">Robotics</a></li>
+                        <li><a href="../solutions/index.html">All solutions</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Research</h4>
+                    <ul class="footer-list">
+                        <li><a href="nearby-gpu-feel-local.html">Wireless GPU</a></li>
+                        <li><a href="running-800b-models-with-inferssd.html">SSD inference</a></li>
+                        <li><a href="gpu-never-learned-to-share.html">GPU sharing</a></li>
+                        <li><a href="answering-is-not-buzzing.html">Real-time AI</a></li>
+                        <li><a href="../research.html">All research</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span class="footer-copyright">© <span id="year">2026</span> WiCi<span class="footer-version">v=20261111f</span></span>
+                    <a href="../privacy.html">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/articles.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

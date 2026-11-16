@@ -1,0 +1,73 @@
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD | WiCi Research</title>
+    <meta name="description" content="How InferSSD runs large MoE models from SSD on Apple Silicon and NVIDIA systems: current benchmarks, expert caching, I/O, execution and reproducible setup.">
+    <meta property="og:image" content="https://wici.ai/images/common/og-device-flatlay.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WiCi One on a violet box among a headset, a tablet, a laptop, and a Mac mini.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="preload" href="/css/fonts/test-financier-display-medium-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/articles.css">
+    <link rel="icon" type="image/png" href="/images/common/favicon.png">
+    <link rel="apple-touch-icon" href="/images/common/apple-touch-icon.png">
+    <script src="/js/tracking.js"></script>
+    <link rel="stylesheet" href="/css/inferssd.css">
+    <link rel="canonical" href="/article/running-800b-models-with-inferssd">
+    <meta property="article:published_time" content="2026-10-29">
+    <meta property="article:modified_time" content="2026-10-30">
+    <style>
+        .article-prose code { font-size: .85em; overflow-wrap: anywhere; }
+        .article-prose .ssd-code pre { white-space: pre; }
+        .article-prose .ssd-code code { font-size: inherit; }
+        .article-table caption { text-align: left; padding-block: 20px; color: var(--ink); font-size: var(--fs-body); font-weight: 600; }
+        .article-table td:last-child { background: var(--accent-soft); }
+        .article-prose .inf-note { font-size: var(--fs-body-s); color: var(--ink-mute); }
+        .inf-architecture { margin: 36px 0; }
+        .inf-architecture a { display: block; border: 0; }
+        .inf-architecture img { display: block; width: 100%; height: auto; }
+        .inf-architecture figcaption { margin-top: 14px; font-size: var(--fs-caption); color: var(--ink-mute); line-height: 1.6; }
+        .inf-sources { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--line); }
+        .inf-sources li { font-size: var(--fs-body-s); }
+        .inf-references > li::marker { content: "[" counter(list-item) "] "; }
+        /* WiCi Infer bar, fixed to the bottom edge of the window at its full width ("sticky on the bottom", then "不需要浮动…直接做一个 full-bleed 的横条", Nov 12, 2026): InferSSD as a desktop app, for readers who would rather not build it. Leaves when closed (kept for the browser session) and while the footer is in view (the script at the end of the page). */
+        .inf-app { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--accent); color: #fff; transition: opacity .3s var(--ease), transform .3s var(--ease), visibility 0s; }
+        .inf-app.is-away { opacity: 0; visibility: hidden; transform: translateY(100%); transition: opacity .3s var(--ease), transform .3s var(--ease), visibility 0s .3s; }
+        .inf-app-inner { display: flex; align-items: center; gap: 16px; padding-block: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+        .inf-app-icon { flex: none; width: 52px; height: 52px; }
+        .inf-app-copy { flex: 1; min-width: 0; }
+        .inf-app-title { margin: 0; font-size: var(--fs-body-s); font-weight: 600; line-height: 1.35; color: #fff; }
+        .inf-app-text { margin: 2px 0 0; font-size: var(--fs-caption); line-height: 1.4; color: rgba(255, 255, 255, .78); }
+        .inf-app-text + .inf-app-text { margin-top: 0; }
+        .inf-app-narrow { display: none; }
+        .inf-app-cta { flex: none; padding: 10px 16px; background: #fff; color: var(--ink); white-space: nowrap; }
+        .inf-app-cta:hover { background: var(--accent-soft); }
+        .inf-app-close { flex: none; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: none; color: rgba(255, 255, 255, .7); cursor: pointer; }
+        .inf-app-close:hover, .inf-app-close:focus-visible { color: #fff; background: rgba(255, 255, 255, .14); }
+        .inf-app a:focus-visible, .inf-app button:focus-visible { outline-color: #fff; }
+        @media (max-width: 720px) {
+            .inf-app-inner { gap: 10px; padding-block: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+            .inf-app-icon { width: 44px; height: 44px; }
+            .inf-app-wide, .article-prose .inf-app--inline .inf-app-wide { display: none; }
+            .inf-app-narrow { display: inline; }
+            .inf-app-cta { padding: 9px 14px; }
+            .inf-app-cta svg { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) { .inf-app, .inf-app.is-away { transition: none; } }
+        /* The same bar set in the text, after the results ("文章上中部也插入cta section 跟底部的一样", Nov 12, 2026): in flow, the column's width, rounded, no close button. */
+        .inf-app--inline { position: static; margin: 48px 0; border-radius: 20px; }
+        .inf-app--inline .inf-app-inner { padding: 16px 20px; }
+        .article-prose .inf-app--inline p { margin: 0; max-width: none; }
+        .article-prose .inf-app--inline .inf-app-title { font-size: var(--fs-body-s); line-height: 1.35; color: #fff; }
+        .article-prose .inf-app--inline .inf-app-text { margin-top: 2px; font-size: var(--fs-caption); line-height: 1.4; color: rgba(255, 255, 255, .78); }
+        .article-prose .inf-app--inline .inf-app-text + .inf-app-text { margin-top: 0; }
+        .article-prose .inf-app--inline a.inf-app-cta { border: 1px solid transparent; background: #fff; background-image: none; color: var(--ink); text-decoration: none; }
+        .article-prose .inf-app--inline a.inf-app-cta:hover { background: var(--accent-soft); color: var(--ink); }
+        .article-prose .inf-app--inline .inf-app-icon { margin: 0; }
+    </style>

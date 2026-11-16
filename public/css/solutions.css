@@ -1,0 +1,763 @@
+/* =========================================
+   WiCi — Solutions pages styles
+   Loaded by solutions.html, local-ai.html, and
+   creative-production.html on top of common.css
+   and home.css (the .hero-* page hero, section
+   base, and the dark .untethered-* band come
+   from there). Each page is three beats: the
+   use case, the tech solution (film or still +
+   benchmark rows + links), and a CTA.
+   ========================================= */
+
+/* ============================
+   Hero
+   ============================ */
+.hero--sol {
+    padding: 88px 0 40px;
+}
+
+.hero--sol .hero-title {
+    font-size: var(--fs-hero-sub);
+    max-width: 18ch;
+}
+
+.hero--sol .hero-lede {
+    max-width: 60ch;
+    padding-top: 22px;
+}
+
+/* ============================
+   Solutions index — the collage hero
+   (Oct 26, 2026: a statement in very large type across a
+   stage, the desk photo in a big circle over its middle,
+   and the five solutions as smaller circles around it, each
+   a link; after the designer's circle-collage take on the
+   homepage and Viens-là's "John Nollet" page. The five
+   cards it replaced are in the history before that date.)
+   ============================ */
+.sx-hero {
+    --sx-w: min(100% - 96px, 1200px);   /* the stage's width, for the lede's place; the container's 1200px since Oct 29, 2026, 1480 with a 24px gutter before */
+    padding: 40px 0 56px;   /* 8px on top until Oct 27, 2026: the CAD circle, which rises past the stage's top, was cut off under the bars */
+    overflow: clip;
+}
+
+/* The stage: a fixed-ratio box the width of the screen less
+   a gutter, 1480px at most; every circle is placed in percent
+   of it, the type in container units, so it scales as one
+   piece. */
+.sx-stage {
+    --sx-fs: clamp(40px, 7cqw, 84px);   /* the same 84px at the narrower stage (5.7cqw at 1480 before); three lines, "Solutions for / industry and / professionals"; 8.6cqw up to 128px for the two-line labels before it */
+    --sx-inset: 3.2cqw;
+    position: relative;
+    width: var(--sx-w);
+    margin-inline: auto;
+    aspect-ratio: 1480 / 880;
+    container-type: inline-size;
+}
+
+/* The statement: two lines, the first at the left, the second
+   pushed right, each fading to pale grey where the big circle
+   lies over it (a gradient clipped to the type). */
+.sx-statement {
+    position: absolute;
+    left: var(--sx-inset);
+    right: var(--sx-inset);
+    top: 21%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.04em;
+    font-family: var(--font-display);
+    font-size: var(--sx-fs);
+    font-weight: 500;
+    line-height: 0.96;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    z-index: 1;
+}
+
+.sx-line {
+    display: block;
+    width: fit-content;
+    white-space: nowrap;
+}
+
+.sx-line-b {
+    margin-left: 0;
+}
+
+/* The circles. --x / --y: the centre in percent of the stage;
+   --s: the diameter in percent of its width. */
+.sx-ring,
+.sx-dot {
+    position: absolute;
+    left: calc(var(--x) * 1%);
+    top: calc(var(--y) * 1%);
+    width: calc(var(--s) * 1%);
+    aspect-ratio: 1;
+    border-radius: 50%; corner-shape: round;
+    translate: -50% -50%;
+    z-index: 2;
+}
+
+.sx-ring {
+    overflow: hidden;
+    background: var(--bg-soft);
+    isolation: isolate;
+    --k: 1;
+    scale: var(--k);
+    transition: scale 0.5s var(--ease), box-shadow 0.5s var(--ease);
+    animation: sx-arrive 0.9s var(--ease) both;
+    animation-delay: var(--d, 0s);
+}
+
+.sx-ring img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos, 50% 50%);
+    display: block;
+}
+
+a.sx-ring {
+    color: var(--ink);
+    cursor: pointer;
+}
+
+a.sx-ring:hover,
+a.sx-ring:focus-visible {
+    --k: 1.05;
+    box-shadow: 0 24px 60px -24px rgba(var(--ink-rgb), 0.35);
+    outline: none;
+}
+
+a.sx-ring:focus-visible {
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--accent);
+}
+
+/* The name of a solution, a chip at the foot of its circle,
+   always shown. */
+.sx-ring-label {
+    position: absolute;
+    left: 50%;
+    bottom: 9%;
+    translate: -50% 0;
+    padding: 6px 12px;
+    border-radius: 999px; corner-shape: round;
+    background: rgba(var(--bg-rgb), 0.92);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.sx-dot {
+    z-index: 0;
+}
+
+.sx-dot--soft {
+    --x: 44.6; --y: 17.2; --s: 8.2;
+    background: var(--accent-soft);
+}
+
+.sx-dot--accent {
+    --x: 26.2; --y: 69.3; --s: 4.8;
+    background: var(--accent);
+}
+
+/* The six, placed as in the designer's frame: the device's circle is the big one
+   at the right of the label, the headset's in front of its lower
+   left, the laptop's cut by the foot at the left, the CAD screen's
+   by the top, the robot's by the corner at the right. */
+.sx-ring--device   { --x: 73.5; --y: 52; --s: 36; --d: 0s; }
+
+/* The big circle's crop, zoomed in on the device: 796 of the photo's 2000px across the
+   circle, its top edge just under the picture frames on the wall, the device in its middle with the wall above and the desk's
+   edge below. */
+.sx-ring--device img {
+    inset: auto;
+    left: -36.7%;
+    top: -40.2%;
+    width: 251.3%;
+    height: auto;
+    max-width: none;
+}
+.sx-ring--creative { --x: 26; --y: 6.5; --s: 16; --d: 0.1s; }
+.sx-ring--ai       { --x: 9; --y: 85; --s: 27; --d: 0.18s; }
+.sx-ring--home     { --x: 87.8; --y: 15.8; --s: 12.7; --d: 0.26s; }
+.sx-ring--robot    { --x: 94; --y: 92.5; --s: 18; --d: 0.14s; }
+.sx-ring--vr       { --x: 50; --y: 73.3; --s: 20; --d: 0.22s; z-index: 3; }
+
+@keyframes sx-arrive {
+    from { opacity: 0; scale: 0.6; }
+    to   { opacity: 1; scale: var(--k); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sx-ring { animation: none; }
+}
+
+/* The lede, at the foot of the stage under the device's circle (the
+   frame's one line of copy, at 30% of the stage's width and 97% of
+   its height; two text columns on a hairline stood here for a few
+   hours). It follows the stage in the flow and is pulled up over its
+   last 3%, so on phones it simply flows under the collage. */
+.sx-lede {
+    position: relative;
+    width: calc(0.48 * var(--sx-w));
+    margin: calc(-0.0178 * var(--sx-w)) 0 0 calc(50% - 0.2 * var(--sx-w));
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink-soft);
+    z-index: 4;
+}
+
+/* ============================
+   Solutions index — the five as rows, an icon at the head of each
+   ============================ */
+.sx-index {
+    padding: 48px 0 104px;
+}
+
+.sx-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+}
+
+.sx-row {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 0.8fr) minmax(0, 1.6fr) 48px;
+    gap: 24px;
+    align-items: start;   /* everything from the row's top */
+    padding: 30px 0 32px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    transition: padding-left 0.4s var(--ease);
+}
+
+/* The slot at the left: an Icons8 glyph for the field, inlined in the markup, in ink. */
+.sx-row-n {
+    display: block;
+    width: 38px;
+    height: 38px;
+    margin-top: 4px;   /* the glyph (80% of its box, 30px) as tall as the name's capitals and centred on them: the name's cap line is 8px under the row's padding, its baseline 38.5px */
+    color: var(--ink);
+}
+
+.sx-row-n svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.sx-row-name {
+    font-family: var(--font-display);
+    font-size: clamp(30px, 3vw, 44px);
+    font-weight: 500;
+    letter-spacing: var(--ls-display);
+    line-height: 1.04;
+    transition: color 0.3s var(--ease);
+}
+
+.sx-row-copy {
+    padding-top: 1px;   /* its first line's capitals on the name's cap line (Oct 27, 2026; 0.35em before, which set them 4px under it) */
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    max-width: 56ch;
+}
+
+.sx-row-copy strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.sx-row-arrow {
+    justify-self: end;
+    align-self: start;
+    margin-top: 1px;   /* centred on the name's capitals, like the icon */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%; corner-shape: round;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease), translate 0.3s var(--ease);
+}
+
+.sx-row:hover .sx-row-name,
+.sx-row:focus-visible .sx-row-name {
+    color: var(--accent-bright);
+}
+
+.sx-row:hover .sx-row-arrow,
+.sx-row:focus-visible .sx-row-arrow {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    translate: 2px -2px;
+}
+
+.sx-row:focus-visible {
+    outline: none;
+}
+
+@media (max-width: 960px) {
+    .sx-row {
+        grid-template-columns: 48px minmax(0, 1fr) 44px;
+        grid-template-areas: "n name arrow" "n copy arrow";
+        row-gap: 10px;
+    }
+    .sx-row-n { grid-area: n; }
+    .sx-row-name { grid-area: name; }
+    .sx-row-copy { grid-area: copy; }
+    .sx-row-arrow { grid-area: arrow; }
+}
+
+/* Phones: the statement in three lines over the collage, which
+   takes its own, taller stage with fewer circles. */
+@media (max-width: 720px) {
+    .sx-stage {
+        --sx-fs: 13.5cqw;
+        --sx-inset: 0;
+        aspect-ratio: 1 / 1.5;
+    }
+    .sx-statement {
+        top: 4%;
+        gap: 0.02em;
+        letter-spacing: -0.04em;
+    }
+    .sx-line {
+        white-space: normal;
+    }
+    .sx-line-b {
+        margin-left: 0;
+    }
+    .sx-hero { --sx-w: calc(100% - 40px); padding-top: 8px; padding-bottom: 8px; }   /* the phone collage keeps its circles inside the stage */
+    .sx-lede {
+        width: auto;
+        margin: 28px 20px 0;
+        font-size: var(--fs-body-s);
+    }
+    .sx-ring--device   { --x: 50; --y: 64; --s: 70; }
+    .sx-ring--creative { --x: 86; --y: 42; --s: 26; }
+    .sx-ring--ai       { --x: 10; --y: 48; --s: 24; }
+    .sx-ring--home     { --x: 92; --y: 72; --s: 18; }
+    .sx-ring--robot    { --x: 20; --y: 88; --s: 30; }
+    .sx-ring--vr       { --x: 72; --y: 90; --s: 26; }
+    .sx-dot--soft      { --x: 94; --y: 8; --s: 12; }
+    .sx-dot--accent    { --x: 52; --y: 37; --s: 3.5; }
+    .sx-ring-label { display: none; }   /* the rows below name the five; the chips would not fit the small circles */
+    .sx-index { padding: 32px 0 72px; }
+    .sx-row-n { width: 26px; height: 26px; margin-top: 0; }
+    .sx-row {
+        grid-template-columns: 36px minmax(0, 1fr) 40px;
+        padding: 22px 0 24px;
+        gap: 16px;
+    }
+    .sx-row-name { font-size: var(--fs-h3-lg); }
+    .sx-row-copy { font-size: var(--fs-body-s); }
+    .sx-row-arrow { width: 40px; height: 40px; }
+}
+
+/* ============================
+   The tech solution
+   ============================ */
+.sol-solution {
+    padding: 56px 0 96px;
+    background: var(--bg-soft);
+}
+
+.sol-head {
+    margin-bottom: 40px;
+}
+
+.sol-head .section-subtitle {
+    max-width: 60ch;
+    margin-top: 20px;
+}
+
+/* Film / still: the product page's teaser with a "full film" button;
+   the still is the artists frame. */
+.sol-film {
+    margin: 0 0 20px;
+    position: relative;
+    border-radius: 29px;
+    overflow: hidden;
+    background: var(--bg-dark);
+    aspect-ratio: 16 / 9;
+}
+
+.sol-film video,
+.sol-film img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sol-film-full {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(var(--bg-rgb), 0.92);
+    color: var(--ink);
+    font-size: var(--fs-button);
+    font-weight: 600;
+    box-shadow: 0 10px 30px -14px rgba(var(--ink-rgb), 0.5);
+    transition: background 0.2s var(--ease);
+}
+
+.sol-film-full:hover {
+    background: var(--bg);
+}
+
+.sol-film-full[hidden] {
+    display: none;
+}
+
+.sol-film-caption {
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+    max-width: 70ch;
+    margin-bottom: 44px;
+}
+
+/* Benchmarks (the product page's rows) beside the link lists */
+.sol-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+}
+
+.sol-bench-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 29px;
+    background: var(--bg-card);
+}
+
+.sol-bench {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.sol-bench th,
+.sol-bench td {
+    padding: 14px 20px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+}
+
+.sol-bench tbody tr:last-child th,
+.sol-bench tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.sol-bench thead th {
+    padding-top: 18px;
+    padding-bottom: 12px;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.sol-bench tbody th {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.sol-bench tbody th small {
+    display: block;
+    font-weight: 400;
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+}
+
+.sol-bench td strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.sol-bench td span {
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+    margin-left: 4px;
+}
+
+.sol-bench-note {
+    margin: 14px 0 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.sol-bench-note a,
+.sol-links a {
+    color: var(--accent-bright);
+}
+
+.sol-bench-note a:hover,
+.sol-links a:hover {
+    color: var(--accent-hover);
+}
+
+/* Compatible apps row */
+.sol-apps {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sol-apps li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 6px;
+    border: 1px solid var(--line);
+    border-radius: 999px; corner-shape: round;
+    background: var(--bg-card);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.sol-apps img {
+    width: 26px;
+    height: 26px;
+    border-radius: 11px;
+}
+
+/* WiCi One card beside the benchmarks: the hero render on its lavender
+   stage, cropped to the device, then the lockup, name, and one line. */
+.sol-product {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: 29px;
+    background: var(--bg-card);
+    overflow: hidden;
+    color: var(--ink);
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.sol-product:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 50px -28px rgba(var(--ink-rgb), 0.18);
+}
+
+.sol-product-media {
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(to bottom, var(--hero-mist) 0%, var(--hero-lavender) 100%);
+    overflow: hidden;
+}
+
+.sol-product-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+    transform: scale(1.12);
+    transform-origin: center 45%;
+}
+
+.sol-product-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px 24px 24px;
+}
+
+.sol-product-logo {
+    height: 18px;
+    width: auto;
+    align-self: flex-start;
+    margin-bottom: 4px;
+}
+
+.sol-product-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: var(--lh-title);
+    color: var(--ink);
+}
+
+.sol-product-body p {
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.sol-product-link {
+    margin-top: 6px;
+    color: var(--accent-bright);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+}
+
+.sol-product:hover .sol-product-link {
+    color: var(--accent-hover);
+}
+
+/* Technology and blog lists, two columns under the benchmarks */
+.sol-more {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    margin-top: 44px;
+}
+
+.sol-links {
+    display: flex;
+    flex-direction: column;
+}
+
+.sol-links-title {
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 10px;
+}
+
+.sol-links ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sol-links li {
+    border-top: 1px solid var(--line);
+}
+
+.sol-links li:last-child {
+    border-bottom: 1px solid var(--line);
+}
+
+.sol-links li a {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 12px 0;
+    color: var(--ink);
+    transition: color 0.2s var(--ease);
+}
+
+.sol-links li a:hover {
+    color: var(--accent-bright);
+}
+
+.sol-links-name {
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+}
+
+.sol-links-desc {
+    font-size: var(--fs-caption);
+    line-height: 1.4;
+    color: var(--ink-mute);
+}
+
+/* ============================
+   CTA band (dark, on .section--untethered)
+   ============================ */
+.sol-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.sol-cta-btn {
+    background: var(--bg);
+    color: var(--ink);
+}
+
+.sol-cta-btn:hover {
+    background: var(--accent-soft);
+    color: var(--ink);
+}
+
+.sol-cta-btn--ghost {
+    background: transparent;
+    color: var(--bg);
+    border-color: rgba(var(--bg-rgb), 0.4);
+}
+
+.sol-cta-btn--ghost:hover {
+    background: rgba(var(--bg-rgb), 0.08);
+    border-color: var(--bg);
+    color: var(--bg);
+}
+
+/* ============================
+   Responsive
+   ============================ */
+@media (max-width: 960px) {
+    .hero--sol {
+        padding: 64px 0 28px;
+    }
+    /* minmax(0, …): a bare 1fr track grows to the benchmark table's
+       480px floor and pushes the column off a phone's screen; with it
+       the table scrolls inside its own frame. */
+    .sol-grid,
+    .sol-more {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .sol-solution {
+        padding: 44px 0 72px;
+    }
+}
+
+/* Phones: the benchmark table fits its frame, three columns with
+   tighter cells, no sideways scroll. */
+@media (max-width: 720px) {
+    .sol-bench {
+        min-width: 0;
+    }
+    .sol-bench th,
+    .sol-bench td {
+        padding: 12px 10px;
+    }
+    .sol-bench th:first-child {
+        padding-left: 16px;
+    }
+    .sol-bench td span {
+        display: block;
+    }
+}

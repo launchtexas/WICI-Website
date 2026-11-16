@@ -1,0 +1,489 @@
+
+
+        <!-- Article header -->
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/sglang-ssd-expert-pack.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-08-29">August 29, 2026</time></p>
+                <h1 class="article-title">WiCi x SGLang: Running Trillion Parameter LLMs on Consumer Hardware with SSD Expert Pack</h1>
+                <p class="article-subtitle">Joint research by WiCi and SGLang. Originally published on <a href="https://www.lmsys.org/blog/2026-08-29-sglang-ssd-expert-pack">LMSYS</a>.</p>
+            </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">1. Introduction: turning a VRAM problem into a storage problem</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#1-introduction-turning-a-vram-problem-into-a-storage-problem">1. Introduction: turning a VRAM problem into a storage problem</a></li>
+                        <li><a href="#2-why-the-native-gguf-loading-path-is-not-enough">2. Why the native GGUF loading path is not enough</a></li>
+                        <li><a href="#3-expert-pack-organizing-weights-by-expert">3. Expert Pack: organizing weights by expert</a></li>
+                        <li><a href="#4-the-key-optimization-removing-the-page-cache---pinned-memory-copy">4. The key optimization: removing the page cache -&gt; pinned memory copy</a></li>
+                        <li><a href="#5-gpuvram-cache-keeping-the-working-set-close-to-compute">5. GPU/VRAM cache: keeping the working set close to compute</a></li>
+                        <li><a href="#6-experimental-setup">6. Experimental setup</a></li>
+                        <li><a href="#7-correctness-boundary">7. Correctness boundary</a></li>
+                        <li><a href="#8-performance-results">8. Performance results</a></li>
+                        <li><a href="#9-detailed-reproduction">9. Detailed reproduction</a></li>
+                        <li><a href="#10-conditions-and-limitations">10. Conditions and limitations</a></li>
+                        <li><a href="#11-conclusion">11. Conclusion</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/sglang-ssd-expert-pack.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li>WiCi AI Team</li>
+                        <li>SGLang Team</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#1-introduction-turning-a-vram-problem-into-a-storage-problem">1. Introduction: turning a VRAM problem into a storage problem</a></li>
+                            <li><a href="#2-why-the-native-gguf-loading-path-is-not-enough">2. Why the native GGUF loading path is not enough</a></li>
+                            <li><a href="#3-expert-pack-organizing-weights-by-expert">3. Expert Pack: organizing weights by expert</a></li>
+                            <li><a href="#4-the-key-optimization-removing-the-page-cache---pinned-memory-copy">4. The key optimization: removing the page cache -&gt; pinned memory copy</a></li>
+                            <li><a href="#5-gpuvram-cache-keeping-the-working-set-close-to-compute">5. GPU/VRAM cache: keeping the working set close to compute</a></li>
+                            <li><a href="#6-experimental-setup">6. Experimental setup</a></li>
+                            <li><a href="#7-correctness-boundary">7. Correctness boundary</a></li>
+                            <li><a href="#8-performance-results">8. Performance results</a></li>
+                            <li><a href="#9-detailed-reproduction">9. Detailed reproduction</a></li>
+                            <li><a href="#10-conditions-and-limitations">10. Conditions and limitations</a></li>
+                            <li><a href="#11-conclusion">11. Conclusion</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose expert-pack-prose">
+
+                <blockquote class="article-callout">
+                <p>SGLang brings the core idea of SSD-LLaMA to MoE inference: keep routed experts that do not fit in VRAM and host RAM on an NVMe SSD, load only the experts selected by the router, and use Expert Pack layout, direct I/O, pinned staging, asynchronous H2D transfers, and a GPU cache to turn SSD capacity into a practical backing tier.</p>
+                </blockquote>
+                <h2 id="1-introduction-turning-a-vram-problem-into-a-storage-problem">1. Introduction: turning a VRAM problem into a storage problem</h2>
+                <p>The total parameter capacity of DeepSeek-V4-Flash and Kimi-K3 is far beyond the VRAM of a single consumer GPU. A conventional deployment therefore needs multiple GPUs or hundreds of gigabytes, and sometimes terabytes, of host memory. That capacity requirement creates a large barrier between frontier model capability and local hardware.</p>
+                <p>SGLang's SSD-backed Expert Pack path takes a different approach. Routed expert weights remain on an NVMe SSD. The router activates only a small subset of experts for each token, so the runtime moves only the selected experts that are not already cached to the GPU. Expert Pack reorganizes the weights of each layer/expert pair into a directly addressable contiguous expert block. The runtime reads that expert block into an aligned pinned host buffer using direct I/O, then transfers it to a GPU cache asynchronously.</p>
+                <p>This path changes how model weights are stored and delivered, not the model computation. It does not prune, replace, merge, or skip selected experts, and it does not reduce Expert Top-K. The result is a practical way to run DeepSeek-V4-Flash and the validated text-only Kimi-K3 path with an Intel Ultra5 230F CPU, 32 GB memory, a TiPro9000 2 TB disk, and an RTX 5090 with 32 GB VRAM.</p>
+                <h3 id="moe-computation-is-sparse-but-model-capacity-is-not">MoE computation is sparse, but model capacity is not</h3>
+                <p>Mixture-of-Experts models split the feed-forward network into many experts. After the router scores the experts for a token, only a small subset participates in that token's computation. The remaining experts are idle for that token.</p>
+                <p>The router's choice changes across tokens and prompts. The complete expert pool must therefore remain available even though only a small working set is active at any one time. Quantization reduces the artifact size, but it does not remove the need to store the expert pool. MoE inference consequently has two different properties:</p>
+                <ul>
+                <li>per-token computation is sparse;</li>
+                <li>the total expert capacity that must be stored and delivered is very large.</li>
+                </ul>
+                <p>This is why SSD is a useful backing tier. It provides much more capacity than consumer VRAM or RAM, and modern PCIe 5.0 NVMe SSDs provide enough sequential bandwidth to make a carefully designed delivery path viable. SSD capacity becomes executable model memory only when the layout, read path, and cache policy match expert-level access patterns.</p>
+                <h3 id="the-capacity-cost-difference">The capacity-cost difference</h3>
+                <p>A capacity-cost comparison makes the trade-off clear. The following figures are capacity-only lower bounds, not complete system prices:</p>
+                <p align="center">
+                <img alt="Capacity cost comparison for DeepSeek-V4-Flash and Kimi-K3 on a logarithmic scale" decoding="async" height="1194" loading="lazy" src="/images/blog/sglang-ssd-expert-pack/price.png" width="1600"/>
+                </p>
+                <p>The figure does not mean SSD and DRAM have the same latency, or that buying an SSD alone is sufficient to run the model. It shows that placing the complete expert pool in VRAM or DRAM quickly becomes impractical, while using SSD for capacity and a bounded GPU cache for the active working set can substantially lower the hardware barrier.</p>
+                <h3 id="sglangs-ssd-expert-pack-approach">SGLang's SSD Expert Pack approach</h3>
+                <p>The central SSD-LLaMA idea is to manage SSD, RAM, and VRAM as a runtime-controlled storage hierarchy. The complete expert pool stays in the high-capacity tier, while limited VRAM retains the experts with the highest observed reuse.</p>
+                <p>SGLang's Expert Pack is an implementation of the most important expert-centric parts of that idea inside the SGLang MoE runtime:</p>
+                <ol>
+                <li>Expert Pack makes a layer/expert pair an independently addressable contiguous expert block.</li>
+                <li><code>O_DIRECT</code> and aligned pinned buffers remove the extra page-cache staging copy.</li>
+                <li>A byte-budgeted LFU/LRU GPU cache retains complete experts that are reused.</li>
+                </ol>
+                <p>The current SGLang path does not claim to reproduce every mechanism in the SSD-LLaMA paper. SGLang's implementation is GPU-centric: pinned host memory is a bounded transfer staging area, not a persistent host expert cache, and the current feature does not require the paper's CPU expert execution or lossless CUDA decompression. Keeping this distinction explicit makes the feature boundary precise.</p>
+                <h2 id="2-why-the-native-gguf-loading-path-is-not-enough">2. Why the native GGUF loading path is not enough</h2>
+                <p>With the original GGUF or multi-shard tensor layout, the gate, up, and down weights of one expert may be located in different file regions. One router hit can therefore trigger several small reads, tensor-name lookups, and staging operations.</p>
+                <p>An explicit on-demand read avoids speculative prefetch, but exposes the full SSD and H2D latency on the critical path of the current MoE layer. After the router produces its result, the GPU must wait for the selected experts. Prefetching can hide part of that latency, but it has two fundamental limitations:</p>
+                <ul>
+                <li>the correct expert may still arrive too late because the routing result is only known after the previous computation;</li>
+                <li>an incorrect prediction consumes SSD bandwidth, staging space, and GPU cache capacity, after which the actually selected expert must still be read.</li>
+                </ul>
+                <p>SGLang therefore first changes the physical expert layout, then reduces the cost of every unavoidable cache miss.</p>
+                <h3 id="why-native-gguf-cannot-directly-use-expert-level-o_direct">Why native GGUF cannot directly use expert-level <code>O_DIRECT</code></h3>
+                <p>Native GGUF is a tensor-oriented model container, not an expert-oriented direct-I/O store. Its metadata and tensor payloads are organized around individual tensors, and a single expert's <code>gate</code>, <code>up</code>, and <code>down</code> weights may be separated across file regions or across multiple shards. The original loading path commonly uses a parser, <code>mmap</code>, or buffered file reads, so the application sees pageable page-cache-backed mappings rather than a preallocated aligned DMA destination.</p>
+                <p><code>O_DIRECT</code> requires all of the following to be controlled by the caller:</p>
+                <ul>
+                <li>a file offset aligned to the storage and filesystem contract;</li>
+                <li>a read length aligned to that contract;</li>
+                <li>a user-provided buffer whose address is also aligned and suitable for the read.</li>
+                </ul>
+                <p>An arbitrary tensor slice in a native GGUF file does not provide that expert-level contract. Its offset may not be aligned, its length may not be a multiple of the required block size, and the three tensors needed for one expert are not guaranteed to form one contiguous range. A caller could issue separate aligned reads with padding and then reconstruct the expert in another buffer, but that gives up the main benefit: it reintroduces multiple reads and extra assembly work, while the original mmap/page-cache path still cannot use the page-cache pages themselves as an <code>O_DIRECT</code> destination.</p>
+                <p>Expert Pack is the offline transformation that makes direct I/O practical. It places all roles of one layer/expert pair into one padded, aligned expert block, records its exact offset and length in the manifest, and provides a pinned buffer whose address satisfies the same contract. The runtime can then read and transfer a complete expert without asking the native GGUF layout to behave like a direct-I/O layout.</p>
+                <h2 id="3-expert-pack-organizing-weights-by-expert">3. Expert Pack: organizing weights by expert</h2>
+                <h3 id="contiguous-expert-layout">Contiguous expert layout</h3>
+                <p>SGLang Expert Pack v1 treats one <code>(layer, expert)</code> pair as one complete expert. A DeepSeek expert contains the <code>gate</code>, <code>up</code>, and <code>down</code> roles. The manifest records each role's tensor boundaries, format, integrity information, and pack offset.</p>
+                <p>The logical layout is:</p>
+                <p><img alt="Expert Pack physical data block layout with contiguous expert byte-streams and explicit block-aligned padding" decoding="async" height="893" loading="lazy" src="/images/blog/sglang-ssd-expert-pack/expert-pack-layout.png" width="1703"/></p>
+                <p>The runtime does not scan the file for tensor names. It derives the expert offset from the pack metadata:</p>
+                <pre><code>expert_offset = data_start
+              + (layer * num_experts + expert) * expert_stride
+</code></pre>
+                <p>Role offsets inside the expert block are validated as well. One manifest lookup can therefore resolve the complete expert read range. The runtime may split that range into a bounded number of parallel tasks according to <code>read_splits</code>.</p>
+                <p>The layout changes the physical organization of weights on SSD, not their tensor contents, quantization formats, routing decisions, or model mathematics. Kimi-K3 uses a separate GGML Expert Pack adapter. The currently validated input consists of 38 Q2_K GGUF shards; its routed experts use Q2_K for gate/up and Q3_K for down.</p>
+                <h3 id="alignment-is-required-for-direct-io">Alignment is required for direct I/O</h3>
+                <p>Direct I/O cannot use arbitrary file offsets, lengths, and user buffers in the same way as ordinary <code>read()</code>. The SGLang runtime validates:</p>
+                <ul>
+                <li>Expert Pack offsets for each expert;</li>
+                <li>the start and length of every read range;</li>
+                <li>the address of every pinned staging buffer.</li>
+                </ul>
+                <p>The current implementation checks 4096-byte alignment. If the pack or staging buffers do not satisfy the contract, initialization fails instead of silently falling back to an uncontrolled path during inference.</p>
+                <h2 id="4-the-key-optimization-removing-the-page-cache---pinned-memory-copy">4. The key optimization: removing the <code>page cache -&gt; pinned memory</code> copy</h2>
+                <p>This is one of the most important differences between Expert Pack and a conventional file-reading path.</p>
+                <h3 id="traditional-buffered-io">Traditional buffered I/O</h3>
+                <p>Traditional file reads normally go through the operating system page cache:</p>
+                <p align="center">
+                <img alt="Traditional file-read path: a synchronous page-cache-to-pinned-memory copy followed by asynchronous H2D" decoding="async" height="894" loading="lazy" src="/images/blog/sglang-ssd-expert-pack/traditional_copy.png" width="818"/>
+                </p>
+                <p>The page cache is a kernel-managed file cache. It is not the same thing as the page-locked user memory that CUDA can use for asynchronous H2D. To issue an asynchronous H2D transfer, the application normally prepares a pinned buffer. The file data therefore has to be copied from the page cache into that pinned buffer before the GPU transfer can start. From the application's perspective, this page-cache-to-pinned handoff is a synchronous CPU memory copy: the host-side staging step must complete before the H2D operation has a valid pinned source buffer. It is not itself a <code>cudaMemcpyAsync</code> operation.</p>
+                <p>This is neither SSD reads nor H2D transfers. Rather, it is an extra synchronous memory copy operation performed by the CPU on the host side: it reads the payload from page-cache-backed memory and writes it into a pinned staging buffer. For a large expert, this translates to a read and write of the full expert size, consuming host memory bandwidth and introducing an additional kernel-to-userland staging handoff before the GPU transfer can proceed.</p>
+                <h3 id="expert-pack-with-direct-io">Expert Pack with direct I/O</h3>
+                <p>When <code>direct_io=True</code>, SGLang opens the Expert Pack with <code>O_DIRECT</code> and makes the read target a preallocated, aligned pinned staging buffer:</p>
+                <p align="center">
+                <img alt="Expert Pack direct-I/O path: an aligned pinned host buffer feeds the GPU expert cache before MoE computation" decoding="async" height="642" loading="lazy" src="/images/blog/sglang-ssd-expert-pack/expert_pack_copy.png" width="842"/>
+                </p>
+                <p>The read target is already the pinned buffer required by CUDA, so the intermediate step below is removed:</p>
+                <pre><code>page cache -&gt; pinned memory
+</code></pre>
+                <p>This is not a faster implementation of that copy. The copy is removed from the data path. A simplified cost model is:</p>
+                <pre><code>Traditional path:
+T = T(SSD -&gt; page cache)
+  + T(page cache -&gt; pinned)
+  + T(pinned -&gt; GPU)
+  + T(sync)
+
+Expert Pack direct I/O:
+T = T(SSD -&gt; pinned)
+  + T(pinned -&gt; GPU)
+</code></pre>
+                <p><code>O_DIRECT</code> does not make the SSD's physical bandwidth increase. It removes one full host-memory traversal from the end-to-end path, which can provide these benefits:</p>
+                <ul>
+                <li>one less host-memory read and write, reducing CPU and memory-bandwidth pressure;</li>
+                <li>one less synchronization handoff between kernel page cache and user-space staging;</li>
+                <li>no large expert payload polluting the page cache and competing with unrelated data;</li>
+                <li>a completed expert block can enter the H2D path without a page-cache staging copy;</li>
+                <li>the same expert-level contract is reused for every layer/expert pair.</li>
+                </ul>
+                <p>The page-cache-copy claim applies only to <code>direct_io=True</code>. The current SGLang Expert Pack loader and the DeepSeek/Kimi 5090 launchers enable this option by default. If direct I/O is explicitly disabled, the path may go through the page cache and an additional staging copy again.</p>
+                <h2 id="5-gpuvram-cache-keeping-the-working-set-close-to-compute">5. GPU/VRAM cache: keeping the working set close to compute</h2>
+                <p>The GPU cache is the mechanism that turns repeated expert access into a local VRAM hit. Expert Pack is not a cache of individual tensor fragments: one cache entry contains the complete <code>gate</code>/<code>up</code>/<code>down</code> data for one <code>(layer, expert)</code> pair. Keeping the complete expert together matters because a selected expert needs all of its roles for computation. Caching only one role would still force the other roles to be read and would not remove the cache-miss cost.</p>
+                <p>The cache is byte-budgeted rather than expert-count-budgeted. Since different models and adapters have different per-expert payload sizes, the runtime derives the number of available slots from the usable VRAM budget:</p>
+                <pre><code>usable_vram = min(requested_cache, free_vram - reserve)
+slot_count  = floor(usable_vram / expert_payload_bytes)
+</code></pre>
+                <p>The reserve protects memory needed by the model, CUDA runtime, activations, and other non-cache allocations. Initialization fails if the resulting slot count cannot hold one complete top-k working set. This makes the cache contract explicit: a cache budget is not allowed to consume the memory required for the current MoE computation.</p>
+                <p>On a cache hit, the runtime reuses the resident expert and does not read the Expert Pack or issue an H2D for that expert. If a previous transfer is still pending, a CUDA event protects the consumer from observing a partially installed slot. On a cache miss, the runtime selects a victim slot, reads the complete expert into a reusable pinned staging buffer, copies the expert into the GPU slot, and publishes the slot only after the transfer event is ready.</p>
+                <p>Replacement combines frequency and recency. The runtime records how often each <code>(layer, expert)</code> is selected and when it was last used. A frequently selected expert is harder to evict than a cold expert; among similarly useful entries, an older entry is a better victim. Active experts for the current top-k request are protected from eviction, so the cache cannot evict the working set it is about to execute.</p>
+                <p>The source Expert Pack is immutable. Evicting a GPU entry therefore requires no write-back: the expert can always be reconstructed from its recorded SSD offset. This makes VRAM cache management simpler than a dirty data cache and keeps replacement focused on reuse value rather than persistence.</p>
+                <p>The runtime exposes counters that make cache behavior measurable:</p>
+                <ul>
+                <li><code>cache_hits</code> and <code>cache_misses</code>;</li>
+                <li><code>cache_evictions</code>;</li>
+                <li><code>pack_read_bytes</code>;</li>
+                <li><code>h2d_bytes</code>;</li>
+                <li><code>fallback_count</code> and <code>io_errors</code>.</li>
+                </ul>
+                <p>These counters distinguish a cache problem from an I/O problem. A low hit rate means the VRAM budget or workload locality is insufficient; high <code>pack_read_bytes</code> and <code>h2d_bytes</code> with a good hit rate may instead indicate that the active set is larger than the cache during a particular phase. <code>io_errors</code> reports observed I/O failures, while <code>fallback_count</code> is diagnostic telemetry whose meaning depends on an instrumented fallback path; neither is a cache-performance metric.</p>
+                <p>The current execution order places an expert-cache miss on the critical path for the MoE computation it feeds. <code>acquire()</code> copies routing IDs to CPU, waits for the SSD read futures, enqueues the expert-level H2D transfers, and makes the current CUDA stream wait for their transfer events. Only after those events are ready does <code>apply()</code> launch the MoE kernels. Reads and transfers for different missing experts may overlap during the delivery phase, but the current path does not overlap that delivery with the MoE computation that consumes the experts.</p>
+                <p>A simplified per-step model for the current path is therefore:</p>
+                <pre><code>T_step ~= T(miss delivery) + T(GPU compute)
+</code></pre>
+                <p>Here, <code>T(miss delivery)</code> includes route-ID preparation, SSD reads, staging, H2D submission, and the waits needed to make the selected experts available. On a GPU cache hit, the SSD-read and H2D portions can be skipped. A cross-step pipeline could change this model, but that is not part of the execution path described here. The actual result depends on SSD bandwidth, access distribution, cache hit rate, staging-slot count, and expert shapes.</p>
+                <h2 id="6-experimental-setup">6. Experimental setup</h2>
+                <p>We evaluated DeepSeek-V4-Flash and Kimi-K3 with SGLang's SSD Expert Pack path on one consumer machine: an Intel Ultra5 230F CPU, 32 GB of memory, a TiPro9000 2 TB disk, and an RTX 5090 with 32 GB of VRAM. The workload represents endpoint inference rather than batched serving: the ten fixed requests are sent one at a time, and the next request starts only after the previous one finishes.</p>
+                <p>The test set contains five Alpaca requests and five MMLU requests. Both comparisons use the same prompt order, temperature 0, default EOS handling, and a 200-token generation target. The result section reports the mean prefill and decode rates, together with the SGLang cache hit rate and SSD traffic. Exact revisions, file preparation, and server commands are documented after the results.</p>
+                <p>Expert Pack is explicitly selected with <code>--load-format expert_pack</code>; ordinary <code>auto</code>, <code>safetensors</code>, and <code>gguf</code> loading paths are unchanged. The detailed DeepSeek-V4-Flash and Kimi-K3 reproduction procedures are in Section 9.</p>
+                <h2 id="7-correctness-boundary">7. Correctness boundary</h2>
+                <p>Expert Pack is a weight-layout and delivery optimization, not an approximate-inference algorithm. The correctness contract is:</p>
+                <ul>
+                <li>every expert selected by the router is executed;</li>
+                <li>Expert Top-K is unchanged;</li>
+                <li>a selected expert is not replaced by a different resident expert;</li>
+                <li>selected experts are not pruned, skipped, or merged;</li>
+                <li>the pack and manifest are structurally, dimensionally, and cryptographically validated as configured;</li>
+                <li><code>fallback_count</code> and <code>io_errors</code> are reported instead of silently hiding I/O failures.</li>
+                </ul>
+                <p>Validation showed that DeepSeek-V4-Flash produced semantically equivalent answers to Ollama across multiple prompt categories. Kimi-K3 matched the 200-token SGLang reference output; all 92 routed layers executed Top-16 experts with <code>io_errors=0</code>. <code>fallback_count</code> is retained as diagnostic telemetry, but the current path does not expose an instrumented increment for every hypothetical fallback, so zero is not used as an independent correctness proof. Correctness is instead established by the route/output audit and the structural pack checks.</p>
+                <h2 id="8-performance-results">8. Performance results</h2>
+                <p>All SGLang, Ollama, and llama.cpp measurements use the test environment and revisions documented in Section 9. The figures describe validation results under this hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.</p>
+                <p>The validated weight files and generated Expert Packs occupy:</p>
+                <div aria-label="8. Performance results table" class="article-table-wrap" role="region" tabindex="0"><table class="article-table"><thead><tr><th scope="col">Model</th><th scope="col">Original weight files</th><th align="right" scope="col">Weight size</th><th align="right" scope="col">Expert Pack size</th></tr></thead><tbody><tr><td>DeepSeek-V4-Flash</td><td>One Ollama MXFP4 GGUF blob</td><td align="right">155.10 GB</td><td align="right">147.18 GB</td></tr><tr><td>Kimi-K3</td><td>38 Q2_K GGUF shards</td><td align="right">1009.51 GB (about 1.01 TB)</td><td align="right">985.61 GB</td></tr></tbody></table></div>
+                <p>These are file sizes for the validated weight payloads. Pack indexes, locks,
+manifests, and other metadata are separate.</p>
+                <h3 id="deepseek-v4-flash-vs-baseline">DeepSeek-V4-Flash vs. Baseline</h3>
+                <p>The comparison uses ten shared requests: five Alpaca and five MMLU. Both runtimes generated up to 200 tokens per request. The chart reports mean prefill and decode token rates for each dataset.</p>
+                <p align="center">
+                <img alt="DeepSeek-V4-Flash SGLang versus Baseline prefill and decode token rates for Alpaca and MMLU" decoding="async" height="930" loading="lazy" src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_baseline_compare.png" width="1691"/>
+                </p>
+                <p>Relative to Baseline, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.</p>
+                <p>The underlying per-dataset means are compactly reported below. Rates are in
+tokens per second and are arithmetic means over the five records in each
+dataset.</p>
+                <div aria-label="DeepSeek-V4-Flash vs. Baseline table" class="article-table-wrap" role="region" tabindex="0"><table class="article-table"><thead><tr><th scope="col">Dataset</th><th align="right" scope="col">Baseline prefill</th><th align="right" scope="col">SGLang prefill</th><th align="right" scope="col">Prefill gain</th><th align="right" scope="col">Baseline decode</th><th align="right" scope="col">SGLang decode</th><th align="right" scope="col">Decode gain</th></tr></thead><tbody><tr><td>Alpaca (n=5)</td><td align="right">1.108</td><td align="right">2.532</td><td align="right">2.28x</td><td align="right">0.288</td><td align="right">1.992</td><td align="right">6.92x</td></tr><tr><td>MMLU (n=5)</td><td align="right">1.223</td><td align="right">4.141</td><td align="right">3.39x</td><td align="right">0.282</td><td align="right">1.846</td><td align="right">6.55x</td></tr></tbody></table></div>
+                <h3 id="kimi-k3-vs-llamacpp">Kimi-K3 vs. llama.cpp</h3>
+                <p>The comparison uses the same ten fixed requests in both runtimes: five Alpaca
+and five MMLU. Both clients use temperature 0 and default EOS handling; each
+request generated exactly 200 completion tokens, so the decode comparison is
+now matched for prompt set, stop behavior, and output length. The chart reports
+mean prefill and decode token rates for each dataset.</p>
+                <p align="center">
+                <img alt="Kimi-K3 SGLang versus llama.cpp prefill and decode token rates for Alpaca and MMLU" decoding="async" height="1435" loading="lazy" src="/images/blog/sglang-ssd-expert-pack/kimi_k3_sglang_vs_llama_compare.png" width="2643"/>
+                </p>
+                <p>Relative to llama.cpp, SGLang improves prefill by 6.96x on Alpaca and 5.80x on
+MMLU. Decode improves by 3.30x and 3.52x, respectively. The ten-request
+aggregates use the ten retained request records described in Section 9.</p>
+                <h3 id="expert-cache-hit-rate-and-ssd-traffic">Expert-cache hit rate and SSD traffic</h3>
+                <p>Token rate should be read together with cache telemetry. The following Python-generated bar charts report the unique-key VRAM cache hit rate and mean SSD traffic per generated token. <code>cache_hits</code> and <code>cache_misses</code> count unique <code>(layer, expert)</code> keys after <code>acquire()</code> de-duplicates keys within each update; they are not per-token router-edge accesses. A cache hit avoids the SSD read and H2D transfer for that expert. The SSD traffic metric is the unweighted per-request mean of total <code>pack_read_bytes</code> across prefill and decode, normalized by generated completion tokens, and is therefore not decode-only traffic.
+Both figures show SGLang-only telemetry, so the single series is labeled by the surrounding text rather than a legend.</p>
+                <p align="center">
+                <img alt="DeepSeek-V4-Flash SGLang unique VRAM cache hit rate and mean SSD traffic per generated token" decoding="async" height="1366" loading="lazy" src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_expert_cache_metrics.png" width="2632"/>
+                </p>
+                <p>DeepSeek uses the complete ten-request run: five Alpaca and five MMLU requests, each with a 200-token completion. Its unique-key VRAM cache hit rate is 54.2% for Alpaca and 46.4% for MMLU. The mean SSD traffic, combining prefill and decode, is 1.66 and 2.04 decimal GB per generated token, respectively.</p>
+                <p align="center">
+                <img alt="Kimi-K3 SGLang unique VRAM cache hit rate and mean SSD traffic per generated token" decoding="async" height="1366" loading="lazy" src="/images/blog/sglang-ssd-expert-pack/kimi_k3_expert_cache_metrics.png" width="2632"/>
+                </p>
+                <p>The Kimi figure uses all ten completed requests: five Alpaca and five MMLU, each with a 200-token completion. The unweighted per-request unique-key VRAM cache hit rates are 17.0% and 22.7%, respectively. The corresponding mean SSD traffic, combining prefill and decode, is 22.10 and 27.63 decimal GB per generated token. The difference from DeepSeek is expected: Kimi's configuration reserves 5 GiB for the GPU expert cache, while the DeepSeek run reserves about 21 GiB, and the two adapters have different expert payload sizes and routing behavior.</p>
+<!-- Retired interim three-request values are kept below only as review history. -->
+<!--
+The Kimi figure uses the first three completed requests of the interleaved run: two Alpaca and one MMLU, each with a 200-token completion. The current means are 17.4% and 18.5% VRAM cache hit rate, with 21.84 and 24.46 GB read per generated token, respectively. The remaining seven requests are still running, so these are explicitly stage results rather than final ten-request averages. The difference from DeepSeek is expected: Kimi’s configuration reserves 5 GiB for the GPU expert cache, while the DeepSeek run reserves about 21 GiB, and the two adapters have different expert payload sizes and routing behavior.
+
+-->
+                <p>The improvement does not come from one isolated faster-copy primitive. It is the combined effect of:</p>
+                <ol>
+                <li>Expert Pack turning scattered tensor accesses into addressable contiguous expert reads;</li>
+                <li>direct I/O removing the <code>page cache -&gt; pinned memory</code> copy;</li>
+                <li>pinned staging provides a CUDA-compatible host source for expert-level H2D without page-cache staging;</li>
+                <li>the GPU cache skipping SSD reads and H2D transfers on a hit.</li>
+                </ol>
+                <h2 id="9-detailed-reproduction">9. Detailed reproduction</h2>
+                <p>This section gives the complete reproduction flow after the result tables. The
+two subsections use the same ten fixed requests. They are endpoint-style tests:
+the client sends ten HTTP requests in order, waits for each response before
+sending the next request, and uses concurrency 1. No batch of requests is used.</p>
+                <p>The requests are five Alpaca samples and five MMLU samples, in this order:</p>
+                <div aria-label="9. Detailed reproduction table" class="article-table-wrap" role="region" tabindex="0"><table class="article-table"><thead><tr><th align="right" scope="col">#</th><th scope="col">Sample ID</th><th scope="col">Dataset</th><th scope="col">Prompt</th></tr></thead><tbody><tr><td align="right">1</td><td><code>alpaca-37246</code></td><td>Alpaca</td><td>Summarize the movie "Toy Story"</td></tr><tr><td align="right">2</td><td><code>mmlu-abstract_algebra-14</code></td><td>MMLU</td><td>Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br/><br/>Question: Find the maximum possible order for an element of S_n for n = 10.<br/>A. 6<br/>B. 12<br/>C. 30<br/>D. 105</td></tr><tr><td align="right">3</td><td><code>alpaca-50812</code></td><td>Alpaca</td><td>Given a list of items, suggest an interesting activity.<br/><br/>Input: pencils, paper, markers</td></tr><tr><td align="right">4</td><td><code>mmlu-moral_disputes-8315</code></td><td>MMLU</td><td>Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br/><br/>Question: According to Hardin, the "ratchet effect" refers to the fact that<br/>A. overpopulation does not affect the number of people who are poor.<br/>B. overpopulation leads to creation of food banks that help curb poverty rates.<br/>C. world hunger and poverty leads to recognition of rights not to be hungry.<br/>D. the use of a world food bank to feed the hungry leads to an escalating series of emergency situations.</td></tr><tr><td align="right">5</td><td><code>alpaca-9907</code></td><td>Alpaca</td><td>Translate this phrase from Spanish to English: El sol no brilla hoy.</td></tr><tr><td align="right">6</td><td><code>mmlu-high_school_macroeconomics-3940</code></td><td>MMLU</td><td>Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br/><br/>Question: The crowding-out effect from government borrowing is best described as<br/>A. the rightward shift in AD in response to the decreasing interest rates from contractionary fiscal policy.<br/>B. the leftward shift in AD in response to the rising interest rates from expansionary fiscal policy.<br/>C. the effect of the President increasing the money supply which decreases real interest rates and increases AD.<br/>D. the effect on the economy of hearing the chairperson of the central bank say that he or she believes that the economy is in a recession.</td></tr><tr><td align="right">7</td><td><code>alpaca-40699</code></td><td>Alpaca</td><td>Give an example of a bias that could exist in an AI algorithm.</td></tr><tr><td align="right">8</td><td><code>mmlu-professional_law-10971</code></td><td>MMLU</td><td>Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br/><br/>Question: Homeowner owns a property in its natural condition with a house on it. There was no fill of any kind on the property. Neighbor, who owns the adjacent property to the East, built a driveway whose western boundary is along the border of homeowner's property. The excavator dug the driveway five feet deep. The land began to subside along the line of excavation and about three feet of homeowner's land fell off into the driveway, making that part of her property useless. Homeowner demanded that neighbor fill in the property to buttress the erosion created. That was not done and the erosion continued to occur. Homeowner sued and asked for an injunction compelling the neighbor to build and maintain a retaining wall. Will the court rule for the plaintiff/homeowner?<br/>A. Yes, because excavation is an abnormally dangerous activity and neighbor is absolutely liable for any damages caused by the violation.<br/>B. Yes, because every landowner has a right to the lateral support of the soil in its natural state.<br/>C. No, because the neighbor did not go onto the adjacent land and confined all excavation to his own land.<br/>D. No, the right to lateral support is a common law right that has been abrogated by statute in virtually all states so that the right no longer exists.</td></tr><tr><td align="right">9</td><td><code>alpaca-34440</code></td><td>Alpaca</td><td>Make a menu item for a restaurant that contains the following ingredients.<br/><br/>Input: Salmon, avocado, spinach</td></tr><tr><td align="right">10</td><td><code>mmlu-jurisprudence-6660</code></td><td>MMLU</td><td>Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br/><br/>Question: Which of the following is the strongest argument against ethical relativism's hostility to human rights?<br/>A. Utilitarianism<br/>B. Communitarianism.<br/>C. Cognitivism.<br/>D. Positivism.</td></tr></tbody></table></div>
+                <p>Each request uses temperature 0, default EOS handling, and a 200-token target.
+The clients record prompt tokens, completion tokens, TTFT/prefill timing, and
+decode timing for every request. The tables in Section 8 report arithmetic means
+over the five requests in each dataset.</p>
+                <p>In the SGLang commands below, <code>model-meta</code> is the lightweight directory holding
+the model configuration and tokenizer metadata used to initialize the server.
+It is not the raw GGUF weight file. The raw GGUF remains the source artifact,
+while the Expert Pack supplies the routed expert payload; the loader connects
+them through <code>source_path</code>, <code>pack_path</code>, and the manifest.</p>
+                <h3 id="91-deepseek-v4-flash-sglang-and-ollama">9.1 DeepSeek-V4-Flash: SGLang and Ollama</h3>
+                <h4 id="versions-and-workload">Versions and workload</h4>
+                <p>The SGLang run uses commit
+                <code>81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec</code> on branch
+                <code>support_deepseek-v4_and_kimi-k3_on_ssd</code>. The baseline uses Ollama <code>0.33.1</code>
+with its managed llama.cpp runner at commit <code>d222767c7</code>. Both sides run the ten
+requests above serially, one request at a time, with the same sampling settings.</p>
+                <h4 id="starting-the-ollama-baseline-server">Starting the Ollama baseline server</h4>
+                <p>Start the Ollama service before pulling the model and sending requests:</p>
+                <pre><code>OLLAMA_HOST=127.0.0.1:11435 ollama serve &gt;/tmp/deepseek-ollama.log 2&gt;&amp;1 &amp;
+</code></pre>
+                <h4 id="preparation">Preparation</h4>
+                <ol>
+                <li>
+                <p>With the baseline service running, pull the validated DeepSeek-V4-Flash MXFP4 GGUF blob from the
+                <a href="https://ollama.com/frob/deepseek-v4-flash-0731">Ollama model page</a> and use
+                <code>ollama show --modelfile</code> to obtain its local file path. The corresponding
+model card is <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731">DeepSeek-V4-Flash-0731 on Hugging Face</a>:</p>
+                <pre><code>ollama pull frob/deepseek-v4-flash-0731
+ollama show --modelfile frob/deepseek-v4-flash-0731
+</code></pre>
+                <p>The recorded blob SHA-256 is
+                <code>947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd</code> and the
+Ollama manifest SHA-256 is
+                <code>882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3</code>.</p>
+                </li>
+                <li>
+                <p>Install the SGLang checkout and build the DeepSeek Expert Pack manually. Use
+a matching DeepSeek model configuration JSON for <code>--model-config</code>:</p>
+                <pre><code>cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
+python3 -m pip install -e 'python'
+python3 tools/expert_pack/prepare_deepseek_pack.py \
+  --gguf /path/to/deepseek-v4-flash-0731.gguf \
+  --model-config /path/to/deepseek-v4-flash-config.json \
+  --safety-margin-gib 16
+</code></pre>
+                <p>This creates or reuses <code>DeepSeek-V4-Flash.expert-pack</code> and its
+                <code>DeepSeek-V4-Flash.expert-pack.manifest.json</code> beside the source GGUF.</p>
+                </li>
+                <li>
+                <p>Validate the generated Pack and create the metadata used by the server. This
+command does not start a service; because the Pack was built in the previous
+step, the validation phase reuses it instead of rebuilding it:</p>
+                <pre><code>python3 examples/runtime/deepseek_v4/benchmark_deepseek_5090.py \
+  --gguf /path/to/deepseek-v4-flash-0731.gguf \
+  --validate-only
+</code></pre>
+                <p>The generated metadata files are stored under
+                <code>${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/deepseek-v4-flash/&lt;fingerprint&gt;/model-meta/</code>:
+                <code>config.json</code>, <code>generation_config.json</code>, <code>tokenizer.json</code>,
+                <code>tokenizer_config.json</code>, and <code>metadata.json</code>.</p>
+                <p>Here <code>&lt;fingerprint&gt;</code> is a short hash derived from the source GGUF state and
+preparation format. It is generated locally to isolate artifacts for
+different source files; it is not a fixed model name or a directory that
+must be downloaded.</p>
+                </li>
+                </ol>
+                <h4 id="starting-sglang">Starting SGLang</h4>
+                <p>The following is the direct Expert Pack server command. The hash values are
+read from the generated manifest before launch.</p>
+                <pre><code>GGUF=/path/to/deepseek-v4-flash-0731.gguf
+ARTIFACT_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/deepseek-v4-flash/&lt;fingerprint&gt;
+MODEL_META="$ARTIFACT_DIR/model-meta"
+PACK_PATH="$(dirname "$GGUF")/DeepSeek-V4-Flash.expert-pack"
+MANIFEST_PATH="$(dirname "$GGUF")/DeepSeek-V4-Flash.expert-pack.manifest.json"
+STATS_PATH="$ARTIFACT_DIR/deepseek-v4-expert-pack.stats.json"
+SOURCE_SHA256="$(jq -r '.source.sha256' "$MANIFEST_PATH")"
+OLLAMA_MANIFEST_SHA256="$(jq -r '.model.model_identity_sha256 // .model.ollama_manifest_sha256' "$MANIFEST_PATH")"
+CONFIG_SHA256="$(jq -r '.model.config_sha256' "$MANIFEST_PATH")"
+
+python3 -m sglang.launch_server \
+  --model-path "$MODEL_META" \
+  --tokenizer-path "$MODEL_META" \
+  --trust-remote-code \
+  --load-format expert_pack \
+  --model-loader-extra-config "{\"pack_path\":\"$PACK_PATH\",\"manifest_path\":\"$MANIFEST_PATH\",\"source_path\":\"$GGUF\",\"source_sha256\":\"$SOURCE_SHA256\",\"ollama_manifest_sha256\":\"$OLLAMA_MANIFEST_SHA256\",\"config_sha256\":\"$CONFIG_SHA256\",\"cache_vram_mib\":21504,\"cache_vram_reserve_mib\":2048,\"stage_slots\":12,\"read_splits\":4,\"direct_io\":true,\"stats_flush_interval\":43,\"stats_path\":\"$STATS_PATH\"}" \
+  --attention-backend dsv4 \
+  --tp-size 1 --ep-size 1 \
+  --disable-cuda-graph --disable-flashinfer-autotune \
+  --disable-shared-experts-fusion --skip-server-warmup \
+  --max-running-requests 1 --mem-fraction-static 0.96 \
+  --watchdog-timeout 1800 --host 127.0.0.1 --port 30001
+</code></pre>
+                <p>Send the same ten rows to the running Ollama <code>/api/generate</code> endpoint. The retained client uses <code>num_predict=200</code>,
+                <code>temperature=0</code>, the fixed seed, and one request at a time; it writes the
+per-request JSONL records and summary used by the result table.</p>
+                <h3 id="92-kimi-k3-sglang-and-llamacpp">9.2 Kimi-K3: SGLang and llama.cpp</h3>
+                <h4 id="versions-and-workload-1">Versions and workload</h4>
+                <p>The SGLang run uses the same commit
+                <code>81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec</code>. The baseline uses llama.cpp commit
+                <code>5fff128451d7603857597ee1fc18ac1dfb90f148</code>. The ten Alpaca/MMLU requests above
+are sent serially, one at a time, with temperature 0, default EOS handling, and
+a 200-token target on both runtimes.</p>
+                <h4 id="preparation-1">Preparation</h4>
+                <ol>
+                <li>
+                <p>Download the 38 text-only Q2_K GGUF shards from
+                <a href="https://huggingface.co/Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED">Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED</a>:</p>
+                <pre><code>hf download Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED \
+  --include "KIMI-K3-MXP4-DERISKED-Q2_K-*.gguf" \
+  --local-dir /path/to/kimi-k3
+</code></pre>
+                </li>
+                <li>
+                <p>Download the tokenizer and configuration files from
+                <a href="https://huggingface.co/moonshotai/Kimi-K3/tree/9f62e4e9fffbd0a83ddd60e1c209d828994b3569">moonshotai/Kimi-K3 at the recorded revision</a>:</p>
+                <pre><code>hf download moonshotai/Kimi-K3 \
+  config.json tokenizer_config.json generation_config.json \
+  tokenization_kimi.py encoding_k3.py tiktoken.model \
+  --revision 9f62e4e9fffbd0a83ddd60e1c209d828994b3569 \
+  --local-dir /path/to/kimi-k3-tokenizer
+</code></pre>
+                </li>
+                <li>
+                <p>Build the Kimi Expert Pack manually. <code>--gguf</code> points to the first numbered
+shard; the script discovers all 38 shards in that directory. The Kimi model
+configuration is the downloaded <code>config.json</code> containing <code>text_config</code>:</p>
+                <pre><code>cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
+python3 tools/expert_pack/prepare_kimi_pack.py \
+  --gguf /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+  --model-config /path/to/kimi-k3-tokenizer/config.json \
+  --safety-margin-gib 2
+</code></pre>
+                <p>This creates <code>KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack</code> beside the GGUF
+shards. It is a separate GGML Expert Pack; the validated routed experts use
+Q2_K for gate/up and Q3_K for down.</p>
+                </li>
+                <li>
+                <p>Create the model metadata and manifest needed by SGLang. This preparation
+mode does not start the service:</p>
+                <pre><code>python3 examples/runtime/kimi_k3/benchmark_kimi_k3_5090.py \
+  --gguf /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+  --max-new-tokens 200 --direct-io --read-splits 1 --prepare-only
+</code></pre>
+                <p>It creates <code>model-meta/</code> and
+                <code>kimi-k3-expert-pack.manifest.json</code> under
+                <code>${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/&lt;fingerprint&gt;/</code>.
+The metadata directory contains the rewritten text configuration and copied
+tokenizer files. The manifest records the shard inventory, tensor layout,
+Pack index, model configuration, and tokenizer hashes. A normal benchmark
+run additionally creates the stats JSON, report JSON, and server log.</p>
+                </li>
+                </ol>
+                <h4 id="starting-sglang-1">Starting SGLang</h4>
+                <pre><code>GGUF_DIR=/path/to/kimi-k3
+PACK_PATH="$GGUF_DIR/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack"
+ARTIFACT_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/&lt;fingerprint&gt;"
+MODEL_META="$ARTIFACT_DIR/model-meta"
+MANIFEST_PATH="$ARTIFACT_DIR/kimi-k3-expert-pack.manifest.json"
+STATS_PATH="$ARTIFACT_DIR/kimi-k3-expert-pack.stats.json"
+
+python3 -m sglang.launch_server \
+  --model-path "$MODEL_META" \
+  --tokenizer-path "$MODEL_META" \
+  --trust-remote-code \
+  --load-format expert_pack \
+  --model-loader-extra-config "{\"pack_path\":\"$PACK_PATH\",\"manifest_path\":\"$MANIFEST_PATH\",\"cache_vram_mib\":5120,\"cache_vram_reserve_mib\":1536,\"stage_slots\":16,\"read_splits\":1,\"direct_io\":true,\"stats_flush_interval\":92,\"stats_path\":\"$STATS_PATH\",\"verify_pack_sha256\":false}" \
+  --tp-size 1 --ep-size 1 \
+  --disable-cuda-graph --disable-shared-experts-fusion \
+  --disable-radix-cache --mamba-radix-cache-strategy no_buffer \
+  --disable-overlap-schedule --skip-server-warmup \
+  --chunked-prefill-size 64 --watchdog-timeout 1800 \
+  --max-running-requests 1 --mem-fraction-static 0.98 \
+  --host 127.0.0.1 --port 30001
+</code></pre>
+                <h4 id="starting-the-llamacpp-baseline-server">Starting the llama.cpp baseline server</h4>
+                <p>Start the pinned llama.cpp build with CPU expert execution:</p>
+                <pre><code>/path/to/llama.cpp/build/bin/llama-server \
+  -m /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+  -ngl -1 --cpu-moe --host 127.0.0.1 --port 8081 \
+  -t 16 -tb 16 --threads-http 16 -np 1 -c 4096 \
+  --no-warmup --metrics \
+  --log-file /path/to/kimi-k3-llama-cpp/server.log
+</code></pre>
+                <p>The llama.cpp client sends the same ten prompts to <code>/completion</code>, one at a
+time, with <code>cache_prompt=false</code>, <code>temperature=0</code>, and <code>n_predict=200</code>.</p>
+                <h2 id="10-conditions-and-limitations">10. Conditions and limitations</h2>
+                <h3 id="ssd-capacity-and-preparation-time">SSD capacity and preparation time</h3>
+                <p>Expert Pack requires additional SSD capacity. The PR records an estimated 5-10 minutes to build the DeepSeek-V4-Flash pack and approximately 8-15 minutes for first-run readiness. Kimi-K3 pack construction took 29 minutes 42 seconds in the retained measurement, with approximately 35-45 minutes to first readiness. The 38 Kimi source shards and generated Expert Pack occupy about 1.814 TiB in total; the measurements use the TiPro9000 2 TB disk, while a 4 TB SSD is recommended for practical deployment headroom.</p>
+                <h3 id="direct-io">Direct I/O</h3>
+                <p><code>O_DIRECT</code> requires platform support and alignment of file offsets, read lengths, and user-buffer addresses. SGLang fails closed during runtime initialization. If the platform does not support direct I/O, or the pack does not satisfy the alignment contract, the result should not be described as direct-I/O performance.</p>
+                <h3 id="cache-and-workload">Cache and workload</h3>
+                <ul>
+                <li>A smaller GPU cache creates more misses, putting SSD reads and H2D transfers on the critical path more often.</li>
+                <li>A change in prompt or workload distribution can change the hot experts, so one request's hot set is not guaranteed to fit every workload.</li>
+                <li>If the complete expert pool already fits in GPU memory, Expert Pack adds an unnecessary data path and is not the right deployment mode.</li>
+                <li>If the workload is dominated by GPU computation, the benefit of removing the host copy may be hidden by compute time.</li>
+                <li>If SSD random-read behavior, queueing, or thermal stability is poor, increasing <code>read_splits</code> and staging slots may add queueing and memory pressure instead of throughput.</li>
+                </ul>
+                <h3 id="current-feature-boundary">Current feature boundary</h3>
+                <p>This feature focuses on routed-expert SSD delivery and GPU caching. It does not provide SSD KV-cache offload and does not change request scheduling. It is an explicit opt-in Expert Pack path, not a global replacement for every SGLang model-loading format.</p>
+                <h2 id="11-conclusion">11. Conclusion</h2>
+                <p>SSD Expert Pack is not simply replacing GPU memory with a slower disk. It redesigns weight delivery around the sparse access pattern of MoE inference:</p>
+                <pre><code>router selects a small set of experts
+  -&gt; Expert Pack resolves their offsets
+  -&gt; O_DIRECT reads into aligned pinned buffers
+  -&gt; expert-level asynchronous H2D fills the GPU cache
+  -&gt; the complete expert becomes available for computation
+</code></pre>
+                <p>Removing the <code>page cache -&gt; pinned memory</code> copy is an easy detail to miss, but it is a concrete end-to-end optimization. A traditional path reads into the OS page cache and then copies the payload into CUDA-usable pinned memory. With direct I/O, Expert Pack uses the preallocated pinned buffer as the read target and removes that full host-memory movement and synchronization handoff.</p>
+                <p>This is how SGLang applies the core SSD-LLaMA idea to real DeepSeek-V4-Flash and Kimi-K3 integrations: the complete expert pool remains on high-capacity SSD, a bounded GPU cache retains the current working set, and the runtime moves only the experts selected by the router. Very large MoE models no longer require stacking enough VRAM or DRAM to hold the complete model and can instead run on a consumer GPU paired with a high-speed NVMe SSD.</p>
+                <p>WiCi’s own engine, <a href="/wici-infer">InferSSD</a>, brings the same approach to llama.cpp and GGUF checkpoints on Apple Silicon and NVIDIA systems. Its design and measured results are in <a href="/article/running-800b-models-with-inferssd">Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</a>.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                        <li><a href="/article/ssd-is-the-new-vram"><figure><img src="/images/research/thumbnails/ssd-is-the-new-vram.webp" alt="" loading="lazy" decoding="async"></figure><strong>The SSD Is the New VRAM</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/gpu-never-learned-to-share"><figure><img src="/images/research/thumbnails/gpu-never-learned-to-share.webp" alt="" loading="lazy" decoding="async"></figure><strong>The GPU Never Learned to Share</strong><time datetime="2026-09">September 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+
+    

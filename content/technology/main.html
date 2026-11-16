@@ -1,0 +1,756 @@
+
+
+        <!-- Hero -->
+        <section class="section dv-hero" id="hero">
+            <div class="container container--wide dv-hero-row">
+                <div class="dv-hero-text">
+                    <span class="section-kicker">WiCi Technologies</span>
+                    <h1 class="dv-hero-title">A nearby GPU<br>built to feel local.</h1>
+                    <p class="dv-hero-lede">
+                        WiCi Protocol turns one-hop network compute into a shared GPU layer. Explore the
+                        transport, memory, scheduling, and runtime architecture behind WiCi One.
+                    </p>
+                    <div class="dv-hero-ctas">
+                        <a href="#pillars" class="cta cta--primary">
+                            <span>Explore the architecture</span>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <figure class="dv-hero-waves" role="img" aria-label="Three photographs in wave-cut frames: a video editor at a desk with WiCi One beside the monitor, someone working on a laptop and phone at a home desk, and a screen of Python code.">
+                    <!-- Each frame is the designer's vector from the Figma (its fill geometry, in the
+                         frame's own coordinates) clipping her exported photo, so the wave edges are hers. -->
+                    <svg class="dv-wave dv-wave--desk" viewBox="0 0 550 346" aria-hidden="true" focusable="false">
+                        <clipPath id="dvWaveDesk"><path d="M0 206.75 L0 19.1173 C0 19.1173 47.1939 -0.00163431 109.819 0 C245.969 0.00355337 325.825 101.251 401.155 146.566 C461.419 182.818 525.495 186.689 550 184.092 L550 344.111 C537.596 346.708 500.264 348.643 450.165 335.615 C387.541 319.33 349.422 299.504 296.782 254.189 C244.142 208.874 166.997 185.509 101.65 184.092 C49.373 182.96 12.1012 198.725 0 206.75 Z"/></clipPath>
+                        <image href="/images/technology/wave-desk-editor-1100.webp" width="550" height="346" preserveAspectRatio="none" clip-path="url(/#dvWaveDesk)"/>
+                    </svg>
+                    <svg class="dv-wave dv-wave--laptop" viewBox="0 0 358 357" aria-hidden="true" focusable="false">
+                        <clipPath id="dvWaveLaptop"><path d="M0 198.567 L0 4.06154 C16.0525 0.996605 56.8802 -3.2943 91.7716 4.06154 C135.386 13.2563 213.528 63.474 255.325 97.424 C288.762 124.584 337.707 142.219 358 147.642 L358 357 C296.213 354.878 241.695 310.319 207.168 277.783 C172.64 245.248 110.853 219.785 81.7766 208.469 C58.5157 199.415 17.5668 198.095 0 198.567 Z"/></clipPath>
+                        <image href="/images/technology/wave-laptop-phone-716.webp" width="358" height="357" preserveAspectRatio="none" clip-path="url(/#dvWaveLaptop)"/>
+                    </svg>
+                    <svg class="dv-wave dv-wave--code" viewBox="0 0 264 248" aria-hidden="true" focusable="false">
+                        <clipPath id="dvWaveCode"><path d="M0 246.122 L0 39.2554 C19.0515 43.5059 78.9278 48.4651 114.309 43.5059 C158.966 37.2468 201.402 13.7512 229.526 5.9583 C252.025 -0.276051 261.883 -0.417741 264 0.290707 L264 180.945 C262.186 180.001 251.843 179.387 224.99 184.487 C191.423 190.863 177.814 202.907 148.784 219.91 C119.753 236.913 98.8866 241.872 65.3196 246.122 C38.466 249.523 10.5842 247.539 0 246.122 Z"/></clipPath>
+                        <image href="/images/technology/wave-code-528.webp" width="264" height="248" preserveAspectRatio="none" clip-path="url(/#dvWaveCode)"/>
+                    </svg>
+                </figure>
+            </div>
+            <div class="dv-wire" aria-hidden="true"><span class="dv-wire-line"></span></div>
+        </section>
+
+        <!-- Quickstart — three altitudes into one GPU layer -->
+        <section class="section dv-quickstart" id="quickstart">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Quickstart</span>
+                    <h2 class="section-title">Choose your<br><em>integration.</em></h2>
+                    <p class="section-subtitle">Connect through the API, SDK, or runtime.</p>
+                </header>
+
+                <ol class="dv-layers">
+                    <li class="dv-layer" style="--lw: 74%;">
+                        <div class="dv-layer-head">
+                            <span class="dv-layer-tag">API</span>
+                            <h3 class="dv-layer-title">Use a familiar endpoint.</h3>
+                        </div>
+                        <code class="dv-layer-cmd">curl http://wici-one.local/v1/chat/completions</code>
+                        <p class="dv-layer-note">OpenAI- and Ollama-compatible. Point your existing client to WiCi One.</p>
+                    </li>
+                    <li class="dv-layer" style="--lw: 87%;">
+                        <div class="dv-layer-head">
+                            <span class="dv-layer-tag">SDK</span>
+                            <h3 class="dv-layer-title">Add discovery and control.</h3>
+                        </div>
+                        <code class="dv-layer-cmd">llm = Model.load("llama-3.1-8b-instruct", device=wici.gpu)</code>
+                        <p class="dv-layer-note"><code class="dv-inline">pip install wici-sdk</code> · <code class="dv-inline">npm i @wici/sdk</code> · <code class="dv-inline">pod 'WiCiSDK'</code>: discovery, model caching, token streaming, device control.</p>
+                    </li>
+                    <li class="dv-layer dv-layer--deep" style="--lw: 100%;">
+                        <div class="dv-layer-head">
+                            <span class="dv-layer-tag">Driver</span>
+                            <h3 class="dv-layer-title">Connect existing GPU workloads.</h3>
+                        </div>
+                        <code class="dv-layer-cmd">wici gpu attach&nbsp;&nbsp;&nbsp;<span class="c"># a GPU-shaped device appears</span></code>
+                        <p class="dv-layer-note">The runtime presents a local GPU interface to supported CUDA and tensor workloads.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 2">2</a></sup></p>
+                    </li>
+                </ol>
+                <p class="dv-layers-foot"><span aria-hidden="true">↓</span> Each layer connects to the same GPU and shared model cache.</p>
+            </div>
+        </section>
+
+        <!-- Technology overview -->
+        <section class="section section--tint dv-pillars" id="pillars">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Protocol architecture</span>
+                    <h2 class="section-title">How WiCi<br><em>works.</em></h2>
+                    <p class="section-subtitle">Six parts of one local compute system.</p>
+                </header>
+
+                <!-- The tech explainer (1:33, with sound and captions), ahead
+                     of the six parts it walks through. It waits behind its
+                     poster and plays in place (the shared inline film:
+                     common.css, initFilms in js/common.js). The same film
+                     is on the product page and in the media kit. -->
+                <figure class="film dv-film" data-film>
+                    <video controls playsinline preload="none" poster="/images/product/film-explainer-poster.webp" aria-label="The WiCi One tech explainer: how an application reaches the GPU through the Driver, the SDK, or the API, with voice-over and captions">
+                        <source src="/cdn.wici.ai/video/film-explainer-full-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                        <source src="/cdn.wici.ai/video/film-explainer-full-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+                    </video>
+                    <button type="button" class="film-play" hidden>
+                        <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z" fill="currentColor"/></svg>
+                        <span>Watch how it works</span>
+                        <span class="film-play-time">1:33</span>
+                    </button>
+                </figure>
+
+                <ol class="dv-pillar-grid">
+                    <li>
+                        <a class="dv-pillar" href="#thesis">
+                            <h3 class="dv-pillar-name">Compute, close by</h3>
+                            <p>The GPU moves out of the device, but stays on your network.</p>
+                            <span class="dv-pillar-go" aria-hidden="true">↓</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dv-pillar" href="#latency">
+                            <h3 class="dv-pillar-name">Fast over Wi&#8209;Fi</h3>
+                            <p>WiCi reduces the network calls that block your workload.</p>
+                            <span class="dv-pillar-go" aria-hidden="true">↓</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dv-pillar" href="#capacity">
+                            <h3 class="dv-pillar-name">Run bigger models</h3>
+                            <p>Model weights stream from high-capacity NVMe storage.</p>
+                            <span class="dv-pillar-go" aria-hidden="true">↓</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dv-pillar" href="#sharing">
+                            <h3 class="dv-pillar-name">Share one GPU</h3>
+                            <p>Weights are shared. Each workload keeps its own private state.</p>
+                            <span class="dv-pillar-go" aria-hidden="true">↓</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dv-pillar" href="#realtime">
+                            <h3 class="dv-pillar-name">Built for real time</h3>
+                            <p>Local processing keeps interactive applications responsive.</p>
+                            <span class="dv-pillar-go" aria-hidden="true">↓</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dv-pillar" href="#compat">
+                            <h3 class="dv-pillar-name">Works with your stack</h3>
+                            <p>Connect through a familiar API, SDK, or GPU runtime.</p>
+                            <span class="dv-pillar-go" aria-hidden="true">↓</span>
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Thesis / physics -->
+        <section class="section section--dark dv-thesis" id="thesis">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Compute, close by</span>
+                    <h2 class="section-title">The GPU doesn&rsquo;t need<br>to be <em>inside.</em></h2>
+                    <p class="section-subtitle">Keep the device in your hand. Put the compute nearby.</p>
+                </header>
+
+                <div class="dv-ledger" role="group" aria-label="Physics ledger: frontier GPU versus phone">
+                    <div class="dv-ledger-col">
+                        <span class="dv-ledger-name">RTX 5090-class GPU</span>
+                        <span class="dv-ledger-line">575 W draw<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 1">1</a></sup></span>
+                        <span class="dv-ledger-line">~3.0 kg on the large boards</span>
+                        <span class="dv-ledger-line">dedicated cooling volume</span>
+                        <span class="dv-ledger-verdict">infrastructure</span>
+                    </div>
+                    <div class="dv-ledger-col">
+                        <span class="dv-ledger-name">iPhone 16 Pro Max</span>
+                        <span class="dv-ledger-line">227 g<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 1">1</a></sup></span>
+                        <span class="dv-ledger-line">fits in a hand</span>
+                        <span class="dv-ledger-line">owns the camera, mic, files: the user</span>
+                        <span class="dv-ledger-verdict">the host</span>
+                    </div>
+                </div>
+                <p class="dv-ledger-note">
+                    The board alone outweighs thirteen phones. Flagship GPU power increased from
+                    350&nbsp;W to 450&nbsp;W to 575&nbsp;W across three generations.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 1">1</a></sup>
+                    High-performance GPU hardware needs dedicated power and cooling.
+                </p>
+
+                <ol class="dv-chain" aria-label="The argument, in four steps">
+                    <li class="dv-chain-step">
+                        <span class="dv-chain-num">1</span>
+                        <p><strong>AI is becoming personal.</strong> Useful assistants need access to your context, preferences, and data.</p>
+                    </li>
+                    <li class="dv-chain-step">
+                        <span class="dv-chain-num">2</span>
+                        <p><strong>Personal AI benefits from local compute.</strong> Conversation runs on a ~200&nbsp;ms clock,<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 6">6</a></sup> where every round trip matters.</p>
+                    </li>
+                    <li class="dv-chain-step">
+                        <span class="dv-chain-num">3</span>
+                        <p><strong>The GPU can&rsquo;t follow every device.</strong> High-performance hardware needs stable power, cooling, and space.</p>
+                    </li>
+                    <li class="dv-chain-step is-glow">
+                        <span class="dv-chain-num">4</span>
+                        <p><strong>WiCi keeps it one hop away.</strong> Nearby compute can stay powered, cooled, and available to every device.</p>
+                    </li>
+                </ol>
+
+                <p class="dv-close-beat">The device stays in control. The compute stays nearby.</p>
+                <a class="dv-post-link" href="/article/gpu-cant-fit-in-your-pocket">Read: Move the GPU Out. Keep It Local. <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <!-- Latency -->
+        <section class="section dv-latency" id="latency">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Fast over Wi&#8209;Fi</span>
+                    <h2 class="section-title">Designed for<br><em>network latency.</em></h2>
+                </header>
+
+                <div class="dv-equation" role="group" aria-label="Remote GPU cost model">
+                    <code>T&nbsp;=&nbsp;T<sub>local</sub>&nbsp;+&nbsp;<span class="dv-eq-hot">N·RTT</span>&nbsp;+&nbsp;D/Rate</code>
+                    <p class="dv-eq-note">Bandwidth matters. Blocking round trips matter more.</p>
+                </div>
+
+                <div class="dv-prose">
+                    <p>
+                        Local GPU software can make thousands of small calls with almost no network cost.
+                        A single vision-model inference issues roughly <strong>20,000</strong> user-mode driver
+                        calls;<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 2">2</a></sup> put a 1.5&nbsp;ms wireless
+                        round trip under each one and the waiting alone runs ~30&nbsp;seconds, for a job that finishes
+                        locally in under two. Even <code class="dv-inline">nvidia-smi</code>, a status command, becomes
+                        ~800 round trips and runs 51&times; slower when remoted naively.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 2">2</a></sup>
+                    </p>
+                    <p>
+                        WiCi reduces that call count. It caches stable facts, deduplicates repeated payloads,
+                        streams large transfers, and pipelines independent work. Expensive state stays on the box.
+                        Let only true dependencies block.
+                    </p>
+                </div>
+
+                <div class="dv-collapse" role="group" aria-label="Blocking calls, naive versus WiCi">
+                    <div class="dv-collapse-row">
+                        <span class="dv-collapse-label">naive RPC</span>
+                        <span class="dv-collapse-bar" style="--w: 100%;"></span>
+                        <span class="dv-collapse-val">20,000 blocking calls · ~30 s of round-trip tax</span>
+                    </div>
+                    <div class="dv-collapse-row">
+                        <span class="dv-collapse-label">WiCi runtime</span>
+                        <span class="dv-collapse-bar dv-collapse-bar--accent" style="--w: 10%;"></span>
+                        <span class="dv-collapse-val">~2,000, only true dependencies block<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 2">2</a></sup></span>
+                    </div>
+                </div>
+
+                <div class="dv-stat-row">
+                    <div class="dv-stat">
+                        <span class="dv-stat-num">483&times;</span>
+                        <span class="dv-stat-label">median cost of a naively remoted driver call vs. local<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 2">2</a></sup></span>
+                    </div>
+                    <div class="dv-stat">
+                        <span class="dv-stat-num">~1.5&nbsp;ms</span>
+                        <span class="dv-stat-label">measured Wi&#8209;Fi&nbsp;6 base round trip, the constant we engineer around<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 2">2</a></sup></span>
+                    </div>
+                    <div class="dv-stat">
+                        <span class="dv-stat-num">10&times;</span>
+                        <span class="dv-stat-label">fewer blocking calls once only real dependencies wait<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 2">2</a></sup></span>
+                    </div>
+                </div>
+
+                <p class="dv-close-beat">Fewer blocking calls. Less time waiting on the network.</p>
+                <a class="dv-post-link" href="/article/nearby-gpu-feel-local">Read: Making a Nearby GPU Feel Local <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <!-- Capacity -->
+        <section class="section section--tint dv-capacity" id="capacity">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Run bigger models</span>
+                    <h2 class="section-title">Models beyond<br><em>available VRAM.</em></h2>
+                </header>
+
+                <div class="dv-prose">
+                    <p>
+                        Large open-weight models can exceed the memory of a single GPU. GLM-5.2 is 753B parameters,
+                        330&ndash;425&nbsp;GB even at 4-bit. DeepSeek-V4-Pro is 1.6T. Consumer DDR5 stops at
+                        256&nbsp;GB, and there is no socket that takes a fifth stick.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 3">3</a></sup>
+                        NVMe provides the required capacity at roughly $0.10&ndash;0.20 per gigabyte,
+                        compared with $11&ndash;15 for shortage-priced DDR5.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 3">3</a></sup>
+                    </p>
+                    <p>WiCi stores weights on NVMe and streams them to the GPU as needed.</p>
+                </div>
+
+                <div class="dv-tiers" role="group" aria-label="Memory hierarchy: capacity versus bandwidth">
+                    <div class="dv-tier" style="--tier-w: 34%;">
+                        <span class="dv-tier-name">VRAM</span>
+                        <span class="dv-tier-meta">32 GB · ~1.8 TB/s · priced like it</span>
+                    </div>
+                    <div class="dv-tier" style="--tier-w: 62%;">
+                        <span class="dv-tier-name">DDR5</span>
+                        <span class="dv-tier-meta">256 GB ceiling · ~90–100 GB/s · $11–15 / GB</span>
+                    </div>
+                    <div class="dv-tier dv-tier--accent" style="--tier-w: 100%;">
+                        <span class="dv-tier-name">NVMe</span>
+                        <span class="dv-tier-meta">multi-TB · ~14 GB/s rated · ~$0.15 / GB</span>
+                    </div>
+                </div>
+
+                <figure class="dv-arith" aria-label="Streaming arithmetic: bytes fetched per token versus tokens per second">
+                    <figcaption class="dv-arith-cap">The streaming arithmetic, at the drive&rsquo;s rated ~14&nbsp;GB/s<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 3">3</a></sup></figcaption>
+                    <table class="dv-arith-table">
+                        <thead>
+                            <tr><th>Bytes off SSD per token</th><th>Tokens / sec</th><th>Experience</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2 GB</td><td>~7</td><td>visible generation</td></tr>
+                            <tr><td>1 GB</td><td>~14</td><td>usable</td></tr>
+                            <tr><td>0.5 GB</td><td>~28</td><td>responsive</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="dv-arith-note">
+                        A ceiling, not a default: naive offloading realizes 2&ndash;5&nbsp;GB/s. MoE sparsity means only the
+                        active experts cross per token. Prediction, alignment, and the disk-to-VRAM path determine real performance.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 3">3</a></sup>
+                    </p>
+                </figure>
+
+                <p class="dv-close-beat">NVMe provides the capacity. WiCi is designed to provide the speed.</p>
+                <a class="dv-post-link" href="/article/ssd-is-the-new-vram">Read: The SSD Is the New VRAM <span aria-hidden="true">→</span></a>
+                <a class="dv-post-link" href="/wici-infer">InferSSD, the open-source engine <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <!-- Sharing -->
+        <section class="section section--dark dv-sharing" id="sharing">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Share one GPU</span>
+                    <h2 class="section-title">One GPU.<br><em>Many workloads.</em></h2>
+                </header>
+
+                <div class="dv-contrast">
+                    <div class="dv-contrast-panel">
+                        <h3 class="dv-contrast-title">CPUs schedule cycles</h3>
+                        <p>CPU time is renewable. A context switch saves a small amount of state in microseconds.</p>
+                    </div>
+                    <div class="dv-contrast-panel dv-contrast-panel--accent">
+                        <h3 class="dv-contrast-title">GPUs must schedule VRAM</h3>
+                        <p>GPU memory holds gigabytes of active state. Switching workloads can mean moving entire models.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 4">4</a></sup></p>
+                    </div>
+                </div>
+
+                <div class="dv-prose dv-prose--dark">
+                    <p>
+                        One machine may run an editor assistant, a CLI coding agent, a notebook kernel,
+                        a chat UI, each holding its own context, often loading the same base model into separate memory.
+                        WiCi One is built to schedule that pool at allocation granularity, so one cached copy can serve
+                        multiple devices and applications.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 4">4</a></sup>
+                    </p>
+                </div>
+
+                <div class="dv-vram" role="group" aria-label="One VRAM pool: model weights loaded once and shared, with a private KV-cache slice per tenant">
+                    <ul class="dv-vram-tenants">
+                        <li class="dv-vram-tenant"><strong>andys-macbook</strong><span>copilot · decoding</span></li>
+                        <li class="dv-vram-tenant"><strong>kitchen-speaker</strong><span>voice agent · listening</span></li>
+                        <li class="dv-vram-tenant"><strong>living-room-cam</strong><span>frame watcher · idle</span></li>
+                    </ul>
+                    <div class="dv-vram-bar">
+                        <span class="dv-vram-seg dv-vram-seg--weights" style="--w: 46%;">llama-3.1-8b · weights, loaded once</span>
+                        <span class="dv-vram-seg dv-vram-seg--kv" style="--w: 13%;">KV · laptop</span>
+                        <span class="dv-vram-seg dv-vram-seg--kv" style="--w: 13%;">KV · speaker</span>
+                        <span class="dv-vram-seg dv-vram-seg--kv" style="--w: 12%;">KV · camera</span>
+                        <span class="dv-vram-seg dv-vram-seg--free" style="--w: 16%;">free</span>
+                    </div>
+                    <p class="dv-vram-caption">one pool · weights shared · KV-cache private per tenant · link RTT ~1.5 ms</p>
+                </div>
+
+                <p class="dv-close-beat">Weights are shared. Each workload keeps its own private state.</p>
+                <a class="dv-post-link dv-post-link--dark" href="/article/gpu-never-learned-to-share">Read: The GPU Never Learned to Share <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <!-- Realtime -->
+        <section class="section dv-realtime" id="realtime">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Built for real time</span>
+                    <h2 class="section-title">Respond while input<br>is still <em>arriving.</em></h2>
+                    <p class="section-subtitle">Local inference reduces delay in voice and interactive applications.</p>
+                </header>
+
+                <div class="dv-prose">
+                    <p>
+                        A voice system needs to know both what to say and when to say it.
+                        Our voice stack streams ASR in ~500&nbsp;ms chunks, re-predicts an answer from the partial
+                        transcript, and runs a trained gate over every candidate. The gate costs ~0.02&nbsp;ms,
+                        next to a ~140&nbsp;ms answerer.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 5">5</a></sup>
+                        Local processing keeps the microphone, model, and decision loop close together.
+                    </p>
+                </div>
+
+                <div class="dv-ruler" role="group" aria-label="Median buzz position within the spoken question">
+                    <div class="dv-ruler-track">
+                        <span class="dv-ruler-flag dv-ruler-flag--wici" style="--at: 51.6%;">
+                            <span class="dv-ruler-flag-label">WiCi commits · 51.6%</span>
+                        </span>
+                        <span class="dv-ruler-flag" style="--at: 63%;">
+                            <span class="dv-ruler-flag-label">human reference · ~63%</span>
+                        </span>
+                    </div>
+                    <div class="dv-ruler-ends" aria-hidden="true"><span>question starts</span><span>question ends</span></div>
+                </div>
+
+                <div class="dv-stat-row">
+                    <div class="dv-stat">
+                        <span class="dv-stat-num">65.2%</span>
+                        <span class="dv-stat-label">answered correctly before the question ends<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 5">5</a></sup></span>
+                    </div>
+                    <div class="dv-stat">
+                        <span class="dv-stat-num">69.9%</span>
+                        <span class="dv-stat-label">correct overall on 1,024 quiz-bowl questions<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 5">5</a></sup></span>
+                    </div>
+                    <div class="dv-stat">
+                        <span class="dv-stat-num">~0.02&nbsp;ms</span>
+                        <span class="dv-stat-label">per speak-now decision; timing is systems work, not a second LLM<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 5">5</a></sup></span>
+                    </div>
+                </div>
+
+                <div class="dv-voiceline" role="group" aria-label="The voice loop on a timeline: an answer forms and the gate fires while the question is still being spoken">
+                    <svg class="dv-voiceline-svg" viewBox="0 0 720 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <polyline class="vl-wave" points="0,60 15,50 30,72 45,44 60,76 75,50 90,66 105,38 120,72 135,52 150,68 165,42 180,74 195,54 210,64 225,40 240,70 255,50 270,68 285,46 300,72 315,54 330,66 345,44 360,70 375,52 390,64 405,46 420,68 435,52 450,62 465,44 480,68 495,50 510,64 525,46 540,66 555,50 570,62 585,48 600,64 615,52 630,60 645,50 660,58 675,57 690,57 705,57 720,57"/>
+                        <line class="vl-mark vl-mark--soft" x1="216" y1="14" x2="216" y2="106"/>
+                        <line class="vl-mark vl-mark--fire" x1="374" y1="8" x2="374" y2="112"/>
+                        <line class="vl-mark vl-mark--end" x1="666" y1="14" x2="666" y2="106"/>
+                    </svg>
+                    <ul class="dv-voiceline-legend">
+                        <li><span class="vl-dot vl-dot--soft" aria-hidden="true"></span>an answer forms from the partial transcript</li>
+                        <li><span class="vl-dot vl-dot--fire" aria-hidden="true"></span>WiCi responds at c&nbsp;=&nbsp;0.52</li>
+                        <li><span class="vl-dot vl-dot--end" aria-hidden="true"></span>the question ends</li>
+                    </ul>
+                </div>
+
+                <p class="dv-close-beat">Local processing makes real-time decisions practical.</p>
+                <a class="dv-post-link" href="/article/answering-is-not-buzzing">Read: Answering Is Not Buzzing <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <!-- Compatibility -->
+        <section class="section dv-compat" id="compat">
+            <div class="container container--narrow">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Works with your stack</span>
+                    <h2 class="section-title">Start with your<br><em>existing app.</em></h2>
+                </header>
+
+                <div class="dv-diff" role="img" aria-label="A one-line code diff: the cloud base URL is replaced with wici-one.local. Nothing else changes.">
+                    <pre class="dv-diff-body"><code>  client = OpenAI(
+<span class="dv-diff-del">-     base_url="https://api.openai.com/v1",</span><span class="dv-diff-add">+     base_url="http://wici-one.local/v1",</span>      api_key=os.environ["KEY"],   <span class="c"># optional on your own network</span>
+  )</code></pre>
+                </div>
+
+                <div class="dv-prose">
+                    <p>
+                        For compatible clients, the endpoint is the only required change. Underneath it,
+                        the runtime keeps the local-GPU contract, so software that expects
+                        a GPU-shaped system still sees one.<sup class="dv-fn"><a href="#footnotes" aria-label="Footnote 2">2</a></sup>
+                        Existing tools and workflows can stay in place.
+                    </p>
+                </div>
+
+                <p class="dv-close-beat">Use the API you know. Add deeper integration when you need it.</p>
+                <a class="dv-post-link" href="/article/nearby-gpu-feel-local">Read: the compatibility contract <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <!-- Platforms -->
+        <section class="section dv-platforms" id="platforms">
+            <div class="container">
+                <header class="dv-section-head dv-section-head--center">
+                    <span class="section-kicker">Platforms</span>
+                    <h2 class="section-title">One GPU across<br><em>your network.</em></h2>
+                    <p class="section-subtitle">Use the same discovery, pairing, and API across supported devices.</p>
+                </header>
+
+                <div class="dv-hub" role="group" aria-label="One WiCi One serving many platforms">
+                    <div class="dv-hub-center">
+                        <span class="dv-hub-ring" aria-hidden="true"></span>
+                        <span class="dv-hub-ring dv-hub-ring--2" aria-hidden="true"></span>
+                        <span class="dv-hub-seam" aria-hidden="true"></span>
+                        <span class="dv-hub-name">WiCi One</span>
+                    </div>
+                    <ul class="dv-hub-spokes">
+                        <li class="dv-spoke"><strong>macOS</strong><span>Python · Swift</span></li>
+                        <li class="dv-spoke"><strong>Windows</strong><span>Node.js · C#</span></li>
+                        <li class="dv-spoke"><strong>Linux</strong><span>Python · CUDA</span></li>
+                        <li class="dv-spoke"><strong>iOS</strong><span>Swift</span></li>
+                        <li class="dv-spoke"><strong>Android</strong><span>Kotlin</span></li>
+                        <li class="dv-spoke"><strong>Robots</strong><span>ROS 2 · C++</span></li>
+                        <li class="dv-spoke"><strong>Cameras</strong><span>RTOS · C</span></li>
+                        <li class="dv-spoke"><strong>Glasses</strong><span>soon</span></li>
+                    </ul>
+                </div>
+
+                <div class="dv-scenes">
+                    <article class="dv-scenario">
+                        <span class="dv-scenario-icon" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect class="i-line" x="8" y="10" width="32" height="21" rx="3"/><path class="i-line" d="M4 36h40l-3 5H7z"/><path class="i-line i-line--accent" d="M20 16.5l-4.5 4 4.5 4M28 16.5l4.5 4-4.5 4"/></svg>
+                        </span>
+                        <h3 class="dv-scenario-title">The laptop</h3>
+                        <p class="dv-scenario-body">Runs a workstation-class copilot without putting the GPU in the laptop.</p>
+                    </article>
+                    <article class="dv-scenario">
+                        <span class="dv-scenario-icon" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect class="i-line" x="12" y="6" width="17" height="34" rx="4"/><line class="i-line" x1="18" y1="35" x2="23" y2="35"/><line class="i-line i-line--accent" x1="35" y1="19" x2="35" y2="27"/><line class="i-line i-line--accent" x1="40" y1="16" x2="40" y2="30"/><line class="i-line i-line--accent" x1="45" y1="21" x2="45" y2="25"/></svg>
+                        </span>
+                        <h3 class="dv-scenario-title">The phone</h3>
+                        <p class="dv-scenario-body">Runs a voice agent while keeping audio on the local network.</p>
+                    </article>
+                    <article class="dv-scenario">
+                        <span class="dv-scenario-icon" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect class="i-line" x="10" y="16" width="22" height="18" rx="5"/><line class="i-line" x1="21" y1="16" x2="21" y2="9"/><circle class="i-fill" cx="21" cy="7.5" r="2"/><circle class="i-fill" cx="17" cy="25" r="2"/><circle class="i-fill" cx="26" cy="25" r="2"/><path class="i-line i-line--accent" d="M32 22l12-6M32 28l12 6" opacity="0.7"/></svg>
+                        </span>
+                        <h3 class="dv-scenario-title">The robot</h3>
+                        <p class="dv-scenario-body">Runs its perception loop without depending on a WAN connection.</p>
+                    </article>
+                </div>
+
+                <p class="dv-close-beat dv-close-beat--center">Each device gets access to the same local compute.</p>
+            </div>
+        </section>
+
+        <!-- API docs teasers -->
+        <section class="section section--dark dv-docs" id="docs">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Developer tools</span>
+                    <h2 class="section-title">Start with<br><em>the API.</em></h2>
+                    <p class="section-subtitle">
+                        Connect, pair, stream, and schedule. SDKs for Python, JavaScript, and Swift.
+                        <code class="dv-inline dv-inline--dark">pip install wici-sdk</code> ·
+                        <code class="dv-inline dv-inline--dark">npm i @wici/sdk</code> ·
+                        <code class="dv-inline dv-inline--dark">pod 'WiCiSDK'</code>
+                    </p>
+                </header>
+
+                <div class="dv-doc-grid">
+                    <article class="dv-doc-card">
+                        <h3 class="dv-doc-title">Use a familiar endpoint</h3>
+                        <p class="dv-doc-body">Point an OpenAI- or Ollama-compatible client to WiCi One.</p>
+                        <pre class="dv-doc-code"><code><span class="dv-p">$</span> curl http://wici-one.local/v1/chat/completions \
+    -d '{ <span class="s">"model"</span>: <span class="s">"llama-3.1-8b-instruct"</span>,
+          <span class="s">"messages"</span>: [&hellip;] }'
+
+<span class="s">"Response from WiCi One"</span></code></pre>
+                    </article>
+
+                    <article class="dv-doc-card">
+                        <h3 class="dv-doc-title">Discover and pair</h3>
+                        <p class="dv-doc-body">Find WiCi One locally and confirm its fingerprint on the device.</p>
+                        <div class="dv-pairflow" role="group" aria-label="Pairing flow: your laptop, a fingerprint confirmation, then WiCi One">
+                            <span class="dv-pairflow-node">your laptop</span>
+                            <span class="dv-pairflow-link" aria-hidden="true"></span>
+                            <span class="dv-pairflow-badge">SHA256:9f2a&hellip;c4&nbsp;<b>✓</b></span>
+                            <span class="dv-pairflow-link" aria-hidden="true"></span>
+                            <span class="dv-pairflow-node dv-pairflow-node--box">WiCi One<i class="dv-pairflow-seam" aria-hidden="true"></i></span>
+                        </div>
+                        <code class="dv-doc-cmd">wici pair wici-one.local</code>
+                    </article>
+
+                    <article class="dv-doc-card">
+                        <h3 class="dv-doc-title">Stream tokens</h3>
+                        <p class="dv-doc-body">Use async iteration without managing SSE directly.</p>
+                        <pre class="dv-doc-code"><code><span class="k">const</span> llm = <span class="k">await</span> Model.load(<span class="s">"llama-3.1-8b-instruct"</span>,
+                             { device: wici.gpu });
+
+<span class="k">for await</span> (<span class="k">const</span> token <span class="k">of</span> llm.stream(prompt)) <span class="fn">render</span>(token);</code></pre>
+                    </article>
+
+                    <article class="dv-doc-card">
+                        <h3 class="dv-doc-title">Set workload priority</h3>
+                        <p class="dv-doc-body">Declare latency needs so the scheduler can plan model residency and reuse loaded weights.</p>
+                        <div class="dv-lanes" role="group" aria-label="Two lease lanes into one GPU: interactive traffic takes the fast lane, background work yields">
+                            <div class="dv-lane">
+                                <span class="dv-lane-tag dv-lane-tag--hot">.interactive</span>
+                                <span class="dv-lane-track dv-lane-track--hot" aria-hidden="true"></span>
+                                <span class="dv-lane-who">voice agent</span>
+                            </div>
+                            <div class="dv-lane">
+                                <span class="dv-lane-tag">.background</span>
+                                <span class="dv-lane-track" aria-hidden="true"></span>
+                                <span class="dv-lane-who">overnight embedder</span>
+                            </div>
+                        </div>
+                        <code class="dv-doc-cmd">wici.gpu.lease(.interactive)</code>
+                        <p class="dv-doc-note">Scheduling semantics are Preview-stage.</p>
+                    </article>
+                </div>
+
+                <p class="dv-docs-foot">Illustrative APIs for the Developer Preview. Final names and semantics may change.</p>
+            </div>
+        </section>
+
+        <!-- Research receipts -->
+        <section class="section dv-research" id="research">
+            <div class="container">
+                <header class="dv-section-head">
+                    <span class="section-kicker">Research</span>
+                    <h2 class="section-title">Read the<br><em>technical work.</em></h2>
+                    <p class="section-subtitle">
+                        Explore our work on wireless transport, model streaming, GPU sharing, and real-time inference.
+                        We publish both measured results and current limitations.
+                    </p>
+                </header>
+
+                <div class="dv-paper-grid">
+                    <a class="dv-paper" href="/article/running-800b-models-with-inferssd">
+                        <figure class="dv-paper-figure"><canvas data-art-seed="Running 800B-Parameter LLMs on Consumer Hardware with InferSSD" aria-hidden="true"></canvas></figure>
+                        <h3 class="dv-paper-title">Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</h3>
+                        <p class="dv-paper-meta">Systems · October 2026</p>
+                    </a>
+                    <a class="dv-paper" href="/article/nearby-gpu-feel-local">
+                        <figure class="dv-paper-figure"><canvas data-art-seed="Making a Nearby GPU Feel Local" aria-hidden="true"></canvas></figure>
+                        <h3 class="dv-paper-title">Making a Nearby GPU Feel Local</h3>
+                        <p class="dv-paper-meta">Performance · September 2026</p>
+                    </a>
+                    <a class="dv-paper" href="/article/ssd-is-the-new-vram">
+                        <figure class="dv-paper-figure"><canvas data-art-seed="The SSD Is the New VRAM" aria-hidden="true"></canvas></figure>
+                        <h3 class="dv-paper-title">The SSD Is the New VRAM</h3>
+                        <p class="dv-paper-meta">Performance · September 2026</p>
+                    </a>
+                    <a class="dv-paper" href="/article/gpu-never-learned-to-share">
+                        <figure class="dv-paper-figure"><canvas data-art-seed="The GPU Never Learned to Share" aria-hidden="true"></canvas></figure>
+                        <h3 class="dv-paper-title">The GPU Never Learned to Share</h3>
+                        <p class="dv-paper-meta">Performance · September 2026</p>
+                    </a>
+                    <a class="dv-paper" href="/article/answering-is-not-buzzing">
+                        <figure class="dv-paper-figure"><canvas data-art-seed="Answering Is Not Buzzing" aria-hidden="true"></canvas></figure>
+                        <h3 class="dv-paper-title">Answering Is Not Buzzing</h3>
+                        <p class="dv-paper-meta">Performance · September 2026</p>
+                    </a>
+                    <a class="dv-paper" href="/article/general-and-the-particular">
+                        <figure class="dv-paper-figure"><canvas data-art-seed="The General and the Particular" aria-hidden="true"></canvas></figure>
+                        <h3 class="dv-paper-title">The General and the Particular</h3>
+                        <p class="dv-paper-meta">Perspective · August 2026</p>
+                    </a>
+                </div>
+
+                <a class="dv-post-link" href="/research">View all research <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="section dv-faq" id="faq">
+            <div class="container container--narrow">
+                <header class="dv-section-head">
+                    <span class="section-kicker">FAQ</span>
+                    <h2 class="section-title">Questions about<br><em>WiCi One.</em></h2>
+                </header>
+
+                <dl class="dv-faq-list">
+                    <div class="dv-faq-row">
+                        <dt>What is WiCi One?</dt>
+                        <dd>WiCi One is a dedicated GPU system on your local network. Nearby devices connect to it over Wi&#8209;Fi and use the same shared compute.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>How is it different from a cloud GPU?</dt>
+                        <dd>WiCi One runs on your network, one hop from your devices. It avoids the public internet round trip and keeps local workloads under your control.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>Is Wi&#8209;Fi fast enough for GPU compute?</dt>
+                        <dd>Not with naive GPU remoting. WiCi reduces blocking network calls through caching, deduplication, streaming, and pipelining. Performance still depends on the workload and network.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>Can it run models larger than GPU memory?</dt>
+                        <dd>That&rsquo;s the goal of WiCi&rsquo;s NVMe streaming system. Model weights stay on high-capacity storage and move to the GPU as needed. Performance optimization is still in development.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>How can one GPU serve multiple devices?</dt>
+                        <dd>Model weights load once and are shared. Each workload keeps its own private inference state, while WiCi schedules compute and GPU memory across devices.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>What changes in my existing app?</dt>
+                        <dd>Compatible clients can point to the OpenAI-compatible endpoint. The optional SDK adds discovery, pairing, streaming, and device control. Deeper runtime support is planned for supported GPU workloads.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>Which workloads are a good fit?</dt>
+                        <dd>Voice agents, robots, copilots, and local inference benefit from low latency and shared models. Workloads with frequent large transfers and readbacks may be better kept on the device.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>Does my data leave the local network?</dt>
+                        <dd>No. WiCi inference keeps prompts, audio, frames, and context on your local network.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>Which models will be supported?</dt>
+                        <dd>Preview examples include whisper-small, llama-3.1-8b-instruct, and piper-en-us. Broader open-weight model support is in development.</dd>
+                    </div>
+                    <div class="dv-faq-row">
+                        <dt>When is the Developer Preview?</dt>
+                        <dd>The Developer Preview is planned for Q4 2026. Join the list for documentation, availability, and pricing updates.</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+
+        <!-- Footnotes -->
+        <section class="section dv-footnotes" id="footnotes">
+            <div class="container container--narrow">
+                <h2 class="dv-footnotes-title">Where the numbers come from</h2>
+                <ol class="dv-footnote-list">
+                    <li><span class="dv-footnote-figs">575 W · ~3.0 kg · 227 g · thirteen phones · 350/450/575 W</span>: <a href="/article/gpu-cant-fit-in-your-pocket">Move the GPU Out. Keep It Local.</a></li>
+                    <li><span class="dv-footnote-figs">20,000 driver calls · ~800 round trips · 51&times; · 483&times; median (97&times; at p90) · ~1.5 ms Wi&#8209;Fi 6 RTT · ~2,000 blocking calls</span>: <a href="/article/nearby-gpu-feel-local">Making a Nearby GPU Feel Local</a></li>
+                    <li><span class="dv-footnote-figs">GLM-5.2 753B at 330&ndash;425 GB (4-bit) · DeepSeek-V4-Pro 1.6T · 256 GB DDR5 ceiling · $/GB · ~14.9 GB/s NVMe · tokens/sec table · 2&ndash;5 GB/s naive</span>: <a href="/article/ssd-is-the-new-vram">The SSD Is the New VRAM</a></li>
+                    <li><span class="dv-footnote-figs">cycles-vs-VRAM asymmetry · allocation-granularity scheduling</span>: <a href="/article/gpu-never-learned-to-share">The GPU Never Learned to Share</a></li>
+                    <li><span class="dv-footnote-figs">65.2% before question end · 69.9% correct · median buzz c&nbsp;=&nbsp;0.516 vs human ~0.63 · ~500 ms ASR · ~140 ms answerer · ~0.02 ms gate</span>: <a href="/article/answering-is-not-buzzing">Answering Is Not Buzzing</a></li>
+                    <li><span class="dv-footnote-figs">~200 ms median human turn gap · p95 over averages</span>: <a href="/article/general-and-the-particular">The General and the Particular</a></li>
+                </ol>
+                <p class="dv-footnote-note">The <code class="dv-inline">wici</code> CLI, SDK snippets, and endpoint examples on this page are illustrative previews of the developer surface; final names and semantics land with the Developer Preview.</p>
+            </div>
+        </section>
+
+        <!-- Access CTA -->
+        <section class="section section--dark dv-access" id="access">
+            <div class="container container--narrow dv-access-inner">
+                <div class="dv-wire dv-wire--bridged" aria-hidden="true"><span class="dv-wire-line"></span><span class="dv-wire-pulse"></span></div>
+                <span class="section-kicker dv-access-kicker">Developer Preview · Q4 2026</span>
+                <h2 class="section-title">Build with<br><em>WiCi One.</em></h2>
+                <p class="dv-access-lede">
+                    Join the Developer Preview for early access, SDK documentation, availability,
+                    and pricing. Tell us what you&rsquo;re building so we can prioritize the right workflows.
+                </p>
+
+                <!-- data-list files these requests under the "inquiry" list on the waitlist
+                     service, with the About contact form and the Developers access form. -->
+                <form class="dv-form" id="devForm" data-form-name="technology-access" data-list="inquiry">
+                    <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none;">
+                    <div class="dv-field">
+                        <input type="email" name="email" placeholder="your email" autocomplete="email" required aria-label="Email">
+                    </div>
+                    <div class="dv-field dv-field--message">
+                        <textarea name="message" rows="3" maxlength="512" placeholder="What are you building?" aria-label="What are you building?"></textarea>
+                    </div>
+                    <div class="dv-form-actions">
+                        <button type="submit" class="dv-form-submit">
+                            <span>Request developer access</span>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="signup-notice signup-notice--on-dark">By signing up, you agree to receive WiCi product and marketing emails. Unsubscribe anytime. <a href="/privacy">Privacy</a>.</p>
+                    <div class="dv-form-success" id="devFormSuccess" hidden>
+                        You&rsquo;re on the list. We&rsquo;ll share updates as the preview approaches.
+                    </div>
+                </form>
+
+                <p class="dv-access-values">Your data and compute stay on your local network.</p>
+            </div>
+        </section>
+
+    

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD | WiCi Research</title>
+    <meta name="description" content="How InferSSD runs large MoE models from SSD on Apple Silicon and NVIDIA systems: current benchmarks, expert caching, I/O, execution and reproducible setup.">
+    <meta property="og:image" content="https://wici.ai/images/common/og-device-flatlay.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WiCi One on a violet box among a headset, a tablet, a laptop, and a Mac mini.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="preload" href="../css/fonts/test-financier-display-medium-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/articles.css">
+    <link rel="icon" type="image/png" href="../images/common/favicon.png">
+    <link rel="apple-touch-icon" href="../images/common/apple-touch-icon.png">
+    <script src="../js/tracking.js"></script>
+    <link rel="stylesheet" href="../css/inferssd.css">
+    <link rel="canonical" href="running-800b-models-with-inferssd.html">
+    <meta property="article:published_time" content="2026-10-29">
+    <meta property="article:modified_time" content="2026-10-30">
+    <style>
+        .article-prose code { font-size: .85em; overflow-wrap: anywhere; }
+        .article-prose .ssd-code pre { white-space: pre; }
+        .article-prose .ssd-code code { font-size: inherit; }
+        .article-table caption { text-align: left; padding-block: 20px; color: var(--ink); font-size: var(--fs-body); font-weight: 600; }
+        .article-table td:last-child { background: var(--accent-soft); }
+        .article-prose .inf-note { font-size: var(--fs-body-s); color: var(--ink-mute); }
+        .inf-architecture { margin: 36px 0; }
+        .inf-architecture a { display: block; border: 0; }
+        .inf-architecture img { display: block; width: 100%; height: auto; }
+        .inf-architecture figcaption { margin-top: 14px; font-size: var(--fs-caption); color: var(--ink-mute); line-height: 1.6; }
+        .inf-sources { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--line); }
+        .inf-sources li { font-size: var(--fs-body-s); }
+        .inf-references > li::marker { content: "[" counter(list-item) "] "; }
+        /* WiCi Infer bar, fixed to the bottom edge of the window at its full width ("sticky on the bottom", then "不需要浮动…直接做一个 full-bleed 的横条", Nov 12, 2026): InferSSD as a desktop app, for readers who would rather not build it. Leaves when closed (kept for the browser session) and while the footer is in view (the script at the end of the page). */
+        .inf-app { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--accent); color: #fff; transition: opacity .3s var(--ease), transform .3s var(--ease), visibility 0s; }
+        .inf-app.is-away { opacity: 0; visibility: hidden; transform: translateY(100%); transition: opacity .3s var(--ease), transform .3s var(--ease), visibility 0s .3s; }
+        .inf-app-inner { display: flex; align-items: center; gap: 16px; padding-block: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+        .inf-app-icon { flex: none; width: 52px; height: 52px; }
+        .inf-app-copy { flex: 1; min-width: 0; }
+        .inf-app-title { margin: 0; font-size: var(--fs-body-s); font-weight: 600; line-height: 1.35; color: #fff; }
+        .inf-app-text { margin: 2px 0 0; font-size: var(--fs-caption); line-height: 1.4; color: rgba(255, 255, 255, .78); }
+        .inf-app-text + .inf-app-text { margin-top: 0; }
+        .inf-app-narrow { display: none; }
+        .inf-app-cta { flex: none; padding: 10px 16px; background: #fff; color: var(--ink); white-space: nowrap; }
+        .inf-app-cta:hover { background: var(--accent-soft); }
+        .inf-app-close { flex: none; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: none; color: rgba(255, 255, 255, .7); cursor: pointer; }
+        .inf-app-close:hover, .inf-app-close:focus-visible { color: #fff; background: rgba(255, 255, 255, .14); }
+        .inf-app a:focus-visible, .inf-app button:focus-visible { outline-color: #fff; }
+        @media (max-width: 720px) {
+            .inf-app-inner { gap: 10px; padding-block: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+            .inf-app-icon { width: 44px; height: 44px; }
+            .inf-app-wide, .article-prose .inf-app--inline .inf-app-wide { display: none; }
+            .inf-app-narrow { display: inline; }
+            .inf-app-cta { padding: 9px 14px; }
+            .inf-app-cta svg { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) { .inf-app, .inf-app.is-away { transition: none; } }
+        /* The same bar set in the text, after the results ("文章上中部也插入cta section 跟底部的一样", Nov 12, 2026): in flow, the column's width, rounded, no close button. */
+        .inf-app--inline { position: static; margin: 48px 0; border-radius: 20px; }
+        .inf-app--inline .inf-app-inner { padding: 16px 20px; }
+        .article-prose .inf-app--inline p { margin: 0; max-width: none; }
+        .article-prose .inf-app--inline .inf-app-title { font-size: var(--fs-body-s); line-height: 1.35; color: #fff; }
+        .article-prose .inf-app--inline .inf-app-text { margin-top: 2px; font-size: var(--fs-caption); line-height: 1.4; color: rgba(255, 255, 255, .78); }
+        .article-prose .inf-app--inline .inf-app-text + .inf-app-text { margin-top: 0; }
+        .article-prose .inf-app--inline a.inf-app-cta { border: 1px solid transparent; background: #fff; background-image: none; color: var(--ink); text-decoration: none; }
+        .article-prose .inf-app--inline a.inf-app-cta:hover { background: var(--accent-soft); color: var(--ink); }
+        .article-prose .inf-app--inline .inf-app-icon { margin: 0; }
+    </style>
+</head>
+<body>
+    <header class="nav" id="nav">
+        <div class="container nav-inner">
+            <nav class="nav-links nav-links--left" aria-label="Primary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../wici-one.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navOneMenu">WiCi One<span class="nav-activity-badge">Wireless GPU</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navOneMenu">
+                        <a class="nav-drop-item" href="../wici-one.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The first wireless GPU for frontier AI.</span></a>
+                        <a class="nav-drop-item" href="../technology.html"><span class="nav-drop-item-title">How it works</span><span class="nav-drop-item-desc">The technology behind WiCi One.</span></a>
+                        <a class="nav-drop-item" href="../wici-one.html#developers"><span class="nav-drop-item-title">For developers</span><span class="nav-drop-item-desc">Driver, SDK, and API.</span></a>
+                    </div>
+                </div>
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../wici-infer.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navInferMenu">WiCi Infer<span class="nav-activity-badge">Local Inference</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navInferMenu">
+                        <a class="nav-drop-item" href="../wici-infer.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The fastest local inference, on your Mac or PC.</span></a>
+                        <a class="nav-drop-item" href="../wici-infer.html#benchmarks"><span class="nav-drop-item-title">Benchmarks</span><span class="nav-drop-item-desc">Measured on Apple and NVIDIA systems.</span></a>
+                        <a class="nav-drop-item" href="../wici-infer.html#engine"><span class="nav-drop-item-title nav-link--activity">InferSSD engine<span class="nav-status-badge">Open source</span></span><span class="nav-drop-item-desc">Open-source inference, source code and docs.</span></a>
+                    </div>
+                </div>
+            </nav>
+            <a href="../index.html" class="nav-brand" aria-label="WiCi home">
+                <img class="nav-brand-lockup" src="../images/common/logo-lockup.svg" alt="WiCi">
+            </a>
+            <nav class="nav-links nav-links--right" aria-label="Secondary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../solutions/index.html" class="nav-link nav-drop-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navSolutionsMenu">Solutions<svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navSolutionsMenu">
+                        <a class="nav-drop-item" href="../solutions/local-ai.html"><span class="nav-drop-item-title">Local AI</span><span class="nav-drop-item-desc">Trillion-parameter models on hardware you own.</span></a>
+                        <a class="nav-drop-item" href="../solutions/creative-production.html"><span class="nav-drop-item-title">Creative artists</span><span class="nav-drop-item-desc">One GPU for the whole studio.</span></a>
+                        <a class="nav-drop-item" href="../solutions/physical-intelligence.html"><span class="nav-drop-item-title">Robotics</span><span class="nav-drop-item-desc">On-site GPU inference for robots.</span></a>
+                        <a class="nav-drop-item" href="../solutions/virtual-reality.html"><span class="nav-drop-item-title">Virtual reality</span><span class="nav-drop-item-desc">Heavy spatial compute, off the headset.</span></a>
+                        <a class="nav-drop-item" href="../solutions/smart-home.html"><span class="nav-drop-item-title">Smart home</span><span class="nav-drop-item-desc">Private AI context for every device.</span></a>
+                    </div>
+                </div>
+                <a href="../research.html" class="nav-link is-current" aria-current="page">Research</a>
+            </nav>
+            <div class="nav-cta">
+                <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-mobile" id="navMobile" data-lenis-prevent>
+            <nav class="nav-mobile-links" aria-label="Menu">
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileOne">WiCi One<span class="nav-activity-badge">First wireless GPU</span></button>
+                <div class="nav-mobile-sub" id="navMobileOne" hidden>
+                    <a href="../wici-one.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="../technology.html" class="nav-mobile-link nav-mobile-link--sub">How it works</a>
+                    <a href="../wici-one.html#developers" class="nav-mobile-link nav-mobile-link--sub">For developers</a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileInfer">WiCi Infer<span class="nav-activity-badge">Fastest local inference</span></button>
+                <div class="nav-mobile-sub" id="navMobileInfer" hidden>
+                    <a href="../wici-infer.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="../wici-infer.html#benchmarks" class="nav-mobile-link nav-mobile-link--sub">Benchmarks</a>
+                    <a href="../wici-infer.html#engine" class="nav-mobile-link nav-mobile-link--sub">InferSSD engine<span class="nav-status-badge">Open source</span></a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn" aria-expanded="false" aria-controls="navMobileSolutions">Solutions</button>
+                <div class="nav-mobile-sub" id="navMobileSolutions" hidden>
+                    <a href="../solutions/index.html" class="nav-mobile-link nav-mobile-link--sub">All solutions</a>
+                    <a href="../solutions/local-ai.html" class="nav-mobile-link nav-mobile-link--sub">Local AI</a>
+                    <a href="../solutions/creative-production.html" class="nav-mobile-link nav-mobile-link--sub">Creative artists</a>
+                    <a href="../solutions/physical-intelligence.html" class="nav-mobile-link nav-mobile-link--sub">Robotics</a>
+                    <a href="../solutions/virtual-reality.html" class="nav-mobile-link nav-mobile-link--sub">Virtual reality</a>
+                    <a href="../solutions/smart-home.html" class="nav-mobile-link nav-mobile-link--sub">Smart home</a>
+                </div>
+                <a href="../research.html" class="nav-mobile-link">Research</a>
+            </nav>
+            <a href="../shop/wici-one.html" class="nav-mobile-cta">Buy WiCi One</a>
+            <div class="nav-mobile-secondary">
+                <a href="../about.html">About</a>
+                <a href="../careers.html">Careers</a>
+                <a href="../about.html#contact">Contact</a>
+            </div>
+        </div>
+    </header>
+    <main id="top" class="ssd">
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="../images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-10-29">October 29, 2026</time></p>
+                <h1 class="article-title">Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</h1>
+                <p class="article-subtitle">SSD-backed MoE inference on Apple Silicon and NVIDIA systems, built on llama.cpp.</p>
+            </div>
+        </header>
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">What runs on consumer hardware</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#results">What runs on consumer hardware</a></li>
+                        <li><a href="#weights">SSD storage for routed expert weights</a></li>
+                        <li><a href="#pipeline">The expert inference pipeline</a></li>
+                        <li><a href="#storage">SSD endurance and read disturb</a></li>
+                        <li><a href="#run">Run InferSSD locally</a></li>
+                        <li><a href="#contribute">Source code and contributions</a></li>
+                        <li><a href="#references">References</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="../images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li>WiCi Research</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#results">What runs on consumer hardware</a></li>
+                            <li><a href="#weights">SSD storage for routed expert weights</a></li>
+                            <li><a href="#pipeline">The expert inference pipeline</a></li>
+                            <li><a href="#storage">SSD endurance and read disturb</a></li>
+                            <li><a href="#run">Run InferSSD locally</a></li>
+                            <li><a href="#contribute">Source code and contributions</a></li>
+                            <li><a href="#references">References</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+
+<p>Some large open-weight models require more memory than a consumer computer provides. DeepSeek-V4.1-Flash-1017 and Muse-Spark-Open are 763B- and 816B-class releases. Their weights occupy hundreds of gigabytes even in the formats used for local inference. A laptop or a desktop GPU holds a fraction of that in memory.</p>
+<p>InferSSD keeps routed expert weights on NVMe storage and reads the working set selected by the model during inference. Attention, shared computation and the dynamic KV cache remain in RAM or VRAM.</p>
+<p><a href="https://github.com/wici-ai/inferssd">InferSSD</a> is an open-source inference runtime built on llama.cpp. It retains GGUF files, browser chat and an OpenAI-compatible API, with an explicit path for expert indexing, I/O, caching and execution. It follows the argument of <a href="ssd-is-the-new-vram.html">The SSD Is the New VRAM</a> and the joint <a href="sglang-ssd-expert-pack.html">SGLang SSD Expert Pack</a> work. This article describes that design and the current recorded results on Apple Silicon and NVIDIA systems.</p>
+
+<h2 id="results">What runs on consumer hardware</h2>
+<p>On an RTX 5090 with 32 GB of system RAM and 32 GB of VRAM, InferSSD processes the DeepSeek 4K prompt tier at <strong>164.5 tokens/s</strong> and generates at <strong>7.27 tokens/s</strong>. On a 48 GB M5 Max MacBook Pro, the current summary reports <strong>26.270 tokens/s prefill</strong> and <strong>2.704 tokens/s decode</strong>. The RTX 5060 Ti system, with 8 GB system RAM and a separate 16 GB of VRAM, reaches <strong>75.1 and 2.55 tokens/s</strong>.</p>
+<p>The following tables use the current <a href="https://github.com/wici-ai/inferssd/blob/f1d536377347ab906271c2166c306e7c44fc7c5f/README.md#performance-benchmarks">README benchmark snapshot</a>. Prefill is prompt-processing throughput. Decode is measured over <strong>tokens 129–256 of a 256-token output</strong>. The 4K label describes the input tier; actual token counts depend on the chat template.</p>
+<div class="article-table-wrap" tabindex="0" role="region" aria-label="DeepSeek-V4.1-Flash-1017 benchmark results"><table class="article-table"><caption>DeepSeek-V4.1-Flash-1017 · 4K prompt tier · tokens/s</caption><thead><tr><th scope="col">System</th><th scope="col">Stage</th><th scope="col">llama.cpp</th><th scope="col">Colibri</th><th scope="col">InferSSD</th></tr></thead><tbody><tr><th scope="row">MacBook Pro</th><td>Prefill</td><td>5.929</td><td>0.708</td><td><strong>26.270</strong></td></tr><tr><th scope="row">MacBook Pro</th><td>Decode</td><td>0.873</td><td>0.437</td><td><strong>2.704</strong></td></tr><tr><th scope="row">RTX 5060 Ti</th><td>Prefill</td><td>6.950</td><td>7.020</td><td><strong>75.100</strong></td></tr><tr><th scope="row">RTX 5060 Ti</th><td>Decode</td><td>0.242</td><td>0.900</td><td><strong>2.550</strong></td></tr><tr><th scope="row">RTX 5090</th><td>Prefill</td><td>8.060</td><td>39.210</td><td><strong>164.500</strong></td></tr><tr><th scope="row">RTX 5090</th><td>Decode</td><td>0.867</td><td>1.878</td><td><strong>7.270</strong></td></tr><tr><th scope="row">DGX Spark</th><td>Prefill</td><td>2.730</td><td>0.826</td><td><strong>127.500</strong></td></tr><tr><th scope="row">DGX Spark</th><td>Decode</td><td>1.608</td><td>0.356</td><td><strong>7.260</strong></td></tr></tbody></table></div>
+<p>For the 816B Muse-Spark-Open model, the RTX 5090 reaches <strong>106.6 tokens/s prefill</strong> and <strong>1.520 tokens/s decode</strong>. DGX Spark reaches <strong>83.9 and 2.140 tokens/s</strong>. The MacBook Pro records <strong>12.480 and 0.944 tokens/s</strong>. Decode throughput determines the wait for generated output, while prefill throughput determines how quickly the input is processed.</p>
+<div class="article-table-wrap" tabindex="0" role="region" aria-label="Muse-Spark-Open · 816B benchmark results"><table class="article-table"><caption>Muse-Spark-Open · 816B · 4K prompt tier · tokens/s</caption><thead><tr><th scope="col">System</th><th scope="col">Stage</th><th scope="col">llama.cpp</th><th scope="col">Colibri</th><th scope="col">InferSSD</th></tr></thead><tbody><tr><th scope="row">MacBook Pro</th><td>Prefill</td><td>3.140</td><td>N/S</td><td><strong>12.480</strong></td></tr><tr><th scope="row">MacBook Pro</th><td>Decode</td><td>0.153</td><td>N/S</td><td><strong>0.944</strong></td></tr><tr><th scope="row">RTX 5060 Ti</th><td>Prefill</td><td>3.410</td><td>N/S</td><td><strong>52.100</strong></td></tr><tr><th scope="row">RTX 5060 Ti</th><td>Decode</td><td>0.059</td><td>N/S</td><td><strong>0.219</strong></td></tr><tr><th scope="row">RTX 5090</th><td>Prefill</td><td>4.000</td><td>N/S</td><td><strong>106.600</strong></td></tr><tr><th scope="row">RTX 5090</th><td>Decode</td><td>0.155</td><td>N/S</td><td><strong>1.520</strong></td></tr><tr><th scope="row">DGX Spark</th><td>Prefill</td><td>1.740</td><td>N/S</td><td><strong>83.900</strong></td></tr><tr><th scope="row">DGX Spark</th><td>Decode</td><td>0.120</td><td>N/S</td><td><strong>2.140</strong></td></tr></tbody></table></div>
+<p class="inf-note">N/S means Muse was unsupported by the tested Colibri version. It is not a zero-throughput result. The Mac Muse baseline is historical and uses a different template and input length.</p>
+<h3>Hardware configuration</h3>
+<p>The benchmarked MacBook Pro has a 2 TB internal SSD and 48 GB unified memory. The two RTX systems use 2 TB ZHITAI TiPro9000 drives, connected over PCIe 4.0 ×4 on the 5060 Ti system and PCIe 5.0 ×4 on the 5090 system. DGX Spark has 128 GB unified memory and a 4 TB Samsung SSD. CPU, memory, drive, connection and cache budget all influence the result. The <a href="../wici-infer.html#benchmarks">product page</a> includes the full hardware table.</p>
+<h3>Scope of the comparisons</h3>
+<p>The measurements report throughput for complete inference configurations. Different backends, weight formats, batching, caches and generated continuations prevent attributing the difference to any single optimization.</p>
+<p>On Mac DeepSeek, the GGUF engines use Metal with CPU routed experts, while the tested Colibri configuration uses the CPU and the official Safetensors checkpoint. On Mac Muse, the llama.cpp baseline uses a different template and input length. Linux numbers are tester-reported summaries. The <a href="https://github.com/wici-ai/inferssd/blob/f1d536377347ab906271c2166c306e7c44fc7c5f/docs/benchmark.md">methodology</a> distinguishes current summaries from historical run artifacts; older timing logs are not evidence for a newer summary value.</p>
+<p>The 5090 DeepSeek rates correspond to 20.41× prefill and 8.39× decode relative to the recorded llama.cpp rates on that system. Those ratios apply to that model, machine and test configuration. Model loading, source preparation and the first launch’s hardware profiling are separate from serving throughput.</p>
+<aside class="inf-app inf-app--inline" aria-label="WiCi Infer">
+    <div class="inf-app-inner">
+        <img class="inf-app-icon" src="../images/infer/app-icon.svg" alt="" width="52" height="52" loading="lazy">
+        <div class="inf-app-copy">
+            <p class="inf-app-title">WiCi Infer</p>
+            <p class="inf-app-text">A desktop app with InferSSD built in.</p>
+            <p class="inf-app-text inf-app-wide">The engine is precompiled and bundled with the app.</p>
+        </div>
+        <a class="cta inf-app-cta" href="../wici-infer.html" data-cta="article-inline"><span class="inf-app-wide">Get WiCi Infer</span><span class="inf-app-narrow">Download</span> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+</aside>
+<h2 id="weights">SSD storage for routed expert weights</h2>
+<p>NVMe storage provides capacity for models that exceed a machine’s memory, but its bandwidth is lower than RAM and NAND flash has a finite program/erase budget. The access pattern determines how useful that capacity can be.</p>
+<h3>Static weights and dynamic KV caches</h3>
+<p>The KV cache stores state produced while processing a conversation and grows as tokens are added. Offloading that changing state to SSD can introduce substantial writes. Gandalf <a href="#ref-gandalf">[1]</a>, a study of SSD-backed KV caching, examines this endurance problem and uses application-aware cache admission to reduce writes. InferSSD’s expert-weight path addresses a different workload: reading model parameters that stay fixed throughout inference.</p>
+<p>A mixture-of-experts model routes each token to a subset of its experts. The total expert set can be much larger than the set needed for one computation. InferSSD uses this distinction to separate model capacity from working memory.</p>
+<p>The expert weights are static during inference. After setup, the expert path reads selected byte ranges and reuses cached weights. Prompt batching spreads a weight read across tokens that choose the same expert. A cache hit avoids another SSD read, and execution can use the processor where the weights are already available.</p>
+<p>Shared layers, attention and the active KV cache still need working memory. The memory budget must cover these allocations as well as temporary activations and expert buffers. Keeping expert weights on SSD removes the requirement to hold the whole expert set in RAM or VRAM; the rest of the inference workload must still fit.</p>
+<p>This requires careful management of a limited bandwidth budget. Storage capacity alone does not determine token speed: the amount actually fetched, cache reuse, batch shape, CPU computation and transfers to GPU memory all matter.</p>
+<h3>Checkpoint formats</h3>
+<p>The DeepSeek release’s 763B label describes its published checkpoint. The recorded text GGUF contains <strong>748.49B parameters</strong> and omits vision and MTP/DSpark modules. Its Q8_0 label covers a mixture of tensor formats: routed experts retain MXFP4, while other tensors include Q8_0, BF16 and F32. Muse uses the Unsloth UD-Q4_K_XL GGUF conversion.</p>
+<p>Expert packing copies the existing quantized expert payload without further quantization. That does not make a text GGUF identical to the full published checkpoint, or establish equal output quality across different formats. The model references and <a href="https://github.com/wici-ai/inferssd/blob/f1d536377347ab906271c2166c306e7c44fc7c5f/docs/benchmark.md#checkpoint-formats">conversion details</a> are part of the benchmark definition.</p>
+<h2 id="pipeline">The expert inference pipeline</h2>
+<p>With memory-mapped weights, accessing a page that is absent from RAM can make computation wait while the operating system fetches it from storage. A general-purpose page cache has limited knowledge of which expert matrices the next operation will need.</p>
+<p>InferSSD explicitly connects expert indexing, token grouping, caching, reads and execution. The router selects experts; the runtime checks their residency, reads missing weights and schedules computation under a shared memory budget. These five mechanisms determine how many bytes move and when the processors can use them.</p>
+<figure class="inf-architecture"><a href="../images/inferssd/expert-streaming-pipeline.png" aria-label="Open full-size Linux and CUDA expert pipeline diagram"><img src="../images/inferssd/expert-streaming-pipeline.png" width="1512" height="732" loading="lazy" alt="Linux/CUDA expert pipeline: the router groups tokens and schedules execution; SSD reads feed an expert cache, with CPU execution and a GPU cache tier. Cache misses request more reads."></a><figcaption>Linux/CUDA expert path. Apple Silicon uses Metal for dense layers and CPU execution for routed experts. Select the diagram to view it at full size.</figcaption></figure>
+<h3>1. Address the expert bytes directly</h3>
+<p>A source index locates each expert’s up, gate and down matrices in the original GGUF shards or a matching expert pack. This gives the reader byte ranges for the selected expert without loading the surrounding experts. Indexing GGUF headers avoids copying the weight payload. Packs arrange expert slices by layer and expert with 4 KiB alignment while preserving their quantized bytes.</p>
+<p>The current launcher can prepare a direct GGUF alias index, so a separate pack is optional. The benchmarked DeepSeek GGUF occupies about 473 GiB; an optional pack adds about 269 GiB. Each pack must stay paired with the source checkpoint: the v1 format has no checkpoint fingerprint.</p>
+<h3>2. Share weight access during prefill</h3>
+<p>The model router selects experts for each token at each layer. During prefill, many tokens can select the same expert. Grouping these tokens lets one weight read serve multiple matrix multiplications. A longer prompt creates more opportunities for this reuse.</p>
+<p>Larger batches also consume more temporary activation memory, so batch size and expert-cache capacity compete for the same budget. Reclaiming cache space can make room for prefill work; decode then has a different balance between batch size and keeping frequently used weights resident.</p>
+<p>The launcher chooses machine-dependent settings and allows explicit batch and micro-batch limits. Linux additionally exposes an online controller through the Python API. macOS uses static launch settings. These platform differences matter when interpreting prefill results.</p>
+<p>An earlier fixed-batch Linux experiment illustrates the tradeoff: on a 436-token prompt, with a 24 GiB host-memory limit and a 7 GB/s host-to-device budget, increasing the batch size from 64 to 128 reduced reported prompt SSD reads from 465.1 GB to 314.5 GB and increased prefill throughput by 47.5%. This development experiment is separate from the current 4K benchmark tables above.</p>
+<h3>3. Keep reused experts in a bounded cache</h3>
+<p>Token grouping shares reads within a batch. Caching extends reuse across batches and generated tokens. Before requesting weights from the SSD, the runtime checks whether they are already resident. A hit saves another read.</p>
+<p>InferSSD accounts for host-memory use and provides an expert cache under the configured budget. On Linux with CUDA, a GPU cache tier can keep selected expert weights in VRAM. Active weights must remain available until their computation finishes; cache hit, miss and eviction counters help explain how a particular memory budget behaves.</p>
+<p>The runtime also needs memory for attention, the KV cache, activations and backend work buffers. Cache capacity can be reclaimed to make room for other allocations. A useful configuration balances reuse against the memory needed to execute the next operation.</p>
+<h3>4. Stream cache misses in compute order</h3>
+<p>Explicit readers submit expert reads into buffers managed by the runtime. The current architecture uses <code>io_uring</code> on Linux and persistent reader threads with <code>F_NOCACHE</code> on macOS. This lets the engine coordinate I/O and memory accounting around the expert workload.</p>
+<p>The Linux direct-I/O path uses <code>O_DIRECT</code> to bypass the file page cache. Read scheduling also follows dependencies within an expert: up and gate matrices produce an intermediate activation, and the down matrix consumes it. Prioritizing up and gate allows their computation to overlap with reading the down matrix. Useful overlap depends on the reader, storage device and execution configuration.</p>
+<h3>5. Choose the execution backend</h3>
+<p>Moving expert matrices over PCIe costs time. Reusing weights on the GPU can pay off for grouped prompt work, while CPU execution can avoid an upload for weights already in host memory. The runtime’s placement logic considers measured costs and residency.</p>
+<p>During discrete-GPU decode, an expert already in VRAM can run on the GPU while the CPU processes experts resident in host memory. This exchanges small activation vectors between processors instead of uploading every weight matrix for each generated token. Supported CUDA systems with coherent memory, such as DGX Spark’s GB10, can also read host expert buffers through host page tables.</p>
+<p>On Apple Silicon, Metal handles dense computation and the CPU sink computes routed experts. Linux/CUDA adds a GPU expert-cache tier. The same high-level data flow therefore maps to different execution paths on the two platforms. The <a href="https://github.com/wici-ai/inferssd/blob/f1d536377347ab906271c2166c306e7c44fc7c5f/docs/architecture.md">architecture guide</a> documents the modules and ownership boundaries.</p>
+<h2 id="storage">SSD endurance and read disturb</h2>
+<p>Expert weights and dynamic inference state have different access patterns. InferSSD’s expert path reads static model weights; attention and the dynamic KV cache stay in working memory. Expert-cache replacement happens in RAM or VRAM.</p>
+<p>SSD endurance ratings commonly use terabytes written (TBW), reflecting the finite program/erase budget of NAND flash. Downloading weights and preparing an optional pack write data during setup. Reading those files during inference does not add the same volume to the host-write total. Operating-system swap, logs and other system activity can still generate writes, so memory pressure and actual device I/O matter.</p>
+<h3>What happens inside the drive</h3>
+<p>Repeated NAND reads can disturb neighboring cells and increase errors. Firmware can refresh affected data by correcting and rewriting it to another location. These internal writes consume part of the program/erase budget and can affect read latency, even during a host workload that only reads. DEAR <a href="#ref-dear">[2]</a> and the read-latency relaxation study <a href="#ref-read-latency">[3]</a> examine this behavior.</p>
+<h3>A conditional wear-budget model</h3>
+<p>We used the DGX Spark / DeepSeek 4K-input, 256-token-output test logs to explore an intensive daily-use scenario: eight hours of use at a 50% active-inference duty cycle, equivalent to four hours of continuous reading. Extrapolating that workload gives roughly <strong>85 TB of host reads per day</strong>. This is an estimate that uses engine expert-copy volume during prefill as a proxy for device reads; it is not a measured daily block-device total.</p>
+<p>A simple refresh-only wear-budget estimate is:</p>
+<p><code>Years ≈ (Capacity × Remaining P/E cycles) / (365 × Daily read volume × R)</code></p>
+<p>Capacity and daily read volume use the same unit, such as TB. <code>R</code> is internal refresh bytes written divided by host bytes read. Remaining P/E cycles are an assumed budget, not a measurement of a particular retail drive. The model assumes uniform wear leveling and omits over-provisioning differences and writes from other workloads.</p>
+<p>In DEAR’s experiments <a href="#ref-dear">[2]</a>, two TLC samples and one QLC sample produced approximately 0.9, 2.4 and 8.2 TiB of internal refresh writes after 30 TiB of reads. Dividing these values gives illustrative ratios of <strong>3%, 8% and 27.3%</strong>. The tests used specific SATA SSDs and 4 KiB random reads. InferSSD uses much larger, aligned matrix reads on NVMe storage, so those ratios cannot be treated as constants for its drives.</p>
+<p>Within this model, halving active read time halves the estimated daily read volume and doubles the calculated wear-budget duration. A drive’s actual refresh policy, prior wear, temperature and workload can change the result. Field reliability research <a href="#ref-reliability">[4]</a> also shows that failures depend on interacting factors beyond a single wear measure. These calculations describe assumptions to test, rather than a promised drive lifespan.</p>
+<p>For sustained use, size the SSD for the complete checkpoint and any pack, keep cooling adequate, and monitor memory pressure, host writes, temperature and available drive-health counters. Measurements from the target NVMe drive are needed to turn this scenario into a useful endurance estimate.</p>
+<h2 id="run">Run InferSSD locally</h2>
+<p>Start with the <a href="https://github.com/wici-ai/inferssd/blob/main/docs/quickstart.md">installation guide</a>. Both documented platforms use the main branch. Install Git, CMake, Ninja, a C/C++ compiler and Python 3.9 or later. macOS needs the Xcode command-line tools and Metal compiler. Linux needs a compatible CUDA toolkit, liburing development files and the documented systemd/cgroup memory controls.</p>
+<div class="ssd-code"><div class="ssd-code-head"><span>Get the source</span><button type="button" class="ssd-copy" data-copy="article-install" aria-label="Copy get the source" aria-live="polite" hidden>Copy</button></div><pre tabindex="0"><code id="article-install">git clone --branch main https://github.com/wici-ai/inferssd.git
+cd inferssd
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install ./framework</code></pre></div>
+<p>Build the backend and hardware probes for your platform, generate <code>engine-resources.json</code>, and copy the corresponding example runtime policy. Set its memory budget, host reserve and runtime limit for your machine. Download the model separately and keep every GGUF shard together; the launcher reads local files.</p>
+<div class="ssd-code"><div class="ssd-code-head"><span>Launch with your local checkpoint</span><button type="button" class="ssd-copy" data-copy="article-launch" aria-label="Copy launch with your local checkpoint" aria-live="polite" hidden>Copy</button></div><pre tabindex="0"><code id="article-launch">inferssd launch --execute \
+  --resources engine-resources.json \
+  --model /path/to/model-00001-of-00010.gguf --profile dsv \
+  --runtime-policy runtime-policy.json</code></pre></div>
+<p>Replace the model path with the first shard. Muse uses <code>--profile muse</code> and the bundled Muse chat template. The first launch profiles the machine and model drive, which the guide says takes one to three minutes. Subsequent launches reuse the saved profile. Once the server is ready, open <code>http://127.0.0.1:8080</code> or connect an OpenAI-compatible client to <code>http://127.0.0.1:8080/v1</code>.</p>
+<p>The platform build commands and a streaming API example are also on the <a href="../wici-infer.html#get-started">WiCi Infer page</a>.</p>
+<h2 id="contribute">Source code and contributions</h2>
+<p>InferSSD is available under Apache-2.0. It builds on the work of llama.cpp, ggml and the model-adaptation community. Bundled components retain their original licenses and notices; model weights remain subject to their publishers’ licenses.</p>
+<p>Useful contributions include improving overlap between reads and computation, cache policy and batching, exploring routed-expert execution on Metal, and measuring more CPUs, GPUs and SSDs. The current macOS path already has persistent readers and direct GGUF indexing; further work should build on those implementations.</p>
+<p>Matched benchmarks are another priority. A reproducible report includes the source revision, checkpoint and quantization, full hardware configuration, launch command, memory budgets, prompt tokens, template and cache state.</p>
+<p>Record prefill duration, timestamps across all 256 output tokens and total request time, with model loading measured separately. Include repeated runs, individual artifacts and a correctness check. Report unsupported models, failures and timeouts separately from completed measurements.</p>
+<p><a href="https://github.com/wici-ai/inferssd">Get the source</a>, follow the <a href="https://github.com/wici-ai/inferssd/blob/main/docs/benchmark.md#reproducing-a-result">measurement checklist</a>, or bring a result to <a href="https://github.com/wici-ai/inferssd/issues">GitHub Issues</a>.</p>
+<h2 id="references">References</h2>
+<ol class="inf-references">
+<li id="ref-gandalf">Irawan, M. A. P., et al. <a href="https://arxiv.org/abs/2610.30791">Gandalf: Flash Shall Not Die! Increasing Flash Storage Lifetime for KV Cache Offloading in LLM Serving.</a> arXiv:2610.30791, 2026.</li>
+<li id="ref-dear">Lee, J., Kim, B., Chun, M., Kim, M., and Kim, J. <a href="https://doi.org/10.1145/3725843.3756134">DEAR: Improving Performance and Lifetime of SSDs Using Dynamic Error-Aware Refresh.</a> MICRO, 2025.</li>
+<li id="ref-read-latency">Liu, C.-Y., Lee, Y., Jung, M., Kandemir, M. T., and Choi, W. <a href="https://doi.org/10.1145/3445814.3446733">Prolonging 3D NAND SSD Lifetime via Read Latency Relaxation.</a> ASPLOS, 2021.</li>
+<li id="ref-reliability">Pinciroli, R., Yang, L., Alter, J., and Smirni, E. <a href="https://arxiv.org/abs/2012.12373">The Life and Death of SSDs and HDDs: Similarities, Differences, and Prediction Models.</a> arXiv:2012.12373, 2020.</li>
+</ol>
+<div class="inf-sources"><h3>Sources and measurement snapshot</h3><ul><li><a href="https://github.com/wici-ai/inferssd/blob/f1d536377347ab906271c2166c306e7c44fc7c5f/README.md">README and 4K performance summary</a>, source revision <code>f1d5363</code>, reviewed October 29, 2026.</li><li><a href="https://github.com/wici-ai/inferssd/blob/f1d536377347ab906271c2166c306e7c44fc7c5f/docs/benchmark.md">Benchmark methodology, checkpoint formats and data provenance.</a></li><li><a href="https://github.com/wici-ai/inferssd/blob/f1d536377347ab906271c2166c306e7c44fc7c5f/docs/architecture.md">Architecture and platform execution paths.</a></li><li><a href="https://github.com/wici-ai/inferssd/blob/main/docs/quickstart.md">Current installation and launch guide.</a></li></ul></div>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="ssd-is-the-new-vram.html"><figure><img src="../images/research/thumbnails/ssd-is-the-new-vram.webp" alt="" loading="lazy" decoding="async"></figure><strong>The SSD Is the New VRAM</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="gpu-never-learned-to-share.html"><figure><img src="../images/research/thumbnails/gpu-never-learned-to-share.webp" alt="" loading="lazy" decoding="async"></figure><strong>The GPU Never Learned to Share</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="sglang-ssd-expert-pack.html"><figure><img src="../images/research/thumbnails/sglang-ssd-expert-pack.webp" alt="" loading="lazy" decoding="async"></figure><strong>WiCi x SGLang: Running Trillion Parameter LLMs on Consumer Hardware with SSD Expert Pack</strong><time datetime="2026-08">August 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+    </main>
+    <aside class="inf-app" id="infApp" aria-label="WiCi Infer">
+        <div class="container inf-app-inner">
+        <img class="inf-app-icon" src="../images/infer/app-icon.svg" alt="" width="52" height="52">
+        <div class="inf-app-copy">
+            <p class="inf-app-title">WiCi Infer</p>
+            <p class="inf-app-text">A desktop app with InferSSD built in.</p>
+            <p class="inf-app-text inf-app-wide">The engine is precompiled and bundled with the app.</p>
+        </div>
+        <a class="cta inf-app-cta" href="../wici-infer.html" data-cta="article-banner"><span class="inf-app-wide">Get WiCi Infer</span><span class="inf-app-narrow">Download</span> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <button type="button" class="inf-app-close" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+    </aside>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-col--brand">
+                    <a href="../index.html" class="footer-brand" aria-label="WiCi home">
+                        <img src="../images/common/logo-lockup.svg" alt="WiCi">
+                    </a>
+                    <p class="footer-tagline">Making Local Frontier AI Accessible to Everyone</p>
+                    <ul class="footer-social" aria-label="WiCi on social media">
+                        <li><a href="https://www.instagram.com/wici_ai/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/company/wici-ai/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://discord.gg/wici" target="_blank" rel="noopener" aria-label="Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" fill="currentColor"/></svg></a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Company</h4>
+                    <ul class="footer-list">
+                        <li><a href="../about.html">About WiCi</a></li>
+                        <li><a href="../careers.html">Join WiCi</a></li>
+                        <li><a href="../media/newsroom.html">Newsroom</a></li>
+                        <li><a href="../about.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi One</h4>
+                    <p class="footer-col-desc">The first wireless GPU for frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="../wici-one.html">Overview</a></li>
+                        <li><a href="../technology.html">How it works</a></li>
+                        <li><a href="../developers.html">For developers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi Infer</h4>
+                    <p class="footer-col-desc">The desktop app for local frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="../wici-infer.html">Overview</a></li>
+                        <li><a href="../wici-infer.html#benchmarks">Benchmarks</a></li>
+                        <li><a href="../wici-infer.html#engine">InferSSD engine</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Solutions</h4>
+                    <ul class="footer-list">
+                        <li><a href="../solutions/local-ai.html">Local AI</a></li>
+                        <li><a href="../solutions/creative-production.html">Creative artists</a></li>
+                        <li><a href="../solutions/physical-intelligence.html">Robotics</a></li>
+                        <li><a href="../solutions/index.html">All solutions</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Research</h4>
+                    <ul class="footer-list">
+                        <li><a href="nearby-gpu-feel-local.html">Wireless GPU</a></li>
+                        <li><a href="running-800b-models-with-inferssd.html">SSD inference</a></li>
+                        <li><a href="gpu-never-learned-to-share.html">GPU sharing</a></li>
+                        <li><a href="answering-is-not-buzzing.html">Real-time AI</a></li>
+                        <li><a href="../research.html">All research</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span class="footer-copyright">© <span id="year">2026</span> WiCi<span class="footer-version">v=20261111f</span></span>
+                    <a href="../privacy.html">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="../js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/articles.js"></script>
+    <script src="../js/inferssd.js"></script>
+    <script>
+        /* The WiCi Infer bar: closed for the browser session by its button, away while the footer is in view. */
+        (function () {
+            var bar = document.getElementById('infApp');
+            if (!bar) return;
+            var KEY = 'wici-inf-app-closed';
+            try { if (sessionStorage.getItem(KEY)) { bar.remove(); return; } } catch (e) {}
+            bar.querySelector('.inf-app-close').addEventListener('click', function () {
+                try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+                bar.remove();
+            });
+            var footer = document.querySelector('.footer');
+            if (footer && 'IntersectionObserver' in window) {
+                new IntersectionObserver(function (entries) {
+                    bar.classList.toggle('is-away', entries[0].isIntersecting);
+                }).observe(footer);
+            }
+        }());
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

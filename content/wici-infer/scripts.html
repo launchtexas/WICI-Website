@@ -1,0 +1,35 @@
+
+
+    <!-- Phones and tablets (html.infer-mobile) cannot install a desktop app, so
+         there both download buttons open this dialog (js/infer.js): email
+         yourself the link (a Newsletter signup, form infer-mobile-download-link),
+         or take an installer anyway. Styles: css/infer.css ".infer-dl". -->
+    <dialog class="infer-dl" id="inferDownloadDialog" data-lenis-prevent aria-labelledby="inferDownloadDialogTitle">
+        <button type="button" class="infer-dl-close" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        <img class="infer-dl-icon" src="/images/infer/app-icon.svg" alt="" width="56" height="56">
+        <h2 class="infer-dl-title" id="inferDownloadDialogTitle" tabindex="-1" autofocus>Get WiCi Infer</h2>
+        <p class="infer-dl-text">We&rsquo;ll email you the link, ready when you&rsquo;re back at your desk.</p>
+        <div class="infer-mlink">
+            <form class="infer-mlink-form" id="inferDownloadLinkForm" data-form-name="infer-mobile-download-link" data-list="newsletter" data-cta="download" data-signup-pending="…" data-signup-done="✓" data-signup-subject="WiCi Infer download link">
+            <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none;">
+            <div class="infer-mlink-field">
+            <input type="email" name="email" placeholder="Email me the download link" autocomplete="email" aria-label="Your email, to get the download link" required>
+            <button type="submit" aria-label="Email me the link"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+            </form>
+            <p class="infer-mlink-note" role="status" hidden>Link sent. Open the email on your computer.</p>
+        </div>
+        <p class="infer-dl-or"><span>or download now</span></p>
+        <ul class="infer-dl-list" aria-label="Download versions">
+            <li><a href="https://appapi.wici.ai/versioning/wici-infer/redirect/macos-latest" data-download="macos" data-cta="mobile-dialog"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" fill="currentColor"/></svg><span>macOS (Apple Silicon)</span></a></li>
+            <li><a href="https://appapi.wici.ai/versioning/wici-infer/redirect/windows-latest" data-download="windows" data-cta="mobile-dialog"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 2h9.5v9.5H2zM12.5 2H22v9.5h-9.5zM2 12.5h9.5V22H2zM12.5 12.5H22V22h-9.5z" fill="currentColor"/></svg><span>Windows (x64)</span></a></li>
+        </ul>
+        <p class="infer-dl-note">Free &middot; No subscription &middot; No login required</p>
+    </dialog>
+
+    <script src="/js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/signup.js"></script>
+    <script src="/js/inferssd.js"></script>
+    <script src="/js/infer.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>

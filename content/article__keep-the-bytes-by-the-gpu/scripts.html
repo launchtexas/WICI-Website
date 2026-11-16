@@ -1,0 +1,49 @@
+
+    <script src="/js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/articles.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script>
+      (function () {
+        var plot = document.getElementById('traffic-plot');
+        var fallback = document.getElementById('traffic-fallback');
+        var steps = document.getElementById('steps');
+        var intermediate = document.getElementById('intermediate');
+        var warm = document.getElementById('warm-cache');
+        var config = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['lasso2d', 'select2d'] };
+
+        function draw() {
+          var count = Number(steps.value);
+          var size = Number(intermediate.value);
+          var model = warm.checked ? 0 : 4;
+          var returned = 2 * (count - 1) * size;
+          document.getElementById('steps-value').textContent = count;
+          document.getElementById('intermediate-value').textContent = size.toFixed(2).replace(/\.00$/, '.0') + ' GB';
+          document.getElementById('client-total').textContent = (model + returned + 0.02).toFixed(2) + ' GB';
+          document.getElementById('gpu-total').textContent = (model + 0.02).toFixed(2) + ' GB';
+          if (!window.Plotly) return;
+          var mobile = window.innerWidth <= 640;
+          var labels = mobile ? ['Client reads', 'GPU keeps'] : ['Client materializes intermediates', 'GPU-side references'];
+          var traces = [
+            { name: 'Model first-use upload', x: [model, model], color: '#9597cf' },
+            { name: 'Intermediate transfers', x: [returned, 0], color: '#d85f36' },
+            { name: 'Final client-visible result', x: [0.02, 0.02], color: '#0f7b6c' }
+          ].map(function (item) {
+            return { type: 'bar', orientation: 'h', name: item.name, x: item.x, y: labels,
+              marker: { color: item.color }, hovertemplate: '%{x:.2f} GB<extra>' + item.name + '</extra>' };
+          });
+          var layout = { barmode: 'stack', margin: { l: mobile ? 86 : 210, r: 18, t: 20, b: 54 },
+            paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { family: 'Google Sans Flex, sans-serif', color: '#222' },
+            xaxis: { title: 'GB sent over Wi-Fi', rangemode: 'tozero', gridcolor: '#e4e4e4' },
+            yaxis: { autorange: 'reversed', automargin: false }, showlegend: false };
+          Plotly.react(plot, traces, layout, config).then(function () { fallback.style.display = 'none'; }).catch(function () { plot.hidden = true; fallback.style.display = 'block'; });
+        }
+
+        if (!window.Plotly) { plot.hidden = true; fallback.style.display = 'block'; }
+        [steps, intermediate, warm].forEach(function (control) { control.addEventListener('input', draw); });
+        window.matchMedia('(max-width: 640px)').addEventListener('change', draw);
+        draw();
+      })();
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>

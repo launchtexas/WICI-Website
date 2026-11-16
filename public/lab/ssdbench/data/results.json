@@ -1,0 +1,137 @@
+{
+  "snapshot": "2026-11-12",
+  "schema_version": 6,
+  "models": {
+    "deepseek": {
+      "name": "DeepSeek V4.1 Flash 1017"
+    }
+  },
+  "groups": [
+    {
+      "id": "5090-32g-4096-inferssd-093b4e2",
+      "engine": "inferssd",
+      "engine_label": "InferSSD",
+      "revision": "093b4e22cb38a1a0598ee8856411fa2537a97301",
+      "model": "deepseek",
+      "tier": 4096,
+      "device_id": "rtx5090",
+      "memory_GiB": 32.0,
+      "actual_input_tokens": [
+        4104
+      ],
+      "output_tokens": 256,
+      "status": "completed",
+      "values": {
+        "server_prefill_tps": 198.41369603717956,
+        "decode": 6.524435335607778,
+        "ttft_s": 20.696531135
+      },
+      "download": "downloads/5090-32g-4096-inferssd-093b4e2.csv"
+    },
+    {
+      "id": "5090-32g-4096-strata-q8-engram-defaults-20261112",
+      "engine": "strata-q8-engram",
+      "engine_label": "Strata",
+      "revision": "146df3c468739147f520ac3816de806f71232571",
+      "model": "deepseek",
+      "tier": 4096,
+      "device_id": "rtx5090",
+      "memory_GiB": 32,
+      "actual_input_tokens": [
+        4104
+      ],
+      "output_tokens": 256,
+      "status": "completed",
+      "values": {
+        "server_prefill_tps": 178.53876699880442,
+        "decode": 3.3059748317560187,
+        "ttft_s": 22.99045398104936
+      },
+      "download": "downloads/5090-32g-4096-strata-q8-engram-defaults-20261112.csv"
+    },
+    {
+      "id": "5090-32g-4096-colibri-defaults-20261112",
+      "engine": "colibri",
+      "engine_label": "Colibri",
+      "revision": "0c6f8bab3b476580e693f17544b8e0f4c7758d26",
+      "model": "deepseek",
+      "tier": 4096,
+      "device_id": "rtx5090",
+      "memory_GiB": 32,
+      "actual_input_tokens": [
+        4104
+      ],
+      "output_tokens": 256,
+      "status": "completed",
+      "values": {
+        "server_prefill_tps": 27.360651245173944,
+        "decode": 2.4392874022324014,
+        "ttft_s": 151.21405419999792
+      },
+      "download": "downloads/5090-32g-4096-colibri-defaults-20261112.csv"
+    },
+    {
+      "id": "5090-32g-4096-llama.cpp-official-defaults-20261112",
+      "engine": "llama.cpp-official",
+      "engine_label": "llama.cpp",
+      "revision": "281e7dad7cfe4539b13d0218f4b0fd5a03f3abc9",
+      "model": "deepseek",
+      "tier": 4096,
+      "device_id": "rtx5090",
+      "memory_GiB": 32,
+      "actual_input_tokens": [
+        4104
+      ],
+      "output_tokens": 256,
+      "status": "completed",
+      "values": {
+        "server_prefill_tps": 2.016828642056934,
+        "decode": 0.7087476897497399,
+        "ttft_s": 2034.959558182
+      },
+      "download": "downloads/5090-32g-4096-llama.cpp-official-defaults-20261112.csv"
+    },
+    {
+      "id": "5090-32g-4096-tensorsharp-defaults-20261112",
+      "engine": "tensorsharp",
+      "engine_label": "TensorSharp",
+      "revision": "73fb55474f9e73b4615a44bcd092769ea5852abb",
+      "model": "deepseek",
+      "tier": 4096,
+      "device_id": "rtx5090",
+      "memory_GiB": 32,
+      "actual_input_tokens": [
+        4104
+      ],
+      "output_tokens": 256,
+      "status": "completed",
+      "values": {
+        "server_prefill_tps": 10.627955037718333,
+        "decode": 0.6736693036719079,
+        "ttft_s": 386.255268931
+      },
+      "download": "downloads/5090-32g-4096-tensorsharp-defaults-20261112.csv"
+    },
+    {
+      "id": "5090-32g-4096-ik_llama.cpp-defaults-20261112",
+      "engine": "ik_llama.cpp",
+      "engine_label": "ik_llama.cpp",
+      "revision": "656036d98503e154952f6c633cb3febc1a4f08b4",
+      "model": "deepseek",
+      "tier": 4096,
+      "device_id": "rtx5090",
+      "memory_GiB": 32,
+      "actual_input_tokens": [
+        4104
+      ],
+      "output_tokens": 256,
+      "status": "completed",
+      "values": {
+        "server_prefill_tps": 4.870466606112961,
+        "decode": 0.6750723454027302,
+        "ttft_s": 843.5765673175745
+      },
+      "download": "downloads/5090-32g-4096-ik_llama.cpp-defaults-20261112.csv"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+
+
+        <section class="sol-banner">
+            <picture class="sol-banner-media">
+                <source media="(max-width: 720px)" srcset="/images/solutions/grading-suite-banner-phone-720.webp 720w, /images/solutions/grading-suite-banner-phone-1440.webp 1440w" sizes="100vw" width="1440" height="2560">
+                <img src="/images/solutions/grading-suite-banner-1600.webp" srcset="/images/solutions/grading-suite-banner-1600.webp 1600w, /images/solutions/grading-suite-banner-3200.webp 3200w" sizes="100vw" width="3200" height="1066" alt="Two editors at a shared desk reviewing a colour grade on a large monitor." fetchpriority="high">
+            </picture>
+            <div class="sol-banner-copy">
+                <span class="sol-banner-kicker">Solutions · Creative production</span>
+                <h1 class="sol-banner-title">One GPU for <br>the whole studio.</h1>
+            </div>
+        </section>
+
+        <section class="hero hero--page hero--after-banner hero--sol">
+            <div class="container">
+                <p class="hero-lede">
+                    Render, generate, and edit from lightweight machines while WiCi One does the heavy lifting nearby. Blender, Premiere Pro, CapCut, and ComfyUI see a standard local GPU. Nothing to install in the apps.
+                </p>
+            </div>
+        </section>
+
+        <section class="section sol-solution" id="solution">
+            <div class="container">
+                <header class="sol-head">
+                    <span class="section-kicker">The solution</span>
+                    <h2 class="section-title">Thin machines. <em>Full renders.</em></h2>
+                    <p class="section-subtitle">WiCi One appears to each machine as a local GPU through the WiCi Driver. Interactive work stays responsive because the WiCi Protocol is built around a measured ~1.5&nbsp;ms Wi&#8209;Fi&nbsp;6 round trip: viewports, timeline scrubbing, and previews run as they would on a desktop GPU, and exports run at desktop-GPU speed.</p>
+                </header>
+
+                <figure class="sol-film">
+                    <img src="/images/product/use-case-artists-1800.webp" srcset="/images/product/use-case-artists-1000.webp 1000w, /images/product/use-case-artists-1800.webp 1800w" sizes="(min-width: 1201px) 1144px, 100vw" alt="Two designers reviewing a 3D scene on a laptop, rendered by WiCi One nearby." loading="lazy">
+                </figure>
+                <p class="sol-film-caption">A studio on thin laptops. Each machine sees WiCi One as its own local GPU through the WiCi Driver, so the apps offload to it with no plugins and no changes.</p>
+                <ul class="sol-apps" aria-label="Compatible apps">
+                    <li><img src="/images/apps/tiles/blender.png" alt="" width="232" height="232" loading="lazy">Blender</li>
+                    <li><img src="/images/apps/tiles/premiere-pro.png" alt="" width="232" height="232" loading="lazy">Premiere Pro</li>
+                    <li><img src="/images/apps/tiles/capcut.png" alt="" width="232" height="232" loading="lazy">CapCut</li>
+                    <li><img src="/images/apps/tiles/comfyui.png" alt="" width="232" height="232" loading="lazy">ComfyUI</li>
+                    <li><img src="/images/apps/tiles/unreal-engine.png" alt="" width="232" height="232" loading="lazy">Unreal Engine</li>
+                    <li><img src="/images/apps/tiles/maya.png" alt="" width="232" height="232" loading="lazy">Maya</li>
+                </ul>
+
+                <div class="sol-grid">
+                    <div>
+                        <div class="sol-bench-wrap">
+                            <table class="sol-bench">
+                                <caption class="sr-only">Creative workloads on WiCi One</caption>
+                                <thead>
+                                    <tr><th scope="col">Workload</th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><th scope="row">Blender <small>Cycles render</small></th><td><strong>2,900</strong><span>samples/min</span></td><td><strong>6,000</strong><span>samples/min</span></td></tr>
+                                    <tr><th scope="row">Premiere Pro <small>4K H.264 export</small></th><td><strong>70</strong><span>fps</span></td><td><strong>90</strong><span>fps</span></td></tr>
+                                    <tr><th scope="row">CapCut <small>4K export</small></th><td><strong>75</strong><span>fps</span></td><td><strong>90</strong><span>fps</span></td></tr>
+                                    <tr><th scope="row">FLUX.2 Klein <small>1024² image generation</small></th><td><strong>~0.49</strong><span>img/s</span></td><td><strong>~0.92</strong><span>img/s</span></td></tr>
+                                    <tr><th scope="row">Wan 2.2 <small>720p video generation</small></th><td><strong>~6.4</strong><span>gen fps</span></td><td><strong>~3.0</strong><span>gen fps</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="sol-bench-note">From the <a href="/wici-one#models">WiCi One benchmarks</a>. Image and video generation use the listed model sizes per edition.</p>
+                    </div>
+                    <a class="sol-product" href="/wici-one">
+                        <div class="sol-product-media">
+                            <img src="/images/product/hero-device-ledge.webp" alt="The WiCi One device on its lavender stage." loading="lazy">
+                        </div>
+                        <div class="sol-product-body">
+                            <img class="sol-product-logo" src="/images/common/logo-lockup.svg" alt="WiCi">
+                            <span class="sol-product-title">WiCi One</span>
+                            <p>A desktop-class GPU on a shelf, reached over Wi&#8209;Fi. Two editions, from $3,499.</p>
+                            <span class="sol-product-link">See WiCi One <span aria-hidden="true">→</span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="sol-more">
+                    <div class="sol-links">
+                        <p class="sol-links-title">Technology</p>
+                            <ul>
+                                <li><a href="/technology#latency"><span class="sol-links-name">Designed for network latency</span><span class="sol-links-desc">Thousands of small driver calls per frame, and how the runtime keeps them off the network.</span></a></li>
+                                <li><a href="/technology#sharing"><span class="sol-links-name">Sharing one GPU</span><span class="sol-links-desc">How several machines share the box without stepping on each other.</span></a></li>
+                            </ul>
+                    </div>
+                    <div class="sol-links">
+                        <p class="sol-links-title">From the blog</p>
+                            <ul>
+                                <li><a href="/article/nearby-gpu-feel-local"><span class="sol-links-name">Making a Nearby GPU Feel Local</span><span class="sol-links-desc">The bottleneck is round-trip latency, not bandwidth, and a protocol can hide it.</span></a></li>
+                                <li><a href="/article/gpu-never-learned-to-share"><span class="sol-links-name">The GPU Never Learned to Share</span><span class="sol-links-desc">VRAM needs a scheduler the way CPU cycles once did.</span></a></li>
+                                <li><a href="/article/gpu-cant-fit-in-your-pocket"><span class="sol-links-name">Move the GPU Out. Keep It Local.</span><span class="sol-links-desc">The physical case for taking the accelerator out of the device.</span></a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA band — reuses the dark .section--untethered styles from home.css -->
+        <section class="section section--untethered" id="cta">
+            <div class="container container--narrow untethered-inner">
+                <h2 class="section-title">The studio's GPU,<br><em>on a shelf.</em></h2>
+                <p class="untethered-lede">Reserve a WiCi One for the studio, or create with us in the co-creation program.</p>
+                <div class="sol-cta-row">
+                    <a class="cta cta--primary sol-cta-btn" href="/shop/wici-one">
+                        <span>Buy WiCi One</span>
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                    <!-- The co-creation program for artists, in the developer-access button's place. -->
+                    <a class="cta cta--ghost sol-cta-btn sol-cta-btn--ghost" href="/partnerships/creators">
+                        <span>Co-creation program</span>
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    

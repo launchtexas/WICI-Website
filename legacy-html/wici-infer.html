@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiCi Infer: Run large local LLMs on your computer</title>
+    <meta name="description" content="Download local LLMs like DeepSeek V4.1 and Qwen3.6 and run them on your own computer, up to 17x faster than llama.cpp. Free desktop app, no login.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wici.ai/wici-infer">
+    <meta property="og:title" content="WiCi Infer: Run large local LLMs on your computer">
+    <meta property="og:description" content="Download local LLMs like DeepSeek V4.1 and Qwen3.6 and run them on your own computer, up to 17x faster than llama.cpp. Free desktop app, no login.">
+    <meta property="og:image" content="https://wici.ai/images/infer/og-infer-1200x630.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="A person working on a laptop at a wooden desk.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WiCi Infer: Run large local LLMs on your computer">
+    <meta name="twitter:description" content="Download local LLMs like DeepSeek V4.1 and Qwen3.6 and run them on your own computer, up to 17x faster than llama.cpp. Free desktop app, no login.">
+    <!-- Describes the app to search engines: what it is, where it runs, that it is free. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "WiCi Infer",
+        "url": "https://wici.ai/wici-infer",
+        "description": "WiCi Infer is a free desktop app that downloads open large language models and runs them locally, including 800B-class mixture-of-experts models, powered by the open-source InferSSD inference engine.",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "Local LLM app",
+        "operatingSystem": "macOS (Apple Silicon), Windows (x64)",
+        "downloadUrl": [
+            "https://appapi.wici.ai/versioning/wici-infer/redirect/macos-latest",
+            "https://appapi.wici.ai/versioning/wici-infer/redirect/windows-latest"
+        ],
+        "isAccessibleForFree": true,
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "image": "https://wici.ai/images/infer/app-icon-glass-480.webp",
+        "keywords": "local LLM, run LLM locally, local LLM app, local AI app, DeepSeek, Qwen, Ollama alternative, LM Studio alternative, llama.cpp alternative, local coding model, OpenAI-compatible local API, InferSSD",
+        "featureList": [
+            "Download and run open LLMs locally",
+            "Run 800B-class mixture-of-experts models without extra compression",
+            "Up to 17x the decode throughput of llama.cpp in published benchmarks",
+            "OpenAI-compatible local API for Claude Code, OpenCode and other tools",
+            "Free, no subscription, no login"
+        ],
+        "publisher": {
+            "@type": "Organization",
+            "name": "WiCi",
+            "url": "https://wici.ai"
+        }
+    }
+    </script>
+    <meta name="theme-color" content="#000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://webapi.wici.ai" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <script>document.documentElement.classList.add('infer-nav-scroll');
+        /* A campaign arrival (any utm_* on the URL: the emails, the ads) that names #get-started starts at the top of the page instead: the anchor is dropped here, before the browser or js/common.js scrolls to it. The page's own Download links and links without utm_* still jump there. */
+        try { if (window.location.hash === '#get-started' && /[?&]utm_[a-z]+=/.test(window.location.search)) window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search); } catch (error) { /* the anchor stays */ }
+        /* Phones and tablets cannot install a desktop app: there the download buttons open a dialog with "email me the link" (js/infer.js). */
+        if (/Android|iPhone|iPod|iPad/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) document.documentElement.classList.add('infer-mobile');
+        /* The download buttons name the visitor's system (macos or windows); on anything else they read "Download" and open the menu (css/infer.css, js/infer.js). */
+        document.documentElement.dataset.inferOs = document.documentElement.classList.contains('infer-mobile') ? 'unknown' : /Windows/i.test(navigator.userAgent) ? 'windows' : /Macintosh|Mac OS X/i.test(navigator.userAgent) ? 'macos' : 'unknown';</script>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/inferssd.css">
+    <link rel="stylesheet" href="css/infer.css">
+    <link rel="icon" type="image/png" href="images/common/favicon.png">
+    <link rel="apple-touch-icon" href="images/common/apple-touch-icon.png">
+    <script src="js/tracking.js"></script>
+    <style id="download-engine-styles">
+        /* The Linux row in the download menus links to the engine on GitHub. */
+        .infer-download-menu a.infer-download-engine { background: none; }
+        .infer-download-menu a.infer-download-engine:hover { background: rgba(var(--ink-rgb), .04); color: var(--ink); }
+        .infer-download-engine small { color: var(--ink-mute); font-size: var(--fs-caption); }
+        .infer-download-engine > span[aria-hidden] { color: var(--ink-mute); }
+        /* Platform marks: monochrome, level with the first line of each row. */
+        .infer-download-menu .infer-os-mark { flex: none; width: 18px; height: 18px; margin-right: -4px; align-self: flex-start; margin-top: calc((1lh - 18px) / 2); color: var(--ink); }
+        .infer-download-menu .infer-os-mark + span { flex: 1; }
+        .infer-download-menu { width: 380px; }
+        .infer-download-menu button:disabled .infer-os-mark { color: var(--ink-mute); }
+        .infer-download-engine small { flex-shrink: 1; text-align: right; }
+        .infer-download-engine > span[aria-hidden] { margin-left: -6px; }
+    </style>
+    <style id="supported-models-styles">
+        /* Keep the model catalogue isolated from concurrent section work. */
+        #supported-models { padding-block: 64px 0; background: var(--bg); color: var(--ink); }
+        #supported-models > .ssd-wrap { max-width: 1080px; padding-inline: 28px; }
+        #supported-models .im-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+        #supported-models h2 { font-family: var(--font-display); font-size: var(--fs-lead); line-height: var(--lh-title); letter-spacing: var(--ls-title); font-weight: 500; color: var(--ink); }
+        #supported-models .im-heading p { font-size: var(--fs-body-s); line-height: var(--lh-body); color: var(--ink-mute); }
+        #supported-models .im-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 32px 24px; }
+        #supported-models .im-card { min-width: 0; }
+        #supported-models .im-model { display: flex; align-items: center; gap: 10px; min-height: 36px; }
+        #supported-models .im-logo { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+        #supported-models h3 { font-family: var(--font-display); font-size: var(--fs-body); font-weight: 600; line-height: var(--lh-title); letter-spacing: var(--ls-title); color: var(--ink); }
+        #supported-models .im-parameters { margin-top: 4px; font-size: var(--fs-micro); line-height: var(--lh-body); color: var(--ink-mute); }
+        #supported-models .im-use { margin-top: 12px; font-size: var(--fs-caption); line-height: var(--lh-body); color: var(--ink-soft); }
+        #supported-models .im-specs { display: grid; gap: 4px; margin: 12px 0 10px; padding: 10px 12px; border-radius: 10px; background: var(--bg-soft); }
+        #supported-models .im-specs > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 16px; }
+        #supported-models .im-specs dt { font-size: var(--fs-micro); line-height: var(--lh-body); color: var(--ink-mute); }
+        #supported-models .im-specs dd { margin: 0; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; font-size: var(--fs-caption); font-weight: 500; line-height: var(--lh-body); color: var(--ink); }
+        #supported-models .im-computer { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 6px; font-size: var(--fs-micro); line-height: var(--lh-body); color: var(--ink-soft); }
+        #supported-models .im-computer span { color: var(--ink-mute); }
+        @media (max-width: 720px) {
+            #supported-models { padding-block: 48px 0; }
+            #supported-models > .ssd-wrap { padding-inline: 20px; }
+            #supported-models .im-heading { align-items: flex-start; margin-bottom: 24px; }
+        }
+    </style>
+    <style id="infer-faq-styles">
+        /* Questions about the app, on the white ground of the download block. */
+        .infer-faq { padding-block: 64px 32px; background: var(--bg); color: var(--ink); }
+        .infer-faq > .ssd-wrap { max-width: 1080px; padding-inline: 28px; }
+        .infer-faq h2 { margin-bottom: 24px; font-family: var(--font-display); font-size: var(--fs-lead); line-height: var(--lh-title); letter-spacing: var(--ls-title); font-weight: 500; color: var(--ink); }
+        .infer-faq-list { border-top: 1px solid var(--line); }
+        .infer-faq-item { border-bottom: 1px solid var(--line); }
+        .infer-faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 0; cursor: pointer; list-style: none; }
+        .infer-faq-item summary::-webkit-details-marker { display: none; }
+        .infer-faq-item summary::after { content: ''; flex: none; width: 7px; height: 7px; margin-right: 4px; border-right: 1.5px solid var(--ink-mute); border-bottom: 1.5px solid var(--ink-mute); transform: translateY(-2px) rotate(45deg); transition: transform .2s var(--ease); }
+        .infer-faq-item[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+        .infer-faq-item h3 { font-family: var(--font-sans); font-size: var(--fs-body); font-weight: 500; line-height: var(--lh-body); color: var(--ink); }
+        .infer-faq-item summary:hover h3 { color: var(--accent-bright); }
+        .infer-faq-item p { max-width: 72ch; padding-bottom: 20px; font-size: var(--fs-body-s); line-height: var(--lh-body); color: var(--ink-soft); }
+        @media (max-width: 720px) {
+            .infer-faq { padding-block: 48px 24px; }
+            .infer-faq > .ssd-wrap { padding-inline: 20px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .infer-faq-item summary::after { transition: none; } }
+    </style>
+    <style id="infer-mobile-nav-fix">
+        /* The open drawer must override the page-specific sticky #nav rule. */
+        #nav.is-menu-open { position: fixed; top: 0; left: 0; right: 0; }
+        /* Over the hero photo the header is light glass, lightest at the top of the page. */
+        #nav::before { transition: opacity .3s var(--ease), background-color .4s var(--ease); }
+        html.infer-nav-scroll #nav:not(.is-past-hero):not(.is-menu-open)::before { background: rgba(var(--ink-rgb), .12); backdrop-filter: blur(10px) brightness(.72); -webkit-backdrop-filter: blur(10px) brightness(.72); }
+        html.infer-nav-scroll #nav:not(.is-past-hero):not(.is-scrolled):not(.is-menu-open)::before { background: rgba(var(--ink-rgb), 0); backdrop-filter: blur(10px) brightness(.86); -webkit-backdrop-filter: blur(10px) brightness(.86); }
+        @media (max-width: 720px) {
+            #nav { --infer-nav-surface: rgb(var(--ink-rgb)); transition: opacity .18s ease, transform .28s var(--ease), visibility 0s, background-color .4s var(--ease); }
+            #nav::before { background: rgba(var(--ink-rgb), .72); transition: opacity .3s var(--ease), background-color .4s var(--ease); }
+            #nav.is-menu-open, #nav.is-menu-open::before { background: var(--infer-nav-surface); }
+            #nav.is-menu-open::before { backdrop-filter: none; -webkit-backdrop-filter: none; }
+            #nav .nav-mobile { background: var(--infer-nav-surface); transition: opacity .4s var(--ease), transform .4s var(--ease), visibility 0s linear .4s; }
+            #nav .nav-mobile.is-open { transition: opacity .4s var(--ease), transform .4s var(--ease); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #nav, #nav::before, #nav .nav-mobile, #nav .nav-mobile.is-open { transition: none; }
+        }
+    </style>
+    <style id="infer-footnote-styles">
+        .infer-hero-content { container-type: inline-size; min-width: 0; }
+        .infer-hero-name { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .infer-hero-name img { flex: none; width: 1.6em; height: 1.6em; }
+        .infer-model-symbol:has(img) { background: var(--bg); }
+        .infer-model-symbol img { width: 22px; height: 22px; object-fit: contain; }
+        .infer-hero #infer-title { font-size: min(calc(var(--fs-hero-sub) * .75), 6.6cqi); }
+        #infer-title > span { display: block; white-space: nowrap; }
+        @media (max-width: 720px) {
+            .infer-hero #infer-title { font-size: calc(var(--fs-h3-lg) * 4 / 3); line-height: var(--lh-title); letter-spacing: var(--ls-title); }
+            #infer-title > span { white-space: normal; text-wrap: balance; }
+            #infer-title .infer-hero-speed { display: block; margin-top: .2em; white-space: nowrap; }
+            #infer-title .infer-footnote-ref { font-size: var(--fs-caption); }
+            .infer-hero-content > p { font-size: var(--fs-body); }
+        }
+        .infer-footnote-ref { font-size: var(--fs-lead); line-height: 0; margin-left: 2px; }
+        .infer-footnote-ref a { color: inherit; padding: 0 1px; }
+        .infer-footnote-ref a:hover { text-decoration: underline; }
+        .infer-page-footnotes { padding: 40px 0 28px; border-top: 1px solid var(--line); background: var(--bg); }
+        .infer-page-footnotes ol { margin: 0; padding-left: 1.4em; max-width: 90ch; font-size: var(--fs-caption); line-height: var(--lh-body); color: var(--ink-mute); }
+        .infer-page-footnotes li::marker { content: "†  "; }
+        .infer-page-footnotes li:target { color: var(--ink); }
+        .infer-page-footnotes a { text-decoration: underline; text-underline-offset: 3px; }
+    </style>
+    <style id="infer-community-cta-styles">
+        /* "Join community" beside the hero's download button: the Discord server, a white-outline pill on the hero. */
+        .infer-hero .ssd-actions .infer-community-cta { min-height: 48px; gap: 10px; padding-inline: 22px; border-color: rgba(var(--bg-rgb), .78); color: var(--bg); background: transparent; }
+        .infer-hero .ssd-actions .infer-community-cta:hover { color: var(--bg); background: rgba(var(--bg-rgb), .12); }
+        .infer-hero .ssd-actions .infer-community-cta svg { flex: none; width: 20px; height: 20px; }
+        .infer-hero .ssd-actions .infer-community-cta:hover svg { transform: none; }
+    </style>
+    <link rel="canonical" href="wici-infer.html">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header class="nav" id="nav">
+        <div class="container nav-inner">
+            <nav class="nav-links nav-links--left" aria-label="Primary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="wici-one.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navOneMenu">WiCi One<span class="nav-activity-badge">Wireless GPU</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navOneMenu">
+                        <a class="nav-drop-item" href="wici-one.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The first wireless GPU for frontier AI.</span></a>
+                        <a class="nav-drop-item" href="technology.html"><span class="nav-drop-item-title">How it works</span><span class="nav-drop-item-desc">The technology behind WiCi One.</span></a>
+                        <a class="nav-drop-item" href="wici-one.html#developers"><span class="nav-drop-item-title">For developers</span><span class="nav-drop-item-desc">Driver, SDK, and API.</span></a>
+                    </div>
+                </div>
+                <div class="nav-drop" data-nav-drop>
+                    <a href="wici-infer.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navInferMenu">WiCi Infer<span class="nav-activity-badge">Local Inference</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navInferMenu">
+                        <a class="nav-drop-item" href="wici-infer.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The fastest local inference, on your Mac or PC.</span></a>
+                        <a class="nav-drop-item" href="wici-infer.html#benchmarks"><span class="nav-drop-item-title">Benchmarks</span><span class="nav-drop-item-desc">Measured on Apple and NVIDIA systems.</span></a>
+                        <a class="nav-drop-item" href="wici-infer.html#engine"><span class="nav-drop-item-title nav-link--activity">InferSSD engine<span class="nav-status-badge">Open source</span></span><span class="nav-drop-item-desc">Open-source inference, source code and docs.</span></a>
+                    </div>
+                </div>
+            </nav>
+            <a href="index.html" class="nav-brand" aria-label="WiCi home">
+                <img class="nav-brand-lockup" src="images/common/logo-lockup.svg" alt="WiCi">
+            </a>
+            <nav class="nav-links nav-links--right" aria-label="Secondary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="solutions/index.html" class="nav-link nav-drop-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navSolutionsMenu">Solutions<svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navSolutionsMenu">
+                        <a class="nav-drop-item" href="solutions/local-ai.html"><span class="nav-drop-item-title">Local AI</span><span class="nav-drop-item-desc">Trillion-parameter models on hardware you own.</span></a>
+                        <a class="nav-drop-item" href="solutions/creative-production.html"><span class="nav-drop-item-title">Creative artists</span><span class="nav-drop-item-desc">One GPU for the whole studio.</span></a>
+                        <a class="nav-drop-item" href="solutions/physical-intelligence.html"><span class="nav-drop-item-title">Robotics</span><span class="nav-drop-item-desc">On-site GPU inference for robots.</span></a>
+                        <a class="nav-drop-item" href="solutions/virtual-reality.html"><span class="nav-drop-item-title">Virtual reality</span><span class="nav-drop-item-desc">Heavy spatial compute, off the headset.</span></a>
+                        <a class="nav-drop-item" href="solutions/smart-home.html"><span class="nav-drop-item-title">Smart home</span><span class="nav-drop-item-desc">Private AI context for every device.</span></a>
+                    </div>
+                </div>
+                <a href="research.html" class="nav-link">Research</a>
+            </nav>
+            <div class="nav-cta">
+                <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-mobile" id="navMobile" data-lenis-prevent>
+            <nav class="nav-mobile-links" aria-label="Menu">
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileOne">WiCi One<span class="nav-activity-badge">First wireless GPU</span></button>
+                <div class="nav-mobile-sub" id="navMobileOne" hidden>
+                    <a href="wici-one.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="technology.html" class="nav-mobile-link nav-mobile-link--sub">How it works</a>
+                    <a href="wici-one.html#developers" class="nav-mobile-link nav-mobile-link--sub">For developers</a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileInfer">WiCi Infer<span class="nav-activity-badge">Fastest local inference</span></button>
+                <div class="nav-mobile-sub" id="navMobileInfer" hidden>
+                    <a href="wici-infer.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="wici-infer.html#benchmarks" class="nav-mobile-link nav-mobile-link--sub">Benchmarks</a>
+                    <a href="wici-infer.html#engine" class="nav-mobile-link nav-mobile-link--sub">InferSSD engine<span class="nav-status-badge">Open source</span></a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn" aria-expanded="false" aria-controls="navMobileSolutions">Solutions</button>
+                <div class="nav-mobile-sub" id="navMobileSolutions" hidden>
+                    <a href="solutions/index.html" class="nav-mobile-link nav-mobile-link--sub">All solutions</a>
+                    <a href="solutions/local-ai.html" class="nav-mobile-link nav-mobile-link--sub">Local AI</a>
+                    <a href="solutions/creative-production.html" class="nav-mobile-link nav-mobile-link--sub">Creative artists</a>
+                    <a href="solutions/physical-intelligence.html" class="nav-mobile-link nav-mobile-link--sub">Robotics</a>
+                    <a href="solutions/virtual-reality.html" class="nav-mobile-link nav-mobile-link--sub">Virtual reality</a>
+                    <a href="solutions/smart-home.html" class="nav-mobile-link nav-mobile-link--sub">Smart home</a>
+                </div>
+                <a href="research.html" class="nav-mobile-link">Research</a>
+            </nav>
+            <a href="shop/wici-one.html" class="nav-mobile-cta">Buy WiCi One</a>
+            <div class="nav-mobile-secondary">
+                <a href="about.html">About</a>
+                <a href="careers.html">Careers</a>
+                <a href="about.html#contact">Contact</a>
+            </div>
+        </div>
+    </header>
+
+
+    <nav class="infer-local-nav" aria-label="WiCi Infer" data-sticky-bar data-nav-yields>
+        <div class="container infer-local-inner">
+            <a class="infer-local-name" href="#top">WiCi Infer</a>
+            <button class="infer-local-toggle" type="button" aria-expanded="false" aria-controls="infer-local-sections" hidden>Menu<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="infer-local-links" id="infer-local-sections" data-lenis-prevent>
+                <a href="#top" data-infer-section="top" aria-current="location">Overview</a>
+                <a href="#engine" data-infer-section="engine">InferSSD</a>
+                <a href="#research" data-infer-section="research">Research</a>
+                <a href="#benchmarks" data-infer-section="benchmarks">Benchmarks</a>
+                <a href="#app" data-infer-section="app">Demo</a>
+            </div>
+            <a class="infer-local-download" href="#get-started" data-infer-section="get-started">Download</a>
+        </div>
+    </nav>
+
+    <main id="top" class="ssd">
+        <section class="infer-hero" aria-labelledby="infer-title">
+            <img class="infer-hero-photo" src="images/infer/local-ai-laptop-2560.webp" width="2560" height="1706" alt="A person working on a laptop at a wooden desk." fetchpriority="high">
+            <div class="infer-hero-content">
+                <div class="infer-hero-name"><img src="images/infer/app-icon.svg" alt="" width="44" height="44">WiCi Infer</div>
+                <h1 id="infer-title"><span>Run large local AI models</span><span>on your computer, <span class="infer-hero-speed">17x faster<sup class="infer-footnote-ref"><a href="#infer-fn-1" aria-label="Performance footnote">†</a></sup>.</span></span></h1>
+                <p>WiCi Infer runs 800B-class AI models locally so you can chat and connect local AI apps, with no cloud dependency. Powered by our most capable local inference engine.</p>
+                <div class="ssd-actions">
+                    <div class="infer-hero-download">
+                    <div class="infer-download-split">
+                        <a class="cta cta--primary" href="#app-download"><span data-os-label="macos">Download for macOS</span><span data-os-label="windows">Download for Windows</span><span data-os-label="unknown">Download</span></a>
+                        <details class="infer-download-picker" id="infer-hero-download-picker">
+                            <summary aria-label="Other download versions"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m5 6 3-3 3 3m-6 4 3 3 3-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+                            <ul class="infer-download-menu" aria-label="Download versions">
+                                <li><a href="https://appapi.wici.ai/versioning/wici-infer/redirect/macos-latest" data-download="macos" data-cta="hero-menu"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" fill="currentColor"/></svg><span>Download for macOS (Apple Silicon)</span></a></li>
+                                <li><a href="https://appapi.wici.ai/versioning/wici-infer/redirect/windows-latest" data-download="windows" data-cta="hero-menu"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 2h9.5v9.5H2zM12.5 2H22v9.5h-9.5zM2 12.5h9.5V22H2zM12.5 12.5H22V22h-9.5z" fill="currentColor"/></svg><span>Download for Windows (x64)</span></a></li>
+                                <li><a class="infer-download-engine" href="https://github.com/wici-ai/inferssd" target="_blank" rel="noopener"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z" fill="currentColor"/></svg><span>Linux</span><small>Use InferSSD CLI</small><span aria-hidden="true">↗</span><span class="sr-only">(opens in a new tab)</span></a></li>
+                            </ul>
+                        </details>
+                    </div>
+                        <p class="infer-download-note">Free · No subscription · No login required</p>
+                    </div>
+                    <a class="cta infer-community-cta" href="https://discord.gg/wici" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" fill="currentColor"/></svg><span>Join community</span><span class="sr-only">(opens in a new tab)</span></a>
+                </div>
+            </div>
+        </section>
+        <div class="infer-showcase">
+        <div class="ssd-wrap">
+            <section class="infer-overview" aria-labelledby="workflow-title">
+                <h2 id="workflow-title">Manage your local AI in one app.</h2>
+                <p class="infer-overview-lede">Discover open LLMs, download your favorites, and start a conversation. Everything in one beautifully simple desktop app, with no cloud dependency.</p>
+                <div class="infer-workflow">
+                    <article class="infer-feature">
+                        <div class="infer-feature-copy"><h3>Find your next model.</h3><p>Browse supported LLMs. Download, load and manage them on your computer.</p></div>
+                        <div class="infer-model-scene" role="img" aria-label="Model library illustration: DeepSeek V4.1 Flash loaded, Muse Spark Open downloading.">
+                            <div class="infer-scene-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="m15 15 5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Discover Models</div>
+                            <div class="infer-model-row"><span class="infer-model-symbol" aria-hidden="true"><img src="images/infer/models/deepseek.png" width="22" height="22" alt=""></span><div><strong>DeepSeek V4.1 Flash</strong><small>763B · Q8_0</small></div><span class="infer-scene-check" aria-hidden="true">✓</span></div>
+                            <div class="infer-model-row"><span class="infer-model-symbol" aria-hidden="true"><img src="images/infer/models/meta.png" width="22" height="22" alt=""></span><div><strong>Muse Spark Open</strong><small>816B · UD-Q4_K_XL</small></div><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v9m-4-4 4 4 4-4M3 14h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                            <div class="infer-scene-progress"><span></span></div><div class="infer-scene-meta">Download in progress<span>38%</span></div>
+                        </div>
+                    </article>
+                    <article class="infer-feature infer-feature--chat">
+                        <div class="infer-feature-copy"><h3>Start a conversation.</h3><p>Chat with your local model and keep your conversations together.</p></div>
+                        <div class="infer-chat-scene" role="img" aria-label="Local chat illustration: a question about local AI and a short response.">
+                            <div class="infer-chat-question">What can I do with a local model?</div>
+                            <div class="infer-chat-answer"><span class="infer-chat-spark" aria-hidden="true">✧</span><p>Draft an idea, explore a question, or connect the model to your coding tools.</p></div>
+                            <div class="infer-chat-input">Message your model<span aria-hidden="true">↑</span></div>
+                        </div>
+                    </article>
+                    <article class="infer-feature">
+                        <div class="infer-feature-copy"><h3>Bring your tools along.</h3><p>Connect compatible apps to the same local LLM through an OpenAI-compatible API.</p></div>
+                        <div class="infer-apps-scene" role="img" aria-label="Connection illustration: Claude Code, OpenCode and Local Chat use the same local model.">
+                            <div class="infer-app-row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-2-15-4 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><strong>Claude Code</strong><span>Connected</span></div>
+                            <div class="infer-app-row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="m7 9 3 3-3 3m6 0h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><strong>OpenCode</strong><span>Connected</span></div>
+                            <div class="infer-app-row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3c1.3 5.5 3.5 7.7 9 9-5.5 1.3-7.7 3.5-9 9-1.3-5.5-3.5-7.7-9-9 5.5-1.3 7.7-3.5 9-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><strong>Local Chat</strong><span>Connected</span></div>
+                            <div class="infer-local-endpoint"><span aria-hidden="true">↳</span> One local model · OpenAI-compatible API</div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
+        </div>
+        <section class="infer-engine-section" id="engine" aria-labelledby="frontier-title">
+        <div class="infer-frontier" id="frontier">
+            <svg class="infer-hero-art" aria-hidden="true" preserveAspectRatio="xMidYMid meet" width="1200" height="675" viewBox="-12 -42 1224 772" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g>
+<rect width="1200" height="675" fill="#1A1820"/>
+<g>
+<path data-infer-group="branch-0" data-infer-block="" d="M130 -20H20V120H130V-20Z" fill="#7A8C5C"/>
+<path data-infer-group="branch-1" data-infer-block="" d="M110 100H0V190H110V100Z" fill="#D4A8B8"/>
+<path data-infer-group="branch-2" data-infer-block="" d="M270 204H40V344H270V204Z" fill="#A8B8C8"/>
+<path data-infer-group="branch-3" data-infer-block="" d="M150 358H0V528H150V358Z" fill="#7A8898"/>
+<path data-infer-group="branch-4" data-infer-block="" d="M190 508H0V618H190V508Z" fill="#5C4B9E"/>
+<path data-infer-block="" d="M300 648H70V718H300V648Z" fill="#6878B8"/>
+<path data-infer-block="" d="M1190 -20H1100C1094.48 -20 1090 -15.5228 1090 -10V60C1090 65.5229 1094.48 70 1100 70H1190C1195.52 70 1200 65.5229 1200 60V-10C1200 -15.5228 1195.52 -20 1190 -20Z" fill="#7A8C5C"/>
+<path data-infer-group="branch-5" data-infer-block="" d="M1130 84H900V194H1130V84Z" fill="#7A8898"/>
+<path data-infer-group="branch-6" data-infer-block="" d="M1200 224H1010V364H1200V224Z" fill="#5C4B9E"/>
+<path data-infer-group="branch-7" data-infer-block="" d="M1160 364H970V434H1160V364Z" fill="#D4A8B8"/>
+<path data-infer-group="branch-8" data-infer-block="" d="M1170 448H1080C1074.48 448 1070 452.477 1070 458V548C1070 553.523 1074.48 558 1080 558H1170C1175.52 558 1180 553.523 1180 548V458C1180 452.477 1175.52 448 1170 448Z" fill="#7A8898"/>
+<path data-infer-group="branch-9" data-infer-block="" d="M1200 538H970V708H1200V538Z" fill="#8AA0C0"/>
+<path data-infer-group="branch-10" data-infer-block="" d="M574 -30H486C477.163 -30 470 -22.8366 470 -14V49C470 57.8366 477.163 65 486 65H574C582.837 65 590 57.8366 590 49V-14C590 -22.8366 582.837 -30 574 -30Z" fill="#5C4B9E"/>
+<path data-infer-group="branch-11" data-infer-block="" d="M714 -30H626C617.163 -30 610 -22.8366 610 -14V49C610 57.8366 617.163 65 626 65H714C722.837 65 730 57.8366 730 49V-14C730 -22.8366 722.837 -30 714 -30Z" fill="#6878B8"/>
+<path data-infer-group="branch-12" data-infer-block="" d="M574 610H486C477.163 610 470 617.163 470 626V689C470 697.837 477.163 705 486 705H574C582.837 705 590 697.837 590 689V626C590 617.163 582.837 610 574 610Z" fill="#8AA0C0"/>
+<path data-infer-group="branch-13" data-infer-block="" d="M714 610H626C617.163 610 610 617.163 610 626V689C610 697.837 617.163 705 626 705H714C722.837 705 730 697.837 730 689V626C730 617.163 722.837 610 714 610Z" fill="#8AA0C0"/>
+<path data-infer-branch="branch-0" data-infer-tip="156 50" data-infer-anchor="531.7 342.3" d="M156 50C156.332 50 156.664 50.0007 156.996 50.0021M531.7 342.3C531.518 342.017 531.337 341.735 531.155 341.453M161.979 50.0741C162.643 50.0905 163.307 50.1097 163.971 50.1317M168.951 50.3475C169.613 50.3831 170.276 50.4214 170.939 50.4624M175.909 50.8212C176.572 50.8759 177.235 50.9333 177.897 50.9935M182.852 51.4939C183.512 51.5673 184.171 51.6434 184.831 51.7222M189.778 52.3639C190.436 52.456 191.095 52.5509 191.753 52.6484M196.666 53.4262C197.321 53.5366 197.976 53.6496 198.631 53.7653M203.539 54.6821C204.188 54.81 204.837 54.9405 205.486 55.0736M210.354 56.1209C211.004 56.2671 211.653 56.4159 212.302 56.5673M217.143 57.7451C217.784 57.9077 218.426 58.0729 219.068 58.2406M223.883 59.5467C224.525 59.7272 225.166 59.9104 225.808 60.096M230.568 61.5197C231.202 61.7154 231.835 61.9137 232.469 62.1144M237.221 63.6667C237.85 63.8783 238.479 64.0924 239.108 64.3089M243.789 65.9664C244.414 66.1935 245.038 66.423 245.662 66.6549M250.337 68.4367C250.951 68.6767 251.565 68.9191 252.179 69.1637M256.785 71.0429C257.399 71.2993 258.013 71.5581 258.627 71.8192M263.205 73.8088C263.808 74.0767 264.411 74.3469 265.014 74.6194M269.538 76.705C270.142 76.9887 270.745 77.2747 271.348 77.563M275.825 79.744C276.417 80.0377 277.009 80.3337 277.6 80.6318M282.039 82.9086C282.631 83.2176 283.222 83.5287 283.814 83.8421M288.19 86.1988C288.77 86.5164 289.35 86.8361 289.93 87.1578M294.28 89.6103C294.86 89.9425 295.439 90.2769 296.019 90.6133M300.296 93.1316C300.863 93.471 301.431 93.8124 301.999 94.1558M306.258 96.769C306.825 97.1224 307.393 97.4779 307.961 97.8353M312.141 100.503C312.697 100.862 313.252 101.223 313.808 101.586M317.974 104.346C318.529 104.719 319.085 105.093 319.64 105.47M323.729 108.276C324.272 108.653 324.815 109.032 325.358 109.413M329.431 112.305C329.974 112.695 330.517 113.087 331.06 113.481M335.063 116.417C335.594 116.811 336.125 117.206 336.655 117.603M340.635 120.614C341.166 121.02 341.696 121.428 342.227 121.837M346.151 124.896C346.67 125.304 347.188 125.714 347.706 126.126M351.593 129.244C352.112 129.664 352.63 130.085 353.148 130.508M357.001 133.685C357.507 134.106 358.013 134.529 358.519 134.954M362.314 138.168C362.82 138.6 363.326 139.034 363.832 139.47M367.62 142.76C368.114 143.193 368.608 143.628 369.102 144.064M372.807 147.363C373.301 147.806 373.795 148.251 374.289 148.698M377.995 152.076C378.485 152.528 378.976 152.98 379.466 153.434M383.083 156.809C383.565 157.262 384.047 157.717 384.529 158.173M388.146 161.624C388.628 162.087 389.11 162.552 389.592 163.019M393.151 166.488C393.621 166.95 394.092 167.414 394.563 167.879M398.092 171.392C398.563 171.864 399.034 172.337 399.504 172.812M403.022 176.385C403.481 176.855 403.94 177.326 404.4 177.799M407.845 181.368C408.304 181.847 408.763 182.327 409.223 182.809M412.668 186.446C413.127 186.935 413.586 187.424 414.046 187.915M417.413 191.538C417.862 192.023 418.31 192.51 418.758 192.998M422.121 196.68C422.569 197.174 423.017 197.67 423.466 198.166M426.809 201.893C427.246 202.383 427.684 202.875 428.122 203.369M431.404 207.09C431.841 207.589 432.279 208.089 432.717 208.591M435.999 212.375C436.437 212.882 436.874 213.391 437.312 213.901M440.527 217.667C440.954 218.171 441.381 218.675 441.808 219.181M445.013 222.995C445.44 223.506 445.867 224.019 446.294 224.533M449.499 228.406C449.916 228.913 450.333 229.421 450.75 229.93M453.879 233.77C454.296 234.285 454.714 234.8 455.131 235.317M458.26 239.213C458.677 239.735 459.094 240.259 459.511 240.783M462.607 244.694C463.015 245.212 463.422 245.73 463.829 246.25M466.885 250.164C467.293 250.689 467.7 251.214 468.108 251.741M471.163 255.71C471.571 256.241 471.978 256.774 472.386 257.308M475.384 261.256C475.782 261.782 476.18 262.309 476.578 262.838M479.563 266.819C479.961 267.352 480.359 267.886 480.757 268.422M483.742 272.454C484.139 272.992 484.535 273.531 484.931 274.071M487.848 278.061C488.237 278.596 488.626 279.131 489.015 279.667M491.931 283.707C492.32 284.248 492.709 284.79 493.098 285.333M496.014 289.421C496.398 289.961 496.781 290.502 497.165 291.044M500.015 295.088C500.395 295.629 500.775 296.171 501.155 296.715M504.006 300.805C504.386 301.353 504.766 301.902 505.146 302.451M507.997 306.589C508.37 307.133 508.743 307.678 509.116 308.223M511.903 312.314C512.274 312.861 512.646 313.41 513.017 313.959M515.804 318.094C516.175 318.648 516.547 319.202 516.918 319.758M519.705 323.938C520.07 324.488 520.435 325.039 520.801 325.59M523.525 329.722C523.889 330.275 524.252 330.828 524.615 331.383M527.34 335.557C527.704 336.116 528.067 336.675 528.43 337.236" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-0" data-infer-block="" d="M147 41H165V59H147V41Z" stroke-width="3" stroke="#7A8C5C"/>
+<path data-infer-branch="branch-1" data-infer-tip="136 145" data-infer-anchor="482.3 328.4" d="M136 145C136.331 145 136.662 145.001 136.993 145.002M482.3 328.4C482.071 328.157 481.842 327.915 481.613 327.673M141.955 145.054C142.617 145.066 143.279 145.08 143.94 145.096M148.901 145.255C149.562 145.281 150.223 145.309 150.884 145.339M155.841 145.602C156.502 145.642 157.163 145.685 157.824 145.729M162.77 146.097C163.43 146.151 164.089 146.207 164.749 146.265M169.691 146.737C170.349 146.805 171.006 146.874 171.663 146.946M176.594 147.521C177.251 147.603 177.909 147.687 178.566 147.772M183.478 148.449C184.133 148.544 184.787 148.641 185.442 148.74M190.35 149.52C191.001 149.628 191.652 149.738 192.303 149.85M197.186 150.728C197.837 150.85 198.488 150.974 199.139 151.1M204.003 152.075C204.65 152.21 205.297 152.347 205.944 152.485M210.796 153.56C211.441 153.707 212.085 153.856 212.73 154.008M217.547 155.174C218.189 155.335 218.832 155.497 219.474 155.661M224.277 156.923C224.914 157.095 225.551 157.269 226.188 157.445M230.966 158.798C231.603 158.983 232.24 159.17 232.877 159.359M237.616 160.798C238.248 160.994 238.879 161.192 239.51 161.392M244.245 162.926C244.87 163.133 245.495 163.342 246.12 163.552M250.808 165.165C251.433 165.385 252.058 165.606 252.684 165.83M257.347 167.528C257.965 167.757 258.584 167.989 259.202 168.222M263.841 170.003C264.46 170.245 265.078 170.489 265.697 170.734M270.284 172.587C270.896 172.838 271.507 173.091 272.119 173.345M276.705 175.287C277.309 175.547 277.913 175.809 278.517 176.073M283.049 178.08C283.653 178.352 284.257 178.625 284.862 178.9M289.369 180.984C289.966 181.264 290.562 181.546 291.159 181.829M295.634 183.983C296.23 184.275 296.827 184.568 297.424 184.862M301.851 187.079C302.44 187.377 303.029 187.678 303.618 187.98M308.034 190.274C308.62 190.582 309.205 190.892 309.791 191.203M314.147 193.548C314.728 193.865 315.309 194.183 315.89 194.503M320.242 196.926C320.814 197.249 321.387 197.573 321.96 197.899M326.254 200.37C326.827 200.704 327.4 201.038 327.972 201.375M332.246 203.912C332.81 204.251 333.375 204.591 333.939 204.933M338.172 207.523C338.736 207.872 339.301 208.223 339.865 208.574M344.061 211.218C344.617 211.572 345.173 211.927 345.729 212.284M349.899 214.986C350.455 215.349 351.011 215.715 351.567 216.081M355.687 218.824C356.235 219.192 356.783 219.561 357.33 219.932M361.438 222.738C361.985 223.116 362.533 223.495 363.08 223.875M367.127 226.711C367.666 227.092 368.205 227.474 368.745 227.858M372.789 230.762C373.326 231.151 373.863 231.542 374.401 231.934M378.382 234.861C378.913 235.254 379.443 235.649 379.974 236.045M383.955 239.04C384.482 239.44 385.01 239.841 385.537 240.243M389.455 243.257C389.977 243.662 390.5 244.068 391.022 244.475M394.94 247.555C395.458 247.965 395.976 248.377 396.494 248.79M400.35 251.884C400.864 252.299 401.378 252.716 401.892 253.134M405.747 256.292C406.257 256.713 406.767 257.135 407.277 257.558M411.07 260.727C411.576 261.152 412.082 261.579 412.588 262.007M416.381 265.237C416.884 265.668 417.387 266.101 417.889 266.534M421.621 269.772C422.119 270.207 422.616 270.643 423.114 271.08M426.845 274.378C427.342 274.819 427.839 275.262 428.335 275.706M432.006 279.009C432.496 279.452 432.985 279.896 433.475 280.341M437.146 283.701C437.635 284.152 438.124 284.604 438.614 285.057M442.231 288.424C442.712 288.875 443.194 289.327 443.675 289.78M447.286 293.197C447.768 293.655 448.249 294.115 448.731 294.575M452.3 298.008C452.774 298.466 453.247 298.925 453.721 299.385M457.272 302.855C457.746 303.321 458.22 303.787 458.693 304.254M462.219 307.752C462.684 308.217 463.15 308.682 463.616 309.149M467.109 312.667C467.575 313.139 468.041 313.612 468.507 314.085M471.992 317.647C472.45 318.118 472.908 318.589 473.366 319.062M476.802 322.625C477.26 323.102 477.719 323.58 478.177 324.06" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-1" data-infer-block="" d="M127 136H145V154H127V136Z" stroke-width="3" stroke="#D4A8B8"/>
+<path data-infer-branch="branch-2" data-infer-tip="296 274" data-infer-anchor="452.3 346.3" d="M296 274C296.336 274 296.672 274.001 297.008 274.003M452.3 346.3C452.052 346.07 451.803 345.841 451.555 345.612M302.045 274.108C302.716 274.132 303.388 274.16 304.059 274.192M309.087 274.506C309.757 274.558 310.427 274.614 311.097 274.674M316.108 275.195C316.774 275.275 317.441 275.358 318.107 275.445M323.093 276.17C323.756 276.276 324.42 276.387 325.083 276.501M330.037 277.425C330.694 277.557 331.351 277.693 332.008 277.833M336.921 278.951C337.573 279.109 338.226 279.271 338.878 279.436M343.745 280.74C344.391 280.923 345.036 281.109 345.682 281.299M350.498 282.782C351.135 282.988 351.773 283.197 352.41 283.41M357.169 285.065C357.801 285.294 358.433 285.526 359.065 285.761M363.763 287.58C364.385 287.829 365.007 288.082 365.628 288.338M370.265 290.312C370.878 290.581 371.491 290.854 372.105 291.13M376.675 293.25C377.282 293.54 377.888 293.832 378.494 294.128M382.997 296.386C383.593 296.693 384.189 297.003 384.785 297.316M389.224 299.707C389.809 300.03 390.394 300.356 390.979 300.685M395.348 303.197C395.926 303.537 396.504 303.88 397.082 304.225M401.38 306.852C401.951 307.208 402.522 307.567 403.092 307.928M407.321 310.662C407.881 311.031 408.441 311.403 409.002 311.778M413.169 314.617C413.718 314.997 414.266 315.381 414.815 315.766M418.915 318.701C419.456 319.094 419.997 319.49 420.537 319.889M424.571 322.911C425.104 323.317 425.637 323.725 426.171 324.136M430.138 327.241C430.664 327.659 431.19 328.079 431.716 328.501M435.618 331.683C436.137 332.111 436.655 332.542 437.174 332.976M441.014 336.23C441.525 336.669 442.036 337.11 442.547 337.553M446.325 340.875C446.827 341.322 447.329 341.771 447.831 342.222" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-2" data-infer-block="" d="M287 265H305V283H287V265Z" stroke-width="3" stroke="#A8B8C8"/>
+<path data-infer-branch="branch-3" data-infer-tip="176 443" data-infer-anchor="530.9 349.9" d="M176 443C176.333 443 176.666 443 176.999 442.999M530.9 349.9C530.604 350.055 530.308 350.21 530.013 350.365M181.993 442.973C182.659 442.967 183.324 442.961 183.99 442.953M188.984 442.875C189.649 442.862 190.315 442.849 190.981 442.834M195.973 442.705C196.639 442.685 197.305 442.665 197.97 442.643M202.96 442.462C203.626 442.436 204.291 442.408 204.956 442.38M209.946 442.148C210.611 442.114 211.275 442.08 211.94 442.045M216.926 441.761C217.591 441.721 218.256 441.68 218.92 441.638M223.902 441.303C224.566 441.256 225.231 441.208 225.895 441.159M230.875 440.773C231.539 440.719 232.202 440.664 232.866 440.609M237.839 440.172C238.503 440.111 239.166 440.05 239.829 439.987M244.799 439.5C245.461 439.432 246.124 439.364 246.786 439.295M251.752 438.757C252.414 438.682 253.076 438.607 253.738 438.531M258.695 437.943C259.355 437.862 260.016 437.78 260.677 437.698M265.632 437.059C266.292 436.972 266.951 436.883 267.611 436.794M272.557 436.106C273.216 436.012 273.876 435.916 274.535 435.82M279.473 435.083C280.131 434.982 280.789 434.881 281.447 434.778M286.381 433.99C287.038 433.883 287.695 433.775 288.351 433.666M293.273 432.83C293.929 432.717 294.586 432.602 295.242 432.486M300.157 431.602C300.812 431.481 301.466 431.36 302.12 431.238M307.028 430.305C307.682 430.179 308.337 430.051 308.991 429.922M313.884 428.942C314.536 428.809 315.188 428.675 315.841 428.54M320.731 427.512C321.381 427.372 322.031 427.232 322.681 427.091M327.557 426.016C328.208 425.87 328.858 425.724 329.508 425.576M334.373 424.455C335.021 424.303 335.668 424.15 336.316 423.997M341.175 422.828C341.822 422.67 342.469 422.511 343.115 422.351M347.956 421.138C348.601 420.973 349.246 420.808 349.892 420.643M354.727 419.382C355.37 419.212 356.012 419.042 356.655 418.87M361.476 417.565C362.119 417.389 362.762 417.212 363.404 417.033M368.209 415.685C368.849 415.503 369.49 415.32 370.13 415.137M374.93 413.742C375.568 413.554 376.206 413.366 376.845 413.176M381.624 411.74C382.261 411.546 382.898 411.352 383.535 411.156M388.307 409.675C388.941 409.476 389.576 409.276 390.21 409.075M394.967 407.552C395.601 407.347 396.235 407.141 396.87 406.934M401.608 405.37C402.239 405.159 402.87 404.948 403.501 404.736M408.235 403.127C408.864 402.911 409.494 402.694 410.123 402.476M414.833 400.83C415.461 400.608 416.089 400.385 416.717 400.162M421.419 398.472C422.044 398.246 422.669 398.018 423.293 397.79M427.979 396.061C428.604 395.828 429.228 395.594 429.853 395.36M434.52 393.592C435.141 393.355 435.763 393.117 436.384 392.878M441.044 391.068C441.664 390.825 442.284 390.581 442.904 390.336M447.539 388.492C448.156 388.244 448.774 387.995 449.392 387.746M454.022 385.859C454.637 385.606 455.251 385.353 455.865 385.099M460.473 383.177C461.087 382.919 461.702 382.659 462.316 382.399M466.909 380.44C467.519 380.178 468.13 379.914 468.741 379.65M473.321 377.652C473.932 377.384 474.543 377.115 475.154 376.845M479.708 374.815C480.315 374.543 480.922 374.269 481.529 373.995M486.082 371.924C486.687 371.647 487.291 371.369 487.895 371.091M492.42 368.99C493.023 368.708 493.626 368.425 494.23 368.141M498.747 366.001C499.347 365.715 499.946 365.428 500.546 365.141M505.042 362.969C505.641 362.678 506.241 362.385 506.84 362.092M511.319 359.887C511.915 359.592 512.51 359.296 513.106 358.999M517.573 356.759C518.169 356.458 518.764 356.157 519.36 355.855M523.8 353.587C524.392 353.282 524.984 352.978 525.575 352.672" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-3" data-infer-block="" d="M167 434H185V452H167V434Z" stroke-width="3" stroke="#7A8898"/>
+<path data-infer-branch="branch-4" data-infer-tip="216 563" data-infer-anchor="533.2 324.8" d="M216 563C216.333 563 216.666 562.999 216.998 562.998M533.2 324.8C533.014 325.08 532.827 325.36 532.641 325.639M221.99 562.915C222.656 562.896 223.321 562.874 223.987 562.849M228.972 562.602C229.636 562.561 230.3 562.517 230.964 562.47M235.944 562.058C236.606 561.996 237.267 561.93 237.928 561.862M242.887 561.289C243.548 561.204 244.21 561.117 244.871 561.027M249.803 560.295C250.46 560.19 251.117 560.082 251.774 559.97M256.692 559.08C257.344 558.954 257.995 558.826 258.647 558.694M263.532 557.651C264.183 557.505 264.835 557.355 265.486 557.203M270.322 556.014C270.966 555.848 271.611 555.68 272.255 555.508M277.07 554.171C277.707 553.986 278.344 553.799 278.981 553.61M283.757 552.131C284.392 551.927 285.028 551.721 285.663 551.511M290.373 549.905C291.001 549.684 291.629 549.46 292.257 549.233M296.941 547.49C297.559 547.253 298.178 547.013 298.796 546.771M303.434 544.902C304.052 544.646 304.67 544.388 305.288 544.126M309.848 542.149C310.456 541.879 311.064 541.606 311.672 541.331M316.213 539.225C316.81 538.942 317.407 538.656 318.004 538.367M322.483 536.157C323.08 535.856 323.677 535.552 324.275 535.246M328.683 532.94C329.269 532.627 329.855 532.312 330.44 531.995M334.834 529.568C335.409 529.245 335.984 528.919 336.559 528.591M340.866 526.088C341.44 525.749 342.015 525.407 342.589 525.063M346.853 522.464C347.416 522.115 347.978 521.765 348.541 521.412M352.758 518.723C353.321 518.358 353.883 517.992 354.445 517.623M358.58 514.872C359.131 514.501 359.681 514.127 360.231 513.751M364.359 510.892C364.9 510.512 365.441 510.13 365.982 509.746M370.019 506.84C370.558 506.448 371.096 506.053 371.634 505.656M375.648 502.66C376.175 502.262 376.701 501.863 377.227 501.461M381.175 498.41C381.702 497.998 382.228 497.585 382.754 497.169M386.652 494.055C387.167 493.64 387.681 493.222 388.196 492.803M392.054 489.622C392.569 489.193 393.083 488.762 393.598 488.329M397.387 485.109C397.89 484.677 398.392 484.244 398.895 483.808M402.665 480.51C403.168 480.066 403.671 479.62 404.173 479.172M407.86 475.854C408.352 475.408 408.843 474.96 409.334 474.511M413.017 471.107C413.506 470.65 413.996 470.192 414.485 469.733M418.083 466.32C418.563 465.861 419.043 465.401 419.522 464.938M423.12 461.44C423.597 460.973 424.074 460.504 424.55 460.033M428.065 456.533C428.534 456.063 429.002 455.591 429.471 455.117M432.986 451.535C433.452 451.056 433.918 450.576 434.384 450.094M437.817 446.516C438.275 446.035 438.733 445.553 439.191 445.069M442.624 441.413C443.082 440.922 443.539 440.429 443.997 439.935M447.351 436.288C447.798 435.798 448.245 435.307 448.692 434.814M452.046 431.093C452.493 430.593 452.94 430.092 453.388 429.589M456.676 425.867C457.113 425.37 457.55 424.87 457.987 424.37M461.263 420.59C461.7 420.083 462.137 419.574 462.574 419.064M465.804 415.269C466.231 414.764 466.657 414.257 467.084 413.75M470.286 409.92C470.713 409.406 471.14 408.89 471.566 408.374M474.744 404.505C475.161 403.994 475.579 403.481 475.996 402.968M479.124 399.093C479.542 398.573 479.959 398.052 480.376 397.53M483.505 393.59C483.913 393.073 484.322 392.554 484.731 392.034M487.789 388.12C488.197 387.596 488.605 387.07 489.012 386.543M492.07 382.567C492.478 382.034 492.886 381.5 493.294 380.965M496.289 377.011C496.688 376.482 497.086 375.952 497.485 375.42M500.475 371.415C500.873 370.878 501.272 370.34 501.671 369.8M504.634 365.772C505.024 365.239 505.413 364.705 505.803 364.17M508.727 360.138C509.116 359.598 509.506 359.057 509.896 358.514M512.82 354.426C513.205 353.884 513.59 353.342 513.976 352.798M516.835 348.745C517.216 348.201 517.598 347.657 517.979 347.112M520.838 343.004C521.219 342.454 521.601 341.903 521.982 341.35M524.808 337.238C525.181 336.692 525.554 336.146 525.927 335.598M528.724 331.475C529.097 330.922 529.47 330.369 529.843 329.815" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-4" data-infer-block="" d="M207 554H225V572H207V554Z" stroke-width="3" stroke="#5C4B9E"/>
+<path data-infer-branch="branch-5" data-infer-tip="874.003 139" data-infer-anchor="701.703 347.2" d="M874.003 139C873.667 139 873.33 139.002 872.994 139.007M701.703 347.2C701.834 346.885 701.964 346.57 702.095 346.255M704.053 341.562C704.314 340.94 704.576 340.319 704.837 339.7M706.795 335.082C707.061 334.46 707.327 333.839 707.592 333.219M709.605 328.552C709.873 327.934 710.141 327.317 710.41 326.701M712.422 322.114C712.698 321.49 712.973 320.868 713.249 320.247M715.318 315.613C715.594 314.999 715.87 314.387 716.146 313.776M718.225 309.204C718.509 308.584 718.793 307.965 719.077 307.349M721.206 302.755C721.49 302.147 721.774 301.54 722.058 300.936M724.215 296.373C724.507 295.759 724.8 295.147 725.092 294.536M727.284 289.993C727.577 289.391 727.869 288.792 728.161 288.194M730.406 283.64C730.707 283.034 731.008 282.429 731.309 281.827M733.568 277.343C733.873 276.741 734.179 276.141 734.485 275.543M736.814 271.025C737.124 270.427 737.435 269.832 737.745 269.239M740.095 264.788C740.415 264.186 740.735 263.587 741.056 262.99M743.458 258.551C743.778 257.965 744.099 257.38 744.419 256.798M746.887 252.356C747.218 251.766 747.548 251.179 747.879 250.594M750.365 246.239C750.707 245.647 751.049 245.057 751.39 244.469M753.953 240.109C754.295 239.533 754.636 238.96 754.978 238.39M757.607 234.049C757.961 233.472 758.314 232.898 758.667 232.327M761.329 228.07C761.695 227.492 762.06 226.917 762.426 226.345M765.167 222.108C765.532 221.55 765.898 220.995 766.263 220.442M769.099 216.214C769.477 215.657 769.856 215.103 770.234 214.552M773.121 210.408C773.513 209.854 773.905 209.302 774.297 208.754M777.242 204.695C777.648 204.143 778.055 203.595 778.461 203.05M781.509 199.03C781.919 198.499 782.328 197.971 782.737 197.447M785.899 193.469C786.321 192.947 786.742 192.43 787.164 191.917M790.418 188.026C790.856 187.513 791.293 187.004 791.731 186.499M795.079 182.713C795.533 182.21 795.987 181.711 796.441 181.217M799.894 177.543C800.365 177.053 800.837 176.567 801.309 176.086M804.877 172.535C805.367 172.06 805.857 171.59 806.346 171.125M810.043 167.711C810.551 167.255 811.06 166.804 811.568 166.358M815.404 163.1C815.932 162.666 816.459 162.238 816.987 161.816M820.973 158.738C821.521 158.331 822.068 157.93 822.615 157.535M826.76 154.666C827.327 154.29 827.894 153.921 828.461 153.558M832.772 150.933C833.358 150.594 833.944 150.262 834.53 149.937M839.007 147.597C839.612 147.3 840.216 147.011 840.821 146.729M845.46 144.719C846.084 144.469 846.708 144.227 847.332 143.994M852.115 142.363C852.763 142.164 853.412 141.974 854.061 141.792M858.962 140.588C859.624 140.448 860.286 140.318 860.948 140.197M865.942 139.456C866.611 139.381 867.28 139.314 867.949 139.257" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-5" data-infer-block="" d="M865 130H883V148H865V130Z" stroke-width="3" stroke="#7A8898"/>
+<path data-infer-branch="branch-6" data-infer-tip="984 294" data-infer-anchor="714 338.3" d="M984 294C983.664 294 983.329 294 982.993 294.001M714 338.3C714.319 338.195 714.639 338.091 714.958 337.986M719.747 336.434C720.385 336.229 721.024 336.025 721.662 335.821M726.463 334.305C727.103 334.104 727.743 333.905 728.384 333.706M733.194 332.226C733.836 332.03 734.478 331.835 735.12 331.64M739.939 330.197C740.583 330.006 741.227 329.816 741.871 329.626M746.701 328.219C747.346 328.033 747.991 327.848 748.636 327.663M753.479 326.292C754.125 326.111 754.771 325.931 755.417 325.752M760.271 324.417C760.918 324.241 761.566 324.066 762.213 323.891M767.076 322.595C767.725 322.424 768.374 322.254 769.024 322.084M773.894 320.826C774.545 320.66 775.196 320.494 775.847 320.33M780.727 319.109C781.379 318.948 782.031 318.788 782.682 318.629M787.575 317.446C788.227 317.29 788.879 317.135 789.532 316.981M794.434 315.837C795.088 315.686 795.742 315.537 796.396 315.388M801.306 314.283C801.961 314.137 802.616 313.993 803.271 313.849M808.189 312.783C808.845 312.643 809.502 312.503 810.159 312.365M815.083 311.339C815.741 311.204 816.399 311.07 817.057 310.936M821.992 309.95C822.65 309.82 823.308 309.691 823.966 309.563M828.91 308.616C829.57 308.492 830.229 308.369 830.888 308.246M835.839 307.34C836.499 307.221 837.16 307.103 837.82 306.985M842.777 306.119C843.439 306.006 844.101 305.893 844.762 305.781M849.725 304.956C850.388 304.848 851.051 304.741 851.713 304.634M856.683 303.85C857.347 303.748 858.01 303.646 858.673 303.545M863.651 302.802C864.315 302.705 864.978 302.608 865.642 302.513M870.626 301.811C871.291 301.719 871.956 301.629 872.62 301.539M877.61 300.878C878.275 300.792 878.941 300.707 879.606 300.623M884.6 300.004C885.266 299.924 885.933 299.844 886.599 299.765M891.597 299.189C892.265 299.114 892.932 299.039 893.599 298.966M898.602 298.432C899.27 298.362 899.937 298.294 900.605 298.226M905.613 297.734C906.281 297.67 906.949 297.607 907.617 297.545M912.63 297.095C913.298 297.037 913.967 296.98 914.635 296.924M919.651 296.516C920.32 296.464 920.989 296.412 921.658 296.362M926.677 295.997C927.347 295.95 928.016 295.904 928.686 295.859M933.707 295.537C934.377 295.496 935.047 295.456 935.717 295.417M940.741 295.137C941.411 295.102 942.081 295.068 942.751 295.034M947.778 294.797C948.449 294.768 949.119 294.739 949.789 294.711M954.818 294.517C955.489 294.494 956.159 294.471 956.83 294.449M961.86 294.298C962.531 294.28 963.202 294.263 963.872 294.246M968.903 294.138C969.574 294.126 970.245 294.115 970.916 294.104M975.948 294.039C976.619 294.033 977.29 294.027 977.961 294.022" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-6" data-infer-block="" d="M975 285H993V303H975V285Z" stroke-width="3" stroke="#5C4B9E"/>
+<path data-infer-branch="branch-7" data-infer-tip="943.997 399" data-infer-anchor="698.297 331" d="M943.997 399C943.665 399 943.333 399 943.002 398.999M698.297 331C698.588 331.161 698.879 331.322 699.171 331.483M703.539 333.872C704.122 334.188 704.704 334.502 705.287 334.815M709.682 337.158C710.268 337.468 710.855 337.777 711.442 338.084M715.858 340.376C716.448 340.68 717.039 340.983 717.63 341.284M722.067 343.525C722.662 343.823 723.257 344.119 723.852 344.414M728.314 346.605C728.911 346.896 729.509 347.185 730.106 347.473M734.599 349.615C735.198 349.898 735.797 350.18 736.396 350.46M740.917 352.552C741.52 352.827 742.123 353.102 742.726 353.376M747.267 355.412C747.874 355.681 748.481 355.949 749.088 356.215M753.65 358.195C754.261 358.457 754.872 358.718 755.483 358.978M760.066 360.9C760.68 361.155 761.295 361.409 761.909 361.661M766.518 363.528C767.135 363.774 767.751 364.019 768.368 364.263M773.004 366.074C773.623 366.312 774.241 366.549 774.859 366.784M779.521 368.536C780.143 368.766 780.765 368.996 781.386 369.223M786.068 370.914C786.693 371.136 787.319 371.357 787.944 371.577M792.645 373.205C793.274 373.419 793.902 373.632 794.531 373.844M799.251 375.408C799.883 375.614 800.515 375.819 801.146 376.022M805.886 377.522C806.521 377.719 807.156 377.915 807.791 378.11M812.552 379.546C813.189 379.734 813.826 379.921 814.462 380.107M819.246 381.477C819.884 381.656 820.522 381.834 821.16 382.011M825.966 383.314C826.607 383.485 827.247 383.653 827.888 383.821M832.71 385.056C833.354 385.217 833.997 385.377 834.641 385.535M839.478 386.701C840.124 386.853 840.77 387.003 841.416 387.153M846.269 388.247C846.918 388.39 847.566 388.531 848.214 388.671M853.082 389.694C853.732 389.828 854.383 389.959 855.034 390.09M859.915 391.041C860.567 391.164 861.22 391.286 861.873 391.407M866.768 392.285C867.422 392.399 868.076 392.512 868.731 392.622M873.64 393.427C874.295 393.531 874.951 393.634 875.606 393.734M880.528 394.465C881.185 394.559 881.841 394.651 882.497 394.742M887.431 395.398C888.089 395.482 888.747 395.564 889.405 395.645M894.347 396.225C895.007 396.299 895.666 396.371 896.325 396.442M901.275 396.946C901.936 397.009 902.596 397.071 903.257 397.132M908.213 397.559C908.875 397.612 909.536 397.664 910.198 397.714M915.16 398.064C915.822 398.107 916.485 398.148 917.147 398.189M922.114 398.461C922.777 398.494 923.44 398.525 924.102 398.555M929.073 398.749C929.736 398.772 930.4 398.792 931.063 398.812M936.036 398.929C936.7 398.941 937.363 398.951 938.026 398.96" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-7" data-infer-block="" d="M935 390H953V408H935V390Z" stroke-width="3" stroke="#D4A8B8"/>
+<path data-infer-branch="branch-8" data-infer-tip="1044 503" data-infer-anchor="672 334.3" d="M1044 503C1043.67 503 1043.34 503 1043 502.999M672 334.3C672.247 334.525 672.495 334.749 672.742 334.973M676.455 338.316C676.95 338.76 677.445 339.203 677.94 339.644M681.652 342.941C682.147 343.378 682.642 343.815 683.137 344.25M686.895 347.539C687.397 347.976 687.899 348.412 688.401 348.848M692.166 352.095C692.668 352.525 693.17 352.955 693.672 353.384M697.468 356.608C697.977 357.038 698.486 357.467 698.995 357.896M702.813 361.089C703.322 361.513 703.831 361.935 704.34 362.357M708.176 365.516C708.692 365.938 709.208 366.36 709.724 366.781M713.596 369.918C714.112 370.333 714.628 370.748 715.144 371.162M719.023 374.254C719.546 374.668 720.07 375.082 720.593 375.495M724.518 378.571C725.041 378.979 725.565 379.385 726.088 379.791M730.013 382.815C730.543 383.22 731.073 383.625 731.603 384.029M735.583 387.04C736.113 387.439 736.644 387.837 737.174 388.234M741.154 391.192C741.689 391.587 742.224 391.981 742.759 392.374M746.792 395.317C747.33 395.706 747.868 396.095 748.406 396.482M752.439 399.37C752.98 399.754 753.521 400.137 754.062 400.52M758.149 403.389C758.695 403.769 759.24 404.148 759.785 404.525M763.872 407.338C764.42 407.711 764.967 408.084 765.514 408.456M769.656 411.247C770.208 411.617 770.761 411.985 771.313 412.352M775.455 415.085C776.009 415.448 776.564 415.81 777.118 416.171M781.314 418.879C781.874 419.238 782.433 419.595 782.993 419.951M787.189 422.6C787.751 422.952 788.313 423.302 788.875 423.652M793.125 426.274C793.691 426.62 794.258 426.966 794.825 427.31M799.074 429.87C799.645 430.21 800.215 430.55 800.786 430.888M805.089 433.417C805.662 433.751 806.236 434.084 806.81 434.416M811.113 436.882C811.692 437.211 812.271 437.538 812.85 437.865M817.206 440.296C817.787 440.618 818.368 440.938 818.948 441.256M823.306 443.624C823.894 443.94 824.481 444.255 825.069 444.569M829.477 446.898C830.064 447.205 830.652 447.512 831.24 447.816M835.657 450.084C836.252 450.386 836.846 450.687 837.441 450.986M841.899 453.207C842.494 453.5 843.088 453.792 843.683 454.082M848.161 456.245C848.762 456.532 849.363 456.818 849.964 457.102M854.472 459.21C855.073 459.488 855.674 459.764 856.275 460.039M860.813 462.091C861.42 462.362 862.028 462.632 862.635 462.901M867.192 464.891C867.799 465.152 868.407 465.413 869.014 465.672M873.611 467.608C874.225 467.863 874.839 468.116 875.452 468.368M880.056 470.234C880.671 470.48 881.287 470.725 881.903 470.968M886.551 472.779C887.171 473.017 887.791 473.254 888.41 473.489M893.06 475.226C893.686 475.456 894.311 475.685 894.936 475.912M899.627 477.59C900.253 477.811 900.878 478.029 901.504 478.247M906.21 479.854C906.84 480.066 907.471 480.277 908.102 480.486M912.834 482.026C913.465 482.228 914.096 482.429 914.727 482.627M919.485 484.1C920.121 484.293 920.757 484.484 921.393 484.674M926.163 486.073C926.8 486.256 927.437 486.437 928.073 486.617M932.879 487.947C933.52 488.121 934.16 488.293 934.801 488.463M939.608 489.715C940.253 489.879 940.898 490.042 941.544 490.203M946.382 491.383C947.027 491.537 947.672 491.689 948.317 491.839M953.169 492.942C953.818 493.086 954.467 493.228 955.116 493.369M959.984 494.395C960.633 494.528 961.282 494.659 961.931 494.789M966.821 495.739C967.474 495.861 968.126 495.983 968.779 496.102M973.673 496.971C974.328 497.083 974.983 497.194 975.638 497.303M980.555 498.093C981.21 498.194 981.866 498.294 982.522 498.392M987.445 499.101C988.103 499.192 988.762 499.281 989.42 499.368M994.357 499.996C995.015 500.075 995.673 500.153 996.331 500.23M1001.28 500.775C1001.94 500.844 1002.6 500.911 1003.26 500.977M1008.21 501.439C1008.87 501.496 1009.54 501.553 1010.2 501.607M1015.16 501.986C1015.82 502.033 1016.48 502.078 1017.15 502.121M1022.11 502.416C1022.78 502.451 1023.44 502.485 1024.1 502.517M1029.07 502.728C1029.74 502.753 1030.4 502.775 1031.06 502.796M1036.04 502.923C1036.7 502.936 1037.37 502.947 1038.03 502.957" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-8" data-infer-block="" d="M1035 494H1053V512H1035V494Z" stroke-width="3" stroke="#7A8898"/>
+<path data-infer-branch="branch-9" data-infer-tip="944.002 623" data-infer-anchor="706.602 349.4" d="M944.002 623C943.667 623 943.333 622.998 942.999 622.995M706.602 349.4C706.736 349.711 706.871 350.021 707.006 350.332M709.029 354.966C709.299 355.582 709.568 356.196 709.838 356.809M711.861 361.388C712.131 361.996 712.4 362.603 712.67 363.209M714.711 367.773C714.988 368.39 715.265 369.006 715.542 369.62M717.62 374.208C717.897 374.817 718.174 375.425 718.451 376.032M720.529 380.561C720.806 381.162 721.083 381.762 721.36 382.361M723.494 386.951C723.779 387.561 724.064 388.169 724.348 388.777M726.484 393.309C726.769 393.911 727.054 394.511 727.338 395.11M729.492 399.617C729.785 400.227 730.077 400.836 730.37 401.444M732.567 405.976C732.86 406.577 733.153 407.177 733.445 407.776M735.642 412.243C735.937 412.84 736.232 413.436 736.528 414.031M738.788 418.56C739.089 419.16 739.391 419.759 739.692 420.357M741.953 424.816C742.254 425.407 742.555 425.997 742.857 426.586M745.159 431.057C745.47 431.656 745.78 432.254 746.09 432.851M748.418 437.297C748.728 437.886 749.039 438.474 749.349 439.061M751.694 443.465C752.014 444.062 752.333 444.658 752.653 445.252M755.051 449.68C755.371 450.266 755.691 450.851 756.011 451.435M758.409 455.785C758.737 456.377 759.066 456.967 759.394 457.555M761.867 461.958C762.197 462.541 762.526 463.122 762.856 463.702M765.329 468.022C765.662 468.6 765.996 469.177 766.33 469.753M768.881 474.122C769.221 474.7 769.561 475.277 769.901 475.852M772.452 480.133C772.794 480.701 773.135 481.268 773.476 481.833M776.11 486.16C776.461 486.733 776.812 487.303 777.164 487.872M779.797 492.105C780.149 492.666 780.501 493.225 780.853 493.782M783.574 498.056C783.936 498.621 784.299 499.184 784.662 499.746M787.383 503.919C787.749 504.475 788.114 505.029 788.48 505.582M791.292 509.79C791.667 510.346 792.042 510.9 792.417 511.452M795.23 515.553C795.613 516.106 795.997 516.658 796.38 517.207M799.289 521.336C799.677 521.881 800.065 522.424 800.453 522.964M803.373 526.993C803.774 527.541 804.175 528.086 804.577 528.63M807.587 532.661C807.989 533.193 808.39 533.722 808.791 534.249M811.849 538.218C812.265 538.751 812.681 539.282 813.096 539.81M816.214 543.725C816.629 544.241 817.045 544.754 817.46 545.265M820.674 549.163C821.105 549.679 821.536 550.192 821.966 550.702M825.195 554.477C825.64 554.991 826.085 555.501 826.53 556.008M829.876 559.771C830.323 560.265 830.769 560.757 831.215 561.245M834.629 564.927C835.091 565.418 835.554 565.906 836.016 566.391M839.485 569.969C839.956 570.448 840.428 570.923 840.899 571.395M844.495 574.932C844.975 575.395 845.454 575.855 845.934 576.311M849.602 579.739C850.099 580.194 850.596 580.646 851.093 581.094M854.82 584.389C855.333 584.834 855.846 585.274 856.359 585.711M860.222 588.925C860.737 589.344 861.252 589.759 861.767 590.17M865.745 593.27C866.278 593.675 866.812 594.076 867.345 594.473M871.399 597.41C871.951 597.799 872.503 598.184 873.054 598.564M877.194 601.332C877.764 601.702 878.334 602.067 878.903 602.427M883.181 605.042C883.754 605.38 884.327 605.714 884.9 606.043M889.313 608.48C889.901 608.793 890.489 609.1 891.078 609.403M895.591 611.623C896.197 611.907 896.803 612.187 897.408 612.461M902.016 614.442C902.638 614.696 903.259 614.944 903.881 615.186M908.582 616.91C909.218 617.128 909.855 617.341 910.491 617.548M915.28 618.995C915.929 619.176 916.577 619.351 917.226 619.519M922.094 620.67C922.752 620.81 923.411 620.944 924.069 621.071M929.005 621.908C929.669 622.005 930.334 622.095 930.998 622.179M935.985 622.688C936.652 622.74 937.319 622.785 937.987 622.824" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-9" data-infer-block="" d="M935 614H953V632H935V614Z" stroke-width="3" stroke="#8AA0C0"/>
+<path data-infer-group="branch-10" data-infer-block="" d="M520 83H540V103H520V83Z" stroke-width="3" stroke="#5C4B9E"/>
+<path data-infer-branch="branch-10" data-infer-tip="530 93" data-infer-anchor="572 325" d="M530 93C530 93.3382 530 93.6761 530 94.0136M572 325C571.663 325 571.328 324.989 570.995 324.966M530.007 99.0482C530.009 99.7157 530.011 100.382 530.013 101.046M530.034 106.003C530.037 106.668 530.041 107.332 530.045 107.993M530.082 113.031C530.087 113.699 530.093 114.365 530.099 115.03M530.151 119.985C530.159 120.651 530.167 121.316 530.175 121.979M530.244 127.015C530.254 127.682 530.264 128.348 530.275 129.011M530.36 133.958C530.372 134.631 530.385 135.301 530.398 135.97M530.503 140.997C530.518 141.663 530.533 142.326 530.548 142.988M530.671 147.94C530.689 148.616 530.707 149.291 530.725 149.964M530.87 154.973C530.89 155.636 530.911 156.297 530.932 156.956M531.097 161.94C531.121 162.613 531.145 163.285 531.169 163.954M531.358 168.936C531.384 169.595 531.411 170.252 531.438 170.907M531.653 175.931C531.683 176.6 531.714 177.267 531.745 177.932M531.983 182.874C532.017 183.547 532.051 184.217 532.086 184.885M532.357 189.9C532.394 190.563 532.432 191.223 532.47 191.881M532.77 196.864C532.812 197.536 532.855 198.206 532.898 198.873M533.23 203.827C533.276 204.49 533.322 205.15 533.369 205.808M533.742 210.83C533.793 211.493 533.845 212.152 533.897 212.809M534.306 217.786C534.363 218.457 534.421 219.125 534.48 219.79M534.928 224.717C534.992 225.391 535.056 226.061 535.121 226.729M535.623 231.712C535.691 232.367 535.76 233.02 535.83 233.668M536.388 238.671C536.465 239.333 536.542 239.991 536.62 240.646M537.233 245.6C537.319 246.268 537.405 246.932 537.493 247.592M538.169 252.507C538.265 253.18 538.362 253.848 538.46 254.512M539.209 259.402C539.317 260.077 539.425 260.746 539.535 261.411M540.376 266.311C540.495 266.976 540.615 267.636 540.736 268.29M541.683 273.185C541.816 273.845 541.951 274.5 542.087 275.148M543.155 280.014C543.307 280.676 543.461 281.33 543.616 281.977M544.827 286.788C545.003 287.453 545.181 288.111 545.361 288.759M546.763 293.539C546.964 294.188 547.168 294.828 547.373 295.457M549.016 300.173C549.248 300.796 549.482 301.407 549.718 302.006M551.67 306.59C551.961 307.22 552.255 307.834 552.551 308.431M554.948 312.804C555.3 313.382 555.656 313.94 556.015 314.477M559.064 318.441C559.518 318.948 559.977 319.426 560.442 319.874M564.383 322.897C564.973 323.24 565.57 323.541 566.175 323.8" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-11" data-infer-block="" d="M660 83H680V103H660V83Z" stroke-width="3" stroke="#6878B8"/>
+<path data-infer-branch="branch-11" data-infer-tip="670 93" data-infer-anchor="628 325" d="M670 93C670 93.3383 670 93.6762 670 94.0137M628 325C628.337 325 628.672 324.989 629.005 324.966M633.825 323.8C634.43 323.541 635.027 323.24 635.617 322.897M639.559 319.874C640.023 319.425 640.482 318.948 640.936 318.441M643.985 314.477C644.344 313.94 644.7 313.382 645.052 312.804M647.449 308.431C647.745 307.834 648.039 307.22 648.33 306.59M650.282 302.005C650.518 301.406 650.752 300.796 650.984 300.173M652.627 295.457C652.832 294.828 653.036 294.188 653.237 293.539M654.639 288.759C654.819 288.11 654.997 287.453 655.173 286.788M656.384 281.977C656.539 281.33 656.693 280.676 656.845 280.014M657.913 275.148C658.049 274.5 658.184 273.845 658.317 273.185M659.264 268.29C659.385 267.636 659.505 266.976 659.624 266.311M660.465 261.411C660.575 260.746 660.683 260.077 660.791 259.402M661.541 254.512C661.638 253.848 661.735 253.18 661.831 252.507M662.507 247.592C662.595 246.932 662.681 246.268 662.767 245.6M663.38 240.646C663.458 239.991 663.535 239.333 663.612 238.671M664.17 233.668C664.24 233.02 664.309 232.367 664.377 231.712M664.879 226.729C664.944 226.061 665.008 225.391 665.072 224.717M665.52 219.79C665.579 219.125 665.637 218.457 665.694 217.786M666.103 212.809C666.155 212.152 666.207 211.493 666.258 210.83M666.631 205.808C666.678 205.151 666.724 204.49 666.77 203.827M667.102 198.873C667.145 198.206 667.188 197.536 667.23 196.864M667.53 191.881C667.568 191.223 667.606 190.563 667.643 189.9M667.914 184.885C667.949 184.217 667.983 183.547 668.017 182.874M668.255 177.932C668.286 177.267 668.317 176.6 668.347 175.931M668.562 170.907C668.589 170.252 668.616 169.595 668.642 168.936M668.831 163.954C668.855 163.285 668.879 162.613 668.903 161.94M669.068 156.956C669.089 156.297 669.11 155.636 669.13 154.973M669.275 149.964C669.293 149.291 669.311 148.617 669.329 147.94M669.452 142.989C669.467 142.326 669.482 141.663 669.497 140.997M669.602 135.97C669.615 135.302 669.628 134.631 669.64 133.958M669.725 129.011C669.736 128.348 669.746 127.682 669.756 127.015M669.825 121.979C669.833 121.316 669.841 120.651 669.849 119.985M669.901 115.03C669.907 114.365 669.913 113.699 669.918 113.031M669.955 107.994C669.959 107.332 669.963 106.668 669.966 106.003M669.987 101.047C669.989 100.382 669.991 99.7159 669.993 99.0483" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-12" data-infer-block="" d="M520 572H540V592H520V572Z" stroke-width="3" stroke="#8AA0C0"/>
+<path data-infer-branch="branch-12" data-infer-tip="530 582" data-infer-anchor="572 349" d="M530 582C530 581.66 530 581.321 530 580.982M572 349C571.662 349 571.326 349.011 570.991 349.034M530.007 575.928C530.009 575.258 530.011 574.589 530.013 573.922M530.034 568.945C530.037 568.278 530.041 567.612 530.045 566.947M530.082 561.889C530.087 561.219 530.093 560.55 530.099 559.883M530.151 554.908C530.159 554.239 530.167 553.572 530.175 552.906M530.244 547.85C530.254 547.18 530.264 546.512 530.275 545.846M530.36 540.879C530.372 540.204 530.385 539.531 530.398 538.859M530.503 533.813C530.517 533.144 530.532 532.478 530.548 531.813M530.67 526.843C530.688 526.163 530.706 525.486 530.725 524.81M530.869 519.781C530.889 519.115 530.91 518.451 530.931 517.79M531.097 512.787C531.12 512.111 531.144 511.437 531.168 510.764M531.357 505.762C531.383 505.101 531.41 504.441 531.437 503.784M531.652 498.74C531.682 498.068 531.713 497.399 531.743 496.731M531.982 491.769C532.016 491.094 532.05 490.421 532.084 489.751M532.355 484.715C532.392 484.049 532.43 483.386 532.468 482.726M532.768 477.724C532.81 477.049 532.853 476.377 532.896 475.707M533.227 470.732C533.273 470.067 533.319 469.404 533.366 468.744M533.739 463.701C533.79 463.036 533.842 462.374 533.894 461.714M534.303 456.719C534.36 456.045 534.417 455.374 534.476 454.707M534.924 449.759C534.987 449.082 535.051 448.41 535.116 447.74M535.618 442.736C535.686 442.078 535.755 441.423 535.825 440.771M536.382 435.749C536.459 435.084 536.536 434.423 536.614 433.766M537.227 428.792C537.312 428.121 537.399 427.455 537.486 426.792M538.161 421.858C538.257 421.182 538.354 420.511 538.452 419.844M539.201 414.932C539.308 414.256 539.417 413.584 539.526 412.918M540.367 407.995C540.485 407.328 540.605 406.667 540.726 406.011M541.672 401.093C541.805 400.431 541.939 399.774 542.075 399.124M543.142 394.235C543.294 393.571 543.447 392.915 543.602 392.266M544.811 387.436C544.988 386.767 545.166 386.106 545.345 385.454M546.745 380.654C546.946 380.001 547.15 379.358 547.355 378.726M548.996 373.988C549.227 373.362 549.461 372.748 549.697 372.145M551.648 367.538C551.938 366.906 552.231 366.29 552.527 365.69M554.922 361.292C555.273 360.711 555.628 360.151 555.986 359.612M559.035 355.619C559.489 355.109 559.948 354.628 560.412 354.177M564.359 351.126C564.95 350.78 565.549 350.476 566.155 350.214" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-group="branch-13" data-infer-block="" d="M660 572H680V592H660V572Z" stroke-width="3" stroke="#8AA0C0"/>
+<path data-infer-branch="branch-13" data-infer-tip="670 582" data-infer-anchor="628 349" d="M670 582C670 581.66 670 581.321 670 580.982M628 349C628.338 349 628.674 349.011 629.009 349.034M633.845 350.214C634.452 350.476 635.05 350.78 635.641 351.126M639.588 354.177C640.052 354.628 640.511 355.109 640.965 355.619M644.014 359.612C644.372 360.151 644.727 360.711 645.078 361.292M647.473 365.69C647.769 366.29 648.062 366.906 648.352 367.538M650.303 372.146C650.539 372.748 650.773 373.362 651.004 373.988M652.645 378.726C652.85 379.358 653.054 380.001 653.255 380.654M654.655 385.455C654.834 386.106 655.012 386.767 655.189 387.436M656.398 392.266C656.553 392.915 656.706 393.571 656.858 394.235M657.925 399.124C658.061 399.774 658.195 400.431 658.328 401.093M659.274 406.011C659.395 406.667 659.515 407.328 659.633 407.995M660.474 412.918C660.583 413.584 660.692 414.256 660.799 414.932M661.548 419.844C661.646 420.511 661.743 421.182 661.839 421.858M662.514 426.792C662.601 427.455 662.688 428.121 662.773 428.792M663.386 433.766C663.464 434.423 663.541 435.085 663.618 435.749M664.175 440.771C664.245 441.423 664.314 442.078 664.382 442.736M664.884 447.74C664.949 448.41 665.013 449.083 665.076 449.759M665.524 454.707C665.583 455.374 665.64 456.045 665.697 456.719M666.106 461.714C666.158 462.374 666.21 463.036 666.261 463.701M666.634 468.744C666.681 469.404 666.727 470.067 666.773 470.732M667.104 475.707C667.147 476.377 667.19 477.049 667.232 477.724M667.532 482.726C667.57 483.386 667.608 484.049 667.645 484.715M667.916 489.751C667.95 490.421 667.984 491.094 668.018 491.769M668.257 496.731C668.287 497.399 668.318 498.068 668.348 498.74M668.563 503.784C668.59 504.441 668.617 505.101 668.643 505.762M668.832 510.764C668.856 511.437 668.88 512.111 668.903 512.787M669.069 517.79C669.09 518.452 669.111 519.115 669.131 519.781M669.275 524.81C669.294 525.486 669.312 526.163 669.33 526.843M669.452 531.813C669.468 532.478 669.483 533.144 669.497 533.813M669.602 538.859C669.615 539.531 669.628 540.204 669.64 540.879M669.725 545.846C669.736 546.512 669.746 547.18 669.756 547.85M669.825 552.906C669.833 553.572 669.841 554.239 669.849 554.908M669.901 559.883C669.907 560.55 669.913 561.219 669.918 561.889M669.955 566.947C669.959 567.612 669.963 568.278 669.966 568.945M669.987 573.922C669.989 574.589 669.991 575.258 669.993 575.928" stroke-width="1.2" stroke="#9AACB8"/>
+<path data-infer-block="" d="M422.602 333.8H410.602V339.8H422.602V333.8Z" fill="#D4A8B8"/>
+<path data-infer-block="" d="M564.297 349.8H546.297V357.8H564.297V349.8Z" fill="#D4825A"/>
+<path data-infer-block="" d="M529.102 328.7H495.102V338.7H529.102V328.7Z" fill="#A8B8C8"/>
+<path data-infer-block="" d="M494.102 330.3H482.102V340.3H494.102V330.3Z" fill="#D4A8B8"/>
+<path data-infer-block="" d="M422.703 332H410.703V340H422.703V332Z" fill="#5C4B9E"/>
+<path data-infer-block="" d="M469.297 340.2H435.297V348.2H469.297V340.2Z" fill="#7A8898"/>
+<path data-infer-block="" d="M439.398 349.2H427.398V355.2H439.398V349.2Z" fill="#D4825A"/>
+<path data-infer-block="" d="M790.203 328.8H764.203V338.8H790.203V328.8Z" fill="#7A8C5C"/>
+<path data-infer-block="" d="M574.5 344.2H540.5V352.2H574.5V344.2Z" fill="#6878B8"/>
+<path data-infer-block="" d="M484.703 329.3H472.703V339.3H484.703V329.3Z" fill="#9A88C0"/>
+<path data-infer-block="" d="M554.203 344.8H520.203V350.8H554.203V344.8Z" fill="#8AA0C0"/>
+<path data-infer-block="" d="M466.898 334.9H458.898V340.9H466.898V334.9Z" fill="#D4825A"/>
+<path data-infer-block="" d="M437.898 330.8H419.898V338.8H437.898V330.8Z" fill="#8AA0C0"/>
+<path data-infer-block="" d="M510 331.5H498V341.5H510V331.5Z" fill="#D4825A"/>
+<path data-infer-block="" d="M549.203 327.9H515.203V335.9H549.203V327.9Z" fill="#9A88C0"/>
+<path data-infer-block="" d="M406.398 330.6H394.398V336.6H406.398V330.6Z" fill="#6878B8"/>
+<path data-infer-block="" d="M398.797 341H386.797V349H398.797V341Z" fill="#5C4B9E"/>
+<path data-infer-block="" d="M770.797 338.1H752.797V344.1H770.797V338.1Z" fill="#5C4B9E"/>
+<path data-infer-block="" d="M796.5 328.3H784.5V338.3H796.5V328.3Z" fill="#8AA0C0"/>
+<path data-infer-block="" d="M599.703 344.5H581.703V352.5H599.703V344.5Z" fill="#D4A8B8"/>
+<path data-infer-block="" d="M604.398 335.6H578.398V343.6H604.398V335.6Z" fill="#7A8C5C"/>
+<path data-infer-block="" d="M589.797 321.6H581.797V331.6H589.797V321.6Z" fill="#5C4B9E"/>
+<path data-infer-block="" d="M637.203 332.9H625.203V340.9H637.203V332.9Z" fill="#9A88C0"/>
+<path data-infer-block="" d="M558.703 338H532.703V346H558.703V338Z" fill="#5C4B9E"/>
+<path data-infer-block="" d="M419.898 331.6H393.898V337.6H419.898V331.6Z" fill="#9A88C0"/>
+<path data-infer-block="" d="M510.797 349.6H476.797V357.6H510.797V349.6Z" fill="#9A88C0"/>
+<path data-infer-block="" d="M470.602 325.3H452.602V335.3H470.602V325.3Z" fill="#A8B8C8"/>
+<path data-infer-block="" d="M574.297 324.1H566.297V334.1H574.297V324.1Z" fill="#9A88C0"/>
+<path data-infer-block="" d="M520.797 325.2H502.797V335.2H520.797V325.2Z" fill="#9A88C0"/>
+<path data-infer-block="" d="M787.898 324.4H775.898V330.4H787.898V324.4Z" fill="#D4A8B8"/>
+<path data-infer-block="" d="M408.398 331.9H400.398V337.9H408.398V331.9Z" fill="#D4A8B8"/>
+<path data-infer-block="" d="M500.797 326.4H488.797V336.4H500.797V326.4Z" fill="#9A88C0"/>
+<path data-infer-block="" d="M538.297 334.2H530.297V344.2H538.297V334.2Z" fill="#7A8898"/>
+<path data-infer-block="" d="M548.602 333.5H522.602V339.5H548.602V333.5Z" fill="#7A8898"/>
+<path opacity="0.7" d="M360 337H360.5M840 337H839.5M363.5 337H364.5M367.5 337H368.5M371.5 337H372.5M375.5 337H376.5M379.5 337H380.5M383.5 337H384.5M387.5 337H388.5M391.5 337H392.5M395.5 337H396.5M399.5 337H400.5M403.5 337H404.5M407.5 337H408.5M411.5 337H412.5M415.5 337H416.5M419.5 337H420.5M423.5 337H424.5M427.5 337H428.5M431.5 337H432.5M435.5 337H436.5M439.5 337H440.5M443.5 337H444.5M447.5 337H448.5M451.5 337H452.5M455.5 337H456.5M459.5 337H460.5M463.5 337H464.5M467.5 337H468.5M471.5 337H472.5M475.5 337H476.5M479.5 337H480.5M483.5 337H484.5M487.5 337H488.5M491.5 337H492.5M495.5 337H496.5M499.5 337H500.5M503.5 337H504.5M507.5 337H508.5M511.5 337H512.5M515.5 337H516.5M519.5 337H520.5M523.5 337H524.5M527.5 337H528.5M531.5 337H532.5M535.5 337H536.5M539.5 337H540.5M543.5 337H544.5M547.5 337H548.5M551.5 337H552.5M555.5 337H556.5M559.5 337H560.5M563.5 337H564.5M567.5 337H568.5M571.5 337H572.5M575.5 337H576.5M579.5 337H580.5M583.5 337H584.5M587.5 337H588.5M591.5 337H592.5M595.5 337H596.5M599.5 337H600.5M603.5 337H604.5M607.5 337H608.5M611.5 337H612.5M615.5 337H616.5M619.5 337H620.5M623.5 337H624.5M627.5 337H628.5M631.5 337H632.5M635.5 337H636.5M639.5 337H640.5M643.5 337H644.5M647.5 337H648.5M651.5 337H652.5M655.5 337H656.5M659.5 337H660.5M663.5 337H664.5M667.5 337H668.5M671.5 337H672.5M675.5 337H676.5M679.5 337H680.5M683.5 337H684.5M687.5 337H688.5M691.5 337H692.5M695.5 337H696.5M699.5 337H700.5M703.5 337H704.5M707.5 337H708.5M711.5 337H712.5M715.5 337H716.5M719.5 337H720.5M723.5 337H724.5M727.5 337H728.5M731.5 337H732.5M735.5 337H736.5M739.5 337H740.5M743.5 337H744.5M747.5 337H748.5M751.5 337H752.5M755.5 337H756.5M759.5 337H760.5M763.5 337H764.5M767.5 337H768.5M771.5 337H772.5M775.5 337H776.5M779.5 337H780.5M783.5 337H784.5M787.5 337H788.5M791.5 337H792.5M795.5 337H796.5M799.5 337H800.5M803.5 337H804.5M807.5 337H808.5M811.5 337H812.5M815.5 337H816.5M819.5 337H820.5M823.5 337H824.5M827.5 337H828.5M831.5 337H832.5M835.5 337H836.5" stroke="#9AACB8"/>
+</g>
+</g>
+
+</svg>
+            <div class="infer-frontier-content">
+                <h2 id="frontier-title">800 billion parameters.<br>Running locally.</h2>
+                <p>Run frontier AI locally, without extra compression or keeping every weight in memory.</p>
+                <a class="cta cta--ghost infer-engine-cta" href="#app">Explore the app <span aria-hidden="true">↓</span></a>
+            </div>
+        </div>
+        <div class="ssd-mechanism infer-engine-details">
+            <div class="ssd-wrap" id="how-it-works">
+                <h3 class="infer-engine-title" id="mechanism-title">Powered by InferSSD.<br>The world’s fastest SSD inference engine.</h3>
+                <div class="infer-pipeline" aria-label="How InferSSD works">
+                    <div class="infer-pipeline-step">
+                        <svg viewBox="0 0 40 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="34" height="10" rx="3"/><rect x="3" y="18" width="34" height="10" rx="3"/><path d="M8 8h1m3 0h1M8 11h1m3 0h1M31 9h1m-1 14h1"/></svg>
+                        <h4>Expert indexing</h4>
+                    </div>
+                    <span class="infer-pipeline-arrow" aria-hidden="true">→</span>
+                    <div class="infer-pipeline-step">
+                        <svg viewBox="0 0 40 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="3" cy="16" r="2"/><path d="M5 16h9M6 16c6 0 3-11 8-11M6 16c6 0 3 11 8 11M20 16h7"/><rect x="14" y="2" width="6" height="6" rx="1.5"/><rect x="14" y="13" width="6" height="6" rx="1.5"/><rect x="14" y="24" width="6" height="6" rx="1.5"/><rect x="27" y="11" width="12" height="10" rx="2"/><path d="M31 14v4m4-4v4"/></svg>
+                        <h4>Router-driven streaming</h4>
+                    </div>
+                    <span class="infer-pipeline-arrow" aria-hidden="true">→</span>
+                    <div class="infer-pipeline-step">
+                        <svg viewBox="0 0 40 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="12" rx="2.5"/><rect x="25" y="15" width="12" height="12" rx="2.5"/><path d="M7 2v3m4-3v3M7 17v3m4-3v3M0 9h3m-3 4h3m12-4h3M29 12v3m4-3v3M29 27v3m4-3v3m4-11h3m-3 4h3m-15 0h3M15 13h3c5 0-1 6 4 6h3"/></svg>
+                        <h4>Adaptive execution</h4>
+                    </div>
+                </div>
+                <p class="infer-engine-intro">InferSSD offloads model weights to your SSD. It indexes expert weights there, streams cache misses into memory on demand, and schedules CPU/GPU work around weight residency.</p>
+                <div class="infer-engine-bottom">
+                    <p>InferSSD is our <a href="https://github.com/wici-ai/inferssd" target="_blank" rel="noopener">open-source inference engine <span aria-hidden="true">↗</span></a>. <a class="infer-deep-dive" href="article/running-800b-models-with-inferssd.html">Technical deep dive <span aria-hidden="true">→</span></a></p>
+                </div>
+            </div>
+        </div>
+        </section>
+        <section class="ssd-section infer-evidence" id="research" aria-labelledby="research-title">
+            <div class="ssd-wrap">
+            <div class="ssd-research-layout">
+                <div class="ssd-research-copy">
+                    <h2 id="research-title">InferSSD, the most capable and fastest local frontier AI inference engine.</h2>
+                    <p>A technical breakthrough in local AI performance.</p>
+                    <a class="ssd-text-link" href="article/running-800b-models-with-inferssd.html" target="_blank" rel="noopener">Read our technical article <span aria-hidden="true">↗</span></a>
+                </div>
+                <a class="ssd-research-image" href="article/running-800b-models-with-inferssd.html" aria-label="Read our blog: Running 800B-Parameter LLMs on Consumer Hardware with InferSSD">
+                    <img src="images/inferssd/hero-mist-2172.jpg" width="2172" height="724" alt="A dark stone suspended above a quiet sea, fading into pale coastal mist." loading="lazy" decoding="async">
+                </a>
+            </div>
+            </div>
+        <section class="ssd-bench infer-evidence-bench" id="benchmarks" aria-labelledby="bench-title">
+            <div class="ssd-wrap">
+                <div class="infer-results">
+                    <div class="infer-benchmark-heading">
+                        <h2 id="bench-title">800B-class uncompressed models on consumer hardware.</h2>
+                    </div>
+                    <div class="infer-result-toolbar">
+                        <div class="infer-result-model">
+                            <div class="ssd-controls"><div class="ssd-tabs" role="group" aria-label="Benchmark model" data-switcher="model" data-default="muse" hidden><button type="button" data-choice="muse" aria-pressed="true">Muse · 816B</button><button type="button" data-choice="deepseek" aria-pressed="false">DeepSeek · 763B</button></div></div>
+                            <span class="infer-result-name" data-panel="model" data-value="muse">Muse-Spark-Open · 816B</span>
+                            <span class="infer-result-name" data-panel="model" data-value="deepseek">DeepSeek-V4.1-Flash-1017</span>
+                        </div>
+                        <div class="ssd-model-controls"><div class="ssd-tabs" role="group" aria-label="Benchmark metric" data-switcher="metric" data-default="decode" hidden><button type="button" data-choice="decode" aria-pressed="true">Decode</button><button type="button" data-choice="prefill" aria-pressed="false">Prefill</button></div></div>
+                    </div>
+                    <div data-panel="model" data-value="muse">
+                    <div class="ssd-bench-grid">
+<article class="ssd-bench-card"><h4>MacBook Pro</h4><p class="ssd-hardware">M5 Max · 48 GB unified memory</p>
+<div data-panel="metric" data-value="decode"><p class="ssd-rate"><strong>6.2×</strong><span>decode throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>0.944</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 16.208%"></i></span><b>0.153</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-unsupported">Not supported</span>
+</div>
+</div>
+<div data-panel="metric" data-value="prefill"><p class="ssd-rate"><strong>4.0×</strong><span>prefill throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>12.48</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 25.160%"></i></span><b>3.14</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-unsupported">Not supported</span>
+</div>
+</div>
+</article>
+<article class="ssd-bench-card"><h4>RTX 5060 Ti</h4><p class="ssd-hardware">8 GB system RAM + 16 GB VRAM</p>
+<div data-panel="metric" data-value="decode"><p class="ssd-rate"><strong>3.7×</strong><span>decode throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>0.219</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 26.941%"></i></span><b>0.059</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-unsupported">Not supported</span>
+</div>
+</div>
+<div data-panel="metric" data-value="prefill"><p class="ssd-rate"><strong>15.3×</strong><span>prefill throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>52.1</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 6.545%"></i></span><b>3.41</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-unsupported">Not supported</span>
+</div>
+</div>
+</article>
+<article class="ssd-bench-card"><h4>RTX 5090</h4><p class="ssd-hardware">32 GB system RAM + 32 GB VRAM</p>
+<div data-panel="metric" data-value="decode"><p class="ssd-rate"><strong>9.8×</strong><span>decode throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>1.52</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 10.197%"></i></span><b>0.155</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-unsupported">Not supported</span>
+</div>
+</div>
+<div data-panel="metric" data-value="prefill"><p class="ssd-rate"><strong>26.7×</strong><span>prefill throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>106.6</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 3.752%"></i></span><b>4</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-unsupported">Not supported</span>
+</div>
+</div>
+</article>
+<article class="ssd-bench-card"><h4>DGX Spark</h4><p class="ssd-hardware">GB10 · 128 GB unified memory</p>
+<div data-panel="metric" data-value="decode"><p class="ssd-rate"><strong>17.8×</strong><span>decode throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>2.14</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 5.607%"></i></span><b>0.12</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-unsupported">Not supported</span>
+</div>
+</div>
+<div data-panel="metric" data-value="prefill"><p class="ssd-rate"><strong>48.2×</strong><span>prefill throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>83.9</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 2.074%"></i></span><b>1.74</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-unsupported">Not supported</span>
+</div>
+</div>
+</article>
+</div></div>
+<div data-panel="model" data-value="deepseek">
+                    <div class="ssd-bench-grid">
+<article class="ssd-bench-card"><h4>MacBook Pro</h4><p class="ssd-hardware">M5 Max · 48 GB unified memory</p>
+<div data-panel="metric" data-value="decode"><p class="ssd-rate"><strong>3.1×</strong><span>decode throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>2.704</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 32.286%"></i></span><b>0.873</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 16.161%"></i></span><b>0.437</b>
+</div>
+</div>
+<div data-panel="metric" data-value="prefill"><p class="ssd-rate"><strong>4.4×</strong><span>prefill throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>26.27</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 22.569%"></i></span><b>5.929</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 2.695%"></i></span><b>0.708</b>
+</div>
+</div>
+</article>
+<article class="ssd-bench-card"><h4>RTX 5060 Ti</h4><p class="ssd-hardware">8 GB system RAM + 16 GB VRAM</p>
+<div data-panel="metric" data-value="decode"><p class="ssd-rate"><strong>2.8×</strong><span>decode throughput vs. Colibri</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>2.55</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 35.294%"></i></span><b>0.9</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 9.490%"></i></span><b>0.242</b>
+</div>
+</div>
+<div data-panel="metric" data-value="prefill"><p class="ssd-rate"><strong>10.7×</strong><span>prefill throughput vs. Colibri</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>75.1</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 9.348%"></i></span><b>7.02</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 9.254%"></i></span><b>6.95</b>
+</div>
+</div>
+</article>
+<article class="ssd-bench-card"><h4>RTX 5090</h4><p class="ssd-hardware">32 GB system RAM + 32 GB VRAM</p>
+<div data-panel="metric" data-value="decode"><p class="ssd-rate"><strong>3.9×</strong><span>decode throughput vs. Colibri</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>7.27</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 25.832%"></i></span><b>1.878</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 11.926%"></i></span><b>0.867</b>
+</div>
+</div>
+<div data-panel="metric" data-value="prefill"><p class="ssd-rate"><strong>4.2×</strong><span>prefill throughput vs. Colibri</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>164.5</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 23.836%"></i></span><b>39.21</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 4.900%"></i></span><b>8.06</b>
+</div>
+</div>
+</article>
+<article class="ssd-bench-card"><h4>DGX Spark</h4><p class="ssd-hardware">GB10 · 128 GB unified memory</p>
+<div data-panel="metric" data-value="decode"><p class="ssd-rate"><strong>4.5×</strong><span>decode throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>7.26</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 22.149%"></i></span><b>1.608</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 4.904%"></i></span><b>0.356</b>
+</div>
+</div>
+<div data-panel="metric" data-value="prefill"><p class="ssd-rate"><strong>46.7×</strong><span>prefill throughput vs. llama.cpp</span></p>
+<div class="ssd-chart-row is-inferssd"><span>InferSSD</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 100.000%"></i></span><b>127.5</b>
+</div>
+<div class="ssd-chart-row is-llama"><span>llama.cpp</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 2.141%"></i></span><b>2.73</b>
+</div>
+<div class="ssd-chart-row is-colibri"><span>Colibri</span>
+<span class="ssd-chart-track" aria-hidden="true"><i style="--bar: 0.648%"></i></span><b>0.826</b>
+</div>
+</div>
+</article>
+</div></div>
+                </div>
+                <div class="infer-benchmark-notes" id="benchmark-notes">
+                    <div class="infer-note-bar">
+                    <div class="infer-note-triggers" hidden>
+                        <button class="infer-note-toggle" id="measurement-notes-toggle" type="button" aria-expanded="false" aria-controls="measurement-notes">Measurement notes <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                        <button class="infer-note-toggle" id="hardware-notes-toggle" type="button" aria-expanded="false" aria-controls="hardware-notes">Test hardware <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                        <button class="infer-note-toggle" id="models-toggle" type="button" aria-expanded="false" aria-controls="models">Model cards <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                    </div>
+                        <a class="ssd-text-link infer-note-more" href="lab/ssdbench/index.html">See SSDBench, our rigorous benchmark for SSD-based inference <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                    <section class="infer-note-content" id="measurement-notes" aria-labelledby="measurement-notes-heading"><h3 class="infer-note-heading" id="measurement-notes-heading">Measurement notes</h3><p>InferSSD runs these 800B-class models without additional compression of the model files. Headline multiples show InferSSD throughput divided by the fastest supported competing engine in each model, hardware and metric panel, rounded to one decimal place. Chart values are tokens/s. Decode uses tokens 129–256 of a 256-token output. Bars use a common scale for the three engines on each system.</p>
+                    <p>Results compare complete configurations. Mac DeepSeek uses Metal + CPU experts for GGUF engines and CPU-only Colibri with different weights and settings. Mac Muse uses a llama.cpp baseline with a different template and input length.</p>
+                    <p><a target="_blank" rel="noopener" class="ssd-text-link" href="https://github.com/wici-ai/inferssd/blob/f1d536377347ab906271c2166c306e7c44fc7c5f/docs/benchmark.md">Measurement details and reproduction <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p></section>
+                    <section class="infer-note-content" id="hardware-notes" aria-labelledby="hardware-notes-heading"><h3 class="infer-note-heading" id="hardware-notes-heading">Test hardware</h3><div class="ssd-table-scroll" tabindex="0" role="region" aria-label="Test hardware specifications"><table class="ssd-table"><thead><tr><th scope="col">System</th><th scope="col">CPU / SoC</th><th scope="col">System memory</th><th scope="col">GPU memory</th><th scope="col">SSD</th></tr></thead><tbody><tr><th scope="row">MacBook Pro</th><td>Apple M5 Max · 18 cores</td><td>48 GB unified</td><td>Shared</td><td>2 TB Apple internal SSD</td></tr><tr><th scope="row">RTX 5060 Ti</th><td>Intel Core 3 100U · 6 cores</td><td>8 GB</td><td>16 GB</td><td>2 TB ZHITAI TiPro9000 · PCIe 4.0 ×4</td></tr><tr><th scope="row">RTX 5090</th><td>Intel Core Ultra 5 230F · 10 cores</td><td>32 GB</td><td>32 GB</td><td>2 TB ZHITAI TiPro9000 · PCIe 5.0 ×4</td></tr><tr><th scope="row">DGX Spark</th><td>NVIDIA GB10 · 20 cores</td><td>128 GB unified</td><td>Shared</td><td>4 TB Samsung MZALC4T0HBL1 · PCIe 5.0 ×4</td></tr></tbody></table></div><p class="ssd-bench-foot">Unified memory is shared by CPU and GPU. Dedicated VRAM is additional to system RAM. Capacities are nominal; SSD interfaces describe the tested connections.</p></section>
+                    <section class="infer-note-content" id="models" aria-labelledby="models-heading"><h3 class="infer-note-heading" id="models-heading">Model cards</h3><div class="infer-note-models"><article><h4>DeepSeek-V4.1-Flash-1017</h4><dl><div><dt>Published checkpoint</dt><dd>763B parameters</dd></div><div><dt>Recorded text GGUF</dt><dd>748.49B parameters</dd></div></dl><p>The recorded GGUF uses Q8_0 with native MXFP4 experts. It omits vision and MTP/DSpark modules. Routed experts retain their existing quantized bytes.</p><a target="_blank" rel="noopener" class="ssd-text-link" href="https://huggingface.co/mrfakename/DeepSeek-V4.1-Flash-1017-GGUF">Get the GGUF weights <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a></article><article><h4>Muse-Spark-Open</h4><dl><div><dt>Total parameters</dt><dd>816B</dd></div><div><dt>Active parameters</dt><dd>42B</dd></div></dl><p>The benchmark uses the Unsloth UD-Q4_K_XL GGUF conversion. The Muse launch profile selects its bundled chat template. Model weights retain their publisher’s license.</p><a target="_blank" rel="noopener" class="ssd-text-link" href="https://huggingface.co/unsloth/Muse-Spark-Open-816B-A42B-GGUF">Get the GGUF weights <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a></article></div></section>
+                </div>
+            </div>
+        </section>
+
+        </section>
+
+        <div class="infer-demo-download" id="app">
+            <div class="ssd-wrap infer-preview-heading">
+                <h2 id="demo-title">Your AI. All your favorite tools.</h2>
+                <p>Explore the interactive WiCi Infer demo.</p>
+            </div>
+            <section class="infer-preview" id="demo-preview" aria-labelledby="demo-title">
+                <div class="ssd-wrap infer-preview-inner">
+                    <div class="infer-preview-stage">
+                        <iframe id="infer-demo" src="demo/wici-infer.html" title="Interactive WiCi Infer app preview with simulated data" sandbox="allow-scripts allow-same-origin" loading="eager"></iframe>
+                    </div>
+                </div>
+            </section>
+        <section class="ssd-section infer-downloads" id="get-started" aria-labelledby="app-download-title">
+            <div class="ssd-wrap infer-download" id="app-download">
+                <img class="infer-app-icon" src="images/infer/app-icon-glass-480.webp" alt="" width="128" height="128">
+                <h2 class="infer-download-title" id="app-download-title">WiCi Infer</h2>
+                <div class="infer-download-actions">
+                    <div class="infer-download-split">
+                        <a class="cta cta--primary" href="https://appapi.wici.ai/versioning/wici-infer/redirect/macos-latest" data-download="macos" data-cta="download-button"><span data-os-label="macos">Download for macOS</span><span data-os-label="windows">Download for Windows</span><span data-os-label="unknown">Download</span></a>
+                        <details class="infer-download-picker" id="infer-download-picker">
+                            <summary aria-label="Other download versions"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m5 6 3-3 3 3m-6 4 3 3 3-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+                            <ul class="infer-download-menu" aria-label="Download versions">
+                                <li><a href="https://appapi.wici.ai/versioning/wici-infer/redirect/macos-latest" data-download="macos" data-cta="download-menu"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" fill="currentColor"/></svg><span>Download for macOS (Apple Silicon)</span></a></li>
+                                <li><a href="https://appapi.wici.ai/versioning/wici-infer/redirect/windows-latest" data-download="windows" data-cta="download-menu"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 2h9.5v9.5H2zM12.5 2H22v9.5h-9.5zM2 12.5h9.5V22H2zM12.5 12.5H22V22h-9.5z" fill="currentColor"/></svg><span>Download for Windows (x64)</span></a></li>
+                                <li><a class="infer-download-engine" href="https://github.com/wici-ai/inferssd" target="_blank" rel="noopener"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z" fill="currentColor"/></svg><span>Linux</span><small>Use InferSSD CLI</small><span aria-hidden="true">↗</span><span class="sr-only">(opens in a new tab)</span></a></li>
+                            </ul>
+                        </details>
+                    </div>
+                </div>
+                    <p class="infer-download-note">Free · No subscription · No login required</p>
+            </div>
+        <section id="supported-models" aria-labelledby="supported-models-title">
+            <div class="ssd-wrap">
+                <div class="im-heading">
+                    <h2 id="supported-models-title">WiCi Infer runs local LLMs on computers of every size</h2>
+                </div>
+                <div class="im-grid">
+                    <article class="im-card" aria-labelledby="im-qwen-title">
+                        <div class="im-model">
+                            <img class="im-logo" src="images/infer/models/qwen.png" width="40" height="40" alt="" loading="lazy">
+                            <div><h3 id="im-qwen-title">Qwen3.6</h3><p class="im-parameters">35B parameters</p></div>
+                        </div>
+                        <p class="im-use">Everyday chat &amp; coding</p>
+                        <dl class="im-specs">
+                            <div><dt>Min. memory</dt><dd>8 GB</dd></div>
+                            <div><dt>Recommended</dt><dd>16 GB<span class="sr-only"> memory</span></dd></div>
+                            <div><dt>Available Storage</dt><dd>25 GB</dd></div>
+                        </dl>
+                        <p class="im-computer"><span>Example</span>MacBook Neo · 8 GB</p>
+                    </article>
+                    <article class="im-card" aria-labelledby="im-deepseek-title">
+                        <div class="im-model">
+                            <img class="im-logo" src="images/infer/models/deepseek.png" width="40" height="40" alt="" loading="lazy">
+                            <div><h3 id="im-deepseek-title">DeepSeek V4.1 Flash</h3><p class="im-parameters">763B parameters</p></div>
+                        </div>
+                        <p class="im-use">Coding &amp; tool use</p>
+                        <dl class="im-specs">
+                            <div><dt>Min. memory</dt><dd>16 GB</dd></div>
+                            <div><dt>Recommended</dt><dd>48 GB<span class="sr-only"> memory</span></dd></div>
+                            <div><dt>Available Storage</dt><dd>520 GB</dd></div>
+                        </dl>
+                        <p class="im-computer"><span>Example</span>MacBook · 16 GB</p>
+                    </article>
+                    <article class="im-card" aria-labelledby="im-meta-title">
+                        <div class="im-model">
+                            <img class="im-logo" src="images/infer/models/meta.png" width="40" height="40" alt="" loading="lazy">
+                            <div><h3 id="im-meta-title">Muse Spark Open</h3><p class="im-parameters">816B parameters</p></div>
+                        </div>
+                        <p class="im-use">Multi-step reasoning &amp; coding</p>
+                        <dl class="im-specs">
+                            <div><dt>Min. memory</dt><dd>24 GB</dd></div>
+                            <div><dt>Recommended</dt><dd>48 GB<span class="sr-only"> memory</span></dd></div>
+                            <div><dt>Available Storage</dt><dd>520 GB</dd></div>
+                        </dl>
+                        <p class="im-computer"><span>Example</span>MacBook Pro · M5 Max · 48 GB</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <section class="infer-faq" id="faq" aria-labelledby="faq-title">
+            <div class="ssd-wrap">
+                <h2 id="faq-title">Questions about running LLMs locally</h2>
+                <div class="infer-faq-list">
+                    <details class="infer-faq-item">
+                        <summary><h3>What is WiCi Infer?</h3></summary>
+                        <p>WiCi Infer is a free desktop app that runs large language models locally. Discover open LLMs such as Qwen3.6, DeepSeek V4.1 Flash and Muse Spark Open, download them, and chat with them on your own computer. It is powered by InferSSD, our open-source local inference engine.</p>
+                    </details>
+                    <details class="infer-faq-item">
+                        <summary><h3>Which computers can run local LLMs with WiCi Infer?</h3></summary>
+                        <p>Macs with Apple Silicon and Windows PCs (x64). Qwen3.6 35B runs with 8 GB of memory. 800B-class models such as DeepSeek V4.1 Flash start at 16 GB of memory and need about 520 GB of free SSD space. On Linux, use the InferSSD command-line engine.</p>
+                    </details>
+                    <details class="infer-faq-item">
+                        <summary><h3>How is WiCi Infer different from Ollama, LM Studio or llama.cpp?</h3></summary>
+                        <p>Most local AI tools are built for models that fit in your computer&rsquo;s memory, so very large models have to be compressed or do not run. InferSSD indexes the expert weights of mixture-of-experts models on your SSD and streams in the ones each token needs, so 800B-class models run without extra compression. In our benchmarks it reached up to 17.8x the decode throughput of llama.cpp on the same hardware.</p>
+                    </details>
+                    <details class="infer-faq-item">
+                        <summary><h3>Can I use a local LLM with Claude Code, OpenCode or my own apps?</h3></summary>
+                        <p>Yes. WiCi Infer serves the loaded model through a local OpenAI-compatible API, so Claude Code, OpenCode and other compatible coding tools can use the same local model.</p>
+                    </details>
+                    <details class="infer-faq-item">
+                        <summary><h3>Do my prompts leave my computer?</h3></summary>
+                        <p>The model runs on your own computer, so your prompts are processed locally instead of on a cloud AI service. There is no account or login.</p>
+                    </details>
+                    <details class="infer-faq-item">
+                        <summary><h3>Is WiCi Infer free?</h3></summary>
+                        <p>Yes. WiCi Infer is free, with no subscription and no login. The InferSSD engine behind it is open source on GitHub.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+        </section>
+        </div>
+        <!-- Research-updates signup. Posts through the shared js/signup.js to
+             the webforms service on the newsletter list, like every
+             newsletter form; its form_name (infer-research-updates) and
+             source_page tell these rows apart in the dashboard, the CSV
+             export and GTM. -->
+        <section class="ssd-section infer-research-updates" id="research-updates" aria-labelledby="research-updates-title">
+            <img class="infer-research-updates-bg" src="images/infer/lab-notes-chalkboard-2048.webp" width="2048" height="1152" alt="" loading="lazy" decoding="async" aria-hidden="true">
+            <div class="ssd-wrap">
+                <div class="infer-research-updates-copy">
+                    <h2 id="research-updates-title">Get the lab notes.</h2>
+                    <p>New papers, benchmark results and engine releases, by email.</p>
+                <form class="infer-research-form" id="researchUpdatesForm" data-form-name="infer-research-updates" data-list="newsletter" data-signup-done="Notes on the way ✓" data-signup-subject="WiCi research updates">
+                    <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none;">
+                    <div class="infer-research-row">
+                        <input type="email" name="email" placeholder="you@domain.com" autocomplete="email" aria-label="Email" required>
+                        <button type="submit" class="cta cta--primary">
+                            <span>Keep me posted</span>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="signup-notice signup-notice--on-dark">By signing up, you agree to receive WiCi product and marketing emails. Unsubscribe anytime. <a href="privacy.html">Privacy</a>.</p>
+                </form>
+                </div>
+            </div>
+        </section>
+        <section class="ssd-section ssd-one" id="wici-one" aria-labelledby="one-title">
+            <div class="ssd-wrap ssd-one-layout">
+                <a class="ssd-one-image" href="wici-one.html" aria-label="Explore WiCi One">
+                    <img src="images/product/hero-device-desk-1600.webp" srcset="images/product/hero-device-desk-1600.webp 1600w, images/product/hero-device-desk-2560.webp 2560w" sizes="(max-width: 720px) calc(100vw - 48px), 52vw" width="1600" height="946" alt="WiCi One on a desk beside a monitor running a video editor." loading="lazy" decoding="async">
+                </a>
+                <div class="ssd-one-copy">
+                    <h2 id="one-title">Add a wireless GPU<br>with WiCi One.</h2>
+                    <p>WiCi One brings a full-power NVIDIA GPU to compatible devices over Wi-Fi, with the same InferSSD engine and WiCi Infer experience built in.</p>
+                    <a class="ssd-text-link" href="wici-one.html" target="_blank" rel="noopener">Explore WiCi One <span aria-hidden="true">↗</span></a>
+                    <div class="ssd-one-standalone">
+                        <h3>Not ready for a hardware upgrade?</h3>
+                        <p>Download WiCi Infer to run models locally, with no additional hardware required.</p>
+                        <a class="ssd-text-link" href="#app-download">Desktop App Download <span aria-hidden="true">→</span></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="infer-page-footnotes" id="footnotes" aria-label="Footnotes">
+            <div class="container">
+                <ol>
+                    <li id="infer-fn-1">“17x faster” refers to InferSSD decode throughput on Muse-Spark-Open with NVIDIA DGX Spark: 2.14 tokens/s versus 0.12 tokens/s for llama.cpp, or 17.83 times the throughput. Tested at the 4K prompt tier, measuring tokens 129–256 of a 256-token output. Model loading is excluded. Results compare the tested configurations and vary by model, hardware and settings. <a href="#benchmarks">View benchmarks and measurement details</a>.</li>
+                </ol>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-col--brand">
+                    <a href="index.html" class="footer-brand" aria-label="WiCi home">
+                        <img src="images/common/logo-lockup.svg" alt="WiCi">
+                    </a>
+                    <p class="footer-tagline">Making Local Frontier AI Accessible to Everyone</p>
+                    <ul class="footer-social" aria-label="WiCi on social media">
+                        <li><a href="https://www.instagram.com/wici_ai/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/company/wici-ai/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://discord.gg/wici" target="_blank" rel="noopener" aria-label="Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" fill="currentColor"/></svg></a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Company</h4>
+                    <ul class="footer-list">
+                        <li><a href="about.html">About WiCi</a></li>
+                        <li><a href="careers.html">Join WiCi</a></li>
+                        <li><a href="media/newsroom.html">Newsroom</a></li>
+                        <li><a href="about.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi One</h4>
+                    <p class="footer-col-desc">The first wireless GPU for frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="wici-one.html">Overview</a></li>
+                        <li><a href="technology.html">How it works</a></li>
+                        <li><a href="developers.html">For developers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi Infer</h4>
+                    <p class="footer-col-desc">The desktop app for local frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="wici-infer.html">Overview</a></li>
+                        <li><a href="wici-infer.html#benchmarks">Benchmarks</a></li>
+                        <li><a href="wici-infer.html#engine">InferSSD engine</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Solutions</h4>
+                    <ul class="footer-list">
+                        <li><a href="solutions/local-ai.html">Local AI</a></li>
+                        <li><a href="solutions/creative-production.html">Creative artists</a></li>
+                        <li><a href="solutions/physical-intelligence.html">Robotics</a></li>
+                        <li><a href="solutions/index.html">All solutions</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Research</h4>
+                    <ul class="footer-list">
+                        <li><a href="article/nearby-gpu-feel-local.html">Wireless GPU</a></li>
+                        <li><a href="article/running-800b-models-with-inferssd.html">SSD inference</a></li>
+                        <li><a href="article/gpu-never-learned-to-share.html">GPU sharing</a></li>
+                        <li><a href="article/answering-is-not-buzzing.html">Real-time AI</a></li>
+                        <li><a href="research.html">All research</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span class="footer-copyright">© <span id="year">2026</span> WiCi<span class="footer-version">v=20261111f</span></span>
+                    <a href="privacy.html">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Phones and tablets (html.infer-mobile) cannot install a desktop app, so
+         there both download buttons open this dialog (js/infer.js): email
+         yourself the link (a Newsletter signup, form infer-mobile-download-link),
+         or take an installer anyway. Styles: css/infer.css ".infer-dl". -->
+    <dialog class="infer-dl" id="inferDownloadDialog" data-lenis-prevent aria-labelledby="inferDownloadDialogTitle">
+        <button type="button" class="infer-dl-close" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        <img class="infer-dl-icon" src="images/infer/app-icon.svg" alt="" width="56" height="56">
+        <h2 class="infer-dl-title" id="inferDownloadDialogTitle" tabindex="-1" autofocus>Get WiCi Infer</h2>
+        <p class="infer-dl-text">We&rsquo;ll email you the link, ready when you&rsquo;re back at your desk.</p>
+        <div class="infer-mlink">
+            <form class="infer-mlink-form" id="inferDownloadLinkForm" data-form-name="infer-mobile-download-link" data-list="newsletter" data-cta="download" data-signup-pending="…" data-signup-done="✓" data-signup-subject="WiCi Infer download link">
+            <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none;">
+            <div class="infer-mlink-field">
+            <input type="email" name="email" placeholder="Email me the download link" autocomplete="email" aria-label="Your email, to get the download link" required>
+            <button type="submit" aria-label="Email me the link"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+            </form>
+            <p class="infer-mlink-note" role="status" hidden>Link sent. Open the email on your computer.</p>
+        </div>
+        <p class="infer-dl-or"><span>or download now</span></p>
+        <ul class="infer-dl-list" aria-label="Download versions">
+            <li><a href="https://appapi.wici.ai/versioning/wici-infer/redirect/macos-latest" data-download="macos" data-cta="mobile-dialog"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" fill="currentColor"/></svg><span>macOS (Apple Silicon)</span></a></li>
+            <li><a href="https://appapi.wici.ai/versioning/wici-infer/redirect/windows-latest" data-download="windows" data-cta="mobile-dialog"><svg class="infer-os-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 2h9.5v9.5H2zM12.5 2H22v9.5h-9.5zM2 12.5h9.5V22H2zM12.5 12.5H22V22h-9.5z" fill="currentColor"/></svg><span>Windows (x64)</span></a></li>
+        </ul>
+        <p class="infer-dl-note">Free &middot; No subscription &middot; No login required</p>
+    </dialog>
+
+    <script src="js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/signup.js"></script>
+    <script src="js/inferssd.js"></script>
+    <script src="js/infer.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

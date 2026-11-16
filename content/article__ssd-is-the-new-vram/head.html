@@ -1,0 +1,204 @@
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The SSD Is the New VRAM | WiCi Research</title>
+    <meta name="description" content="When LLMs go into every home, VRAM and RAM are not a datacenter problem &mdash; they are a consumer-price problem. The only tier that can hold frontier-size open weights for a few hundred dollars is the SSD. Streaming from disk is the capacity answer; making that stream feel fast is the systems problem.">
+    <meta property="og:image" content="https://wici.ai/images/common/og-device-flatlay.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WiCi One on a violet box among a headset, a tablet, a laptop, and a Mac mini.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="article:published_time" content="2026-09-15">
+    <link rel="preload" href="/css/fonts/test-financier-display-medium-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/articles.css">
+    <link rel="icon" type="image/png" href="/images/common/favicon.png">
+    <link rel="apple-touch-icon" href="/images/common/apple-touch-icon.png">
+    <style>
+      /* ---------------------------------------------------------------
+         Article-specific components only (figures, tier matrix, spine
+         sidebar). The global shell — nav, header/title, prose
+         typography, footer — comes from common.css + articles.css above.
+         Custom palette vars below alias the site tokens (see docs/DESIGN.md).
+         --------------------------------------------------------------- */
+      :root {
+        /* --ink, --line, --accent come from common.css; the aliases below
+           follow the shared tokens so a palette change reaches this page. */
+        --muted: var(--ink-mute);
+        --panel: var(--bg-card);
+        --accent-2: #d85f36;   /* article chart colors: remote / warm */
+        --accent-3: #9597cf;   /* article chart colors: secondary violet */
+        --dark: var(--bg-dark);
+        --soft: var(--bg-tint);
+      }
+
+      /* The claim box: the
+         product hero's mist, square corners, no edge, no shadow. */
+      .claim {
+        margin: 32px 0;
+        padding: 26px 28px;
+        background: var(--hero-mist);
+        color: var(--ink);
+        font-size: var(--fs-lead);
+        line-height: 1.5;
+        font-weight: 400;
+      }
+
+      .figure {
+        margin: 38px 0 42px;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: var(--panel);
+        box-shadow: 0 18px 48px rgba(var(--ink-rgb), .08);
+      }
+
+      .figure h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+        line-height: 1.25;
+      }
+
+      .figure p {
+        margin: 0 0 18px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      /* Fig 1 — Plotly log-scale scatter with fitted trend line (flagship
+         model parameter counts over time, extrapolated to 2028). */
+      .plot-shell {
+        min-height: 430px;
+        border: 1px solid #dfe5ec;
+        border-radius: 13px;
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .param-trend-plot {
+        width: 100%;
+        height: 430px;
+      }
+
+      .plot-fallback {
+        display: none;
+        padding: 18px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .plot-fallback b { color: var(--dark); }
+
+      /* Fig 2 — static 3-row x 3-column matrix (VRAM vs RAM vs SSD). */
+      .link-matrix {
+        display: grid;
+        grid-template-columns: 148px repeat(3, 1fr);
+        gap: 10px;
+      }
+
+      .matrix-corner,
+      .matrix-head,
+      .matrix-axis,
+      .matrix-cell {
+        min-width: 0;
+        min-height: 82px;
+        padding: 14px;
+        border: 1px solid #dfe5ec;
+        border-radius: 13px;
+        background: #fff;
+      }
+
+      .matrix-corner {
+        background: transparent;
+        border-color: transparent;
+      }
+
+      .matrix-head {
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--dark);
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        line-height: 1.2;
+      }
+
+      .matrix-axis {
+        display: grid;
+        align-items: center;
+        color: var(--dark);
+        background: var(--soft);
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .matrix-cell b {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 16px;
+        line-height: 1.15;
+        color: var(--ink);
+      }
+
+      .matrix-cell span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.32;
+      }
+
+      @media (max-width: 720px) {
+        /* Phones: the column heads go; each axis becomes a labelled row
+           of three compact cells, each cell naming its column. */
+        .link-matrix { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .matrix-corner, .matrix-head { display: none; }
+        .matrix-axis { grid-column: 1 / -1; min-height: 0; padding: 14px 0 2px; border: 0; background: none; font-size: var(--fs-micro); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); }
+        .matrix-cell { min-height: 0; padding: 12px 10px; }
+        .matrix-cell::before { display: block; margin-bottom: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-bright); }
+        .matrix-cell:nth-child(4n+2)::before { content: "VRAM"; }
+        .matrix-cell:nth-child(4n+3)::before { content: "DDR5 RAM"; }
+        .matrix-cell:nth-child(4n+4)::before { content: "NVMe SSD"; }
+        .matrix-cell b { font-size: 15px; }
+        .matrix-cell span { font-size: 12px; }
+        .figure { padding: 18px; }
+        .claim { padding: 18px; }
+      }
+
+      .sources {
+        margin-top: 52px;
+        padding-top: 26px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .sources h2 {
+        margin: 0 0 14px;
+        font-size: var(--fs-lead);
+        color: var(--ink);
+      }
+
+      .sources ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .sources li { font-size: 14px; color: var(--muted); }
+      .sources li + li { margin-top: 8px; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: .01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+    <script src="/js/tracking.js"></script>

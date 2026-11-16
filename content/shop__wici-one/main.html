@@ -1,0 +1,231 @@
+
+
+        <!-- Buy — test bed for the WiCi One purchase flow, in the manner of
+             Apple's Buy iPhone pages: a hero with the price, a sticky
+             product/price bar, a sticky image gallery on the left beside
+             the configurator steps on the right (Edition is the only step
+             that maps to a store variant; the comparison and payment steps
+             are informational), then the "awaits" summary with the Continue
+             button. Continue is a plain link to a Shopify cart permalink on
+             store.wici.ai (variant ID + quantity 1, with ref and a source
+             attribute), which 302s straight into Shopify checkout; the site
+             never handles payment. Without JS the page sells the 5060 Ti
+             edition (the checked radio's link). Prices and the two variant
+             IDs are hand-copied from the store (September 2026); sweep the
+             radios' data-* when the store changes. js/buy.js: selection
+             sync, gallery, wici_one_config_confirmed dataLayer event. -->
+
+        <!-- Hero: kicker, name, availability, price. -->
+        <section class="buy-hero" id="buy">
+            <div class="container buy-hero-inner">
+                <div class="buy-hero-text">
+                    <span class="buy-kicker">New</span>
+                    <h1 class="buy-title">WiCi One</h1>
+                    <p class="buy-avail">Ships in 8 weeks.</p>
+                    <p class="buy-hero-price">Buy from <del class="buy-hero-was" data-offer-was hidden>$3,499</del> <strong data-offer-price data-full="3499">$3,499</strong></p>
+                    <p class="buy-hero-launch" data-offer-line hidden><span data-offer-lead>Exclusive offer</span>: <strong><span data-offer-amount>$800</span> off</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sticky product bar: sits under the site nav once the hero scrolls
+             away, carrying the name and the current price. -->
+        <div class="buy-bar" id="buyBar" data-sticky-bar>
+            <div class="container buy-bar-inner">
+                <span class="buy-bar-name">WiCi One <span class="buy-bar-edition" data-buy-edition>5060 Ti edition</span></span>
+                <span class="buy-bar-price"><span data-buy-pay-label>Buy</span> <strong data-buy-price>$3,499</strong><span class="buy-bar-ship">Ships in 8 weeks</span><span class="buy-bar-discount" data-buy-bar-discount hidden></span></span>
+            </div>
+        </div>
+
+        <!-- Gallery + configurator -->
+        <section class="buy-layout">
+            <div class="container buy-layout-inner">
+
+                <div class="buy-gallery" id="buyGallery">
+                    <div class="buy-stage">
+                        <div class="buy-track" tabindex="0" aria-label="Product images">
+                        <!-- First slide: a looping film, the 360° turn (the shell fading
+                             to the interior on the far side) and then the exploded turn
+                             (the device coming apart into its layers and closing again),
+                             20.8 s: the first runs at 25 fps, the second a quarter faster
+                             at 31.25 fps. It has no alpha: the frames are composited on
+                             the stage's own grey (--bg-soft), so it fills the slide edge
+                             to edge and no rectangle shows. The gallery does not advance
+                             on its own; js/buy.js keeps the poster under reduced motion. -->
+                        <figure class="buy-slide buy-slide--film">
+                            <video autoplay muted loop playsinline preload="auto" width="1600" height="1200" poster="/images/media/render-turntable-exploded-poster.webp" aria-label="WiCi One turning a full circle, its shell fading away to show the GPU, board, and cooling stack; then turning again as it comes apart into its layers and closes.">
+                                <source src="/cdn.wici.ai/video/render-turntable-exploded-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                                <source src="/cdn.wici.ai/video/render-turntable-exploded-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+                            </video>
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="/images/media/render-exterior-left-full.jpg" width="1600" height="900" alt="WiCi One, front three-quarter view: the wave-textured top and the perforated panel with the WiCi mark." loading="lazy">
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="/images/media/render-exterior-front-full.jpg" width="1600" height="900" alt="WiCi One, straight on: the sculpted front face and the finned metal edge." loading="lazy">
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="/images/media/render-interior-board-full.jpg" width="1600" height="900" alt="Inside WiCi One, seen through the shell: the GPU, the board, and the cooling stack." loading="lazy">
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="/images/media/render-rear-io-full.jpg" width="1600" height="900" alt="The rear of WiCi One with its I/O panel." loading="lazy">
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="/images/media/render-exploded-landscape-full.jpg" width="1600" height="900" alt="WiCi One exploded into its layers: shell, cooling, GPU, board, and base." loading="lazy">
+                        </figure>
+                        </div>
+                        <button type="button" class="buy-arrow buy-arrow--prev" data-dir="-1" aria-label="Previous image" hidden>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m10 3-5 5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button type="button" class="buy-arrow buy-arrow--next" data-dir="1" aria-label="Next image">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <div class="buy-dots" role="tablist" aria-label="Choose image"><button type="button" class="buy-dot is-active" data-slide="0" aria-label="Image 1 of 6"></button><button type="button" class="buy-dot" data-slide="1" aria-label="Image 2 of 6"></button><button type="button" class="buy-dot" data-slide="2" aria-label="Image 3 of 6"></button><button type="button" class="buy-dot" data-slide="3" aria-label="Image 4 of 6"></button><button type="button" class="buy-dot" data-slide="4" aria-label="Image 5 of 6"></button><button type="button" class="buy-dot" data-slide="5" aria-label="Image 6 of 6"></button></div>
+                    </div>
+                </div>
+
+                <div class="buy-steps">
+
+                    <!-- Step: Edition (the only choice that maps to a store variant) -->
+                    <fieldset class="buy-step" id="edition">
+                        <legend class="buy-step-title"><strong>Edition.</strong> Which GPU is right for you?</legend>
+                        <div class="buy-options">
+                            <label class="buy-option is-selected">
+                                <input class="sr-only" type="radio" name="edition" value="5060ti" checked
+                                       data-label="5060 Ti edition" data-variant-id="48476761522402" data-variant-title="NVIDIA RTX 5060 Ti · 16GB"
+                                       data-price="3499" data-price-text="$3,499" data-href="https://store.wici.ai/cart/48476761522402:1?ref=shop&amp;attributes%5Bsource%5D=wici.ai">
+                                <span class="buy-option-main">
+                                    <span class="buy-option-name">5060 Ti</span>
+                                    <span class="buy-option-sub">NVIDIA RTX 5060&nbsp;Ti · 16GB</span>
+                                </span>
+                                <span class="buy-option-price">Buy <del class="buy-price-was" data-offer-was hidden>$3,499</del> <strong data-offer-price data-full="3499">$3,499</strong></span>
+                            </label>
+                            <label class="buy-option">
+                                <input class="sr-only" type="radio" name="edition" value="5090"
+                                       data-label="5090 edition" data-variant-id="48476761555170" data-variant-title="NVIDIA RTX 5090 · 32GB"
+                                       data-price="12999" data-price-text="$12,999" data-href="https://store.wici.ai/cart/48476761555170:1?ref=shop&amp;attributes%5Bsource%5D=wici.ai">
+                                <span class="buy-option-main">
+                                    <span class="buy-option-name">5090</span>
+                                    <span class="buy-option-sub">NVIDIA RTX 5090 · 32GB</span>
+                                </span>
+                                <span class="buy-option-price">Buy <del class="buy-price-was" data-offer-was hidden>$12,999</del> <strong data-offer-price data-full="12999">$12,999</strong></span>
+                            </label>
+                        </div>
+                        <button type="button" class="buy-help" data-sheet="bench">
+                            <span class="buy-help-text">
+                                <strong>Not sure which edition to get?</strong>
+                                See how each one runs models and creative tools.
+                            </span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        </button>
+                        <button type="button" class="buy-help" data-sheet="specs">
+                            <span class="buy-help-text">
+                                <strong>Tech specs and comparison.</strong>
+                                The full specifications, and how WiCi One compares with pocket AI boxes and the Mac Studio.
+                            </span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        </button>
+                    </fieldset>
+
+                    <!-- Step: side-by-side figures from the product page's Benchmarks table -->
+                    <div class="buy-step" id="compare">
+                        <h2 class="buy-step-title"><strong>Compare.</strong> The two editions, side by side.</h2>
+                        <div class="buy-compare-wrap">
+                            <table class="buy-compare">
+                                <caption class="sr-only">Selected benchmarks for the 5060 Ti and 5090 editions</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col" data-edition="5060ti">5060 Ti</th>
+                                        <th scope="col" data-edition="5090">5090</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Kimi K3<small>2.8T params</small></th>
+                                    <td data-edition="5060ti">2.5 tok/s</td>
+                                    <td data-edition="5090">5 tok/s</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Gemma 4<small>26B params</small></th>
+                                    <td data-edition="5060ti">140 tok/s</td>
+                                    <td data-edition="5090">500+ tok/s</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">FLUX.2 Klein<small>1024² images</small></th>
+                                    <td data-edition="5060ti">~0.49 img/s</td>
+                                    <td data-edition="5090">~0.92 img/s</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Premiere Pro<small>4K H.264 export</small></th>
+                                    <td data-edition="5060ti">70 fps</td>
+                                    <td data-edition="5090">90 fps</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="buy-fine">Figures from the full <button type="button" class="buy-link" data-sheet="bench">Benchmarks</button>, where every workload and its notes live.</p>
+                    </div>
+
+                    <!-- Step: Payment. Two radio cards, no store variant behind
+                         them: pay in full (the edition's price) or installments
+                         over up to 18 months (the price / 18 to the cent, the
+                         months on the radio's data-months). The choice switches
+                         the price bar's and the summary's label and figure, and
+                         adds payment=shop_pay to Continue so checkout opens in
+                         Shop Pay, where the plan is offered (js/buy.js). -->
+                    <fieldset class="buy-step" id="payment">
+                        <legend class="buy-step-title"><strong>Payment.</strong> Pay securely at checkout.</legend>
+                        <div class="buy-options">
+                            <label class="buy-option is-selected">
+                                <input class="sr-only" type="radio" name="payment" value="full" checked>
+                                <span class="buy-option-main">
+                                    <span class="buy-option-name">Buy</span>
+                                    <span class="buy-option-sub">Pay in full at checkout. Taxes and shipping are calculated there.</span>
+                                </span>
+                                <span class="buy-option-price">One payment <strong data-buy-price-full>$3,499</strong></span>
+                            </label>
+                            <label class="buy-option">
+                                <input class="sr-only" type="radio" name="payment" value="installments" data-months="18">
+                                <span class="buy-option-main">
+                                    <span class="buy-option-name">Installments</span>
+                                    <span class="buy-option-sub">Pay over up to 18 months. Credit option and approval provided by Shop Pay.</span>
+                                </span>
+                                <span class="buy-option-price">As low as <strong><span data-buy-monthly>$194.39</span>/mo.</strong></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary: the selection, the price, and the Continue link into checkout -->
+        <section class="buy-summary" id="summary">
+            <div class="container">
+                <h2 class="buy-summary-title"><strong>Summary.</strong> Review your order.</h2>
+                <div class="buy-summary-card">
+                    <div class="buy-summary-text">
+                        <p class="buy-summary-line">WiCi One · <span data-buy-edition>5060 Ti edition</span></p>
+                        <p class="buy-summary-price"><span data-buy-pay-label>Buy</span> <strong data-buy-price>$3,499</strong></p>
+                        <!-- Shown by js/buy.js when the visitor came with a discount
+                             code (?discount=, the links in our emails): the code
+                             rides the Continue link into checkout. -->
+                        <p class="buy-summary-discount" id="buyDiscount" hidden>Discount code <strong data-buy-discount></strong> <span data-buy-discount-rest>is applied at checkout.</span></p>
+                        <p class="buy-summary-ship">Ships in 8 weeks. Taxes and shipping are calculated at checkout.</p>
+                    </div>
+                    <div class="buy-summary-actions">
+                        <a class="cta cta--primary buy-continue" id="buyContinue" href="https://store.wici.ai/cart/48476761522402:1?ref=shop&amp;attributes%5Bsource%5D=wici.ai" rel="noopener"
+                           data-buy="shop-wici-one" data-variant-id="48476761522402" data-variant-title="NVIDIA RTX 5060 Ti · 16GB" data-price="3499">
+                            <span>Continue</span>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                        <p class="buy-summary-note"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Secure checkout</span></p>
+                        <!-- The purchase policies, one tab each on shop/policies. -->
+                        <p class="buy-summary-policies"><a href="/shop/policies#shipping">Shipping</a> · <a href="/shop/policies#returns">Returns &amp; refunds</a> · <a href="/shop/policies#warranty">Warranty</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    

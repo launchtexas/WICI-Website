@@ -1,0 +1,96 @@
+
+
+    <script src="/js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/articles.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script>
+        (function () {
+            var plot = document.getElementById("gpu-trend-plot");
+            var fallback = document.getElementById("gpu-trend-fallback");
+            if (!plot) return;
+
+            function showFallback() {
+                plot.style.display = "none";
+                if (fallback) fallback.style.display = "block";
+            }
+
+            if (!window.Plotly) {
+                showFallback();
+                return;
+            }
+
+            var points = {
+                x: [350, 450, 575],
+                y: [1.565, 2.5, 3.0],
+                text: ["RTX 3090", "RTX 4090", "RTX 5090"],
+                mode: "lines+markers+text",
+                type: "scatter",
+                textposition: ["bottom right", "top left", "top left"],
+                line: { color: "#686bc0", width: 3 },
+                marker: {
+                    size: [14, 18, 22],
+                    color: ["#686bc0", "#9597cf", "#d85f36"],
+                    line: { color: "#ffffff", width: 2 }
+                },
+                customdata: [
+                    ["350 W", "1.6 kg"],
+                    ["450 W", "2.5 kg"],
+                    ["575 W", "3.0 kg"]
+                ],
+                hovertemplate: "<b>%{text}</b><br>Power: %{customdata[0]}<br>Weight: %{customdata[1]}<extra></extra>"
+            };
+
+            var layout = {
+                margin: { l: 64, r: 28, t: 28, b: 58 },
+                paper_bgcolor: "#ffffff",
+                plot_bgcolor: "#ffffff",
+                font: {
+                    family: "Google Sans Flex, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+                    color: "#1d1d1f"
+                },
+                xaxis: {
+                    title: { text: "Power (W)" },
+                    range: [310, 610],
+                    tickvals: [350, 450, 575],
+                    gridcolor: "#e5eaf1",
+                    zeroline: false
+                },
+                yaxis: {
+                    title: { text: "Board weight (kg)" },
+                    range: [1.25, 3.25],
+                    tickvals: [1.5, 2.0, 2.5, 3.0],
+                    gridcolor: "#e5eaf1",
+                    zeroline: false
+                },
+                annotations: [
+                    {
+                        x: 575,
+                        y: 3.0,
+                        ax: -88,
+                        ay: 54,
+                        xref: "x",
+                        yref: "y",
+                        axref: "pixel",
+                        ayref: "pixel",
+                        text: "trend",
+                        showarrow: true,
+                        arrowhead: 3,
+                        arrowsize: 1,
+                        arrowwidth: 2,
+                        arrowcolor: "#d85f36",
+                        font: { color: "#d85f36", size: 13 }
+                    }
+                ]
+            };
+
+            var config = {
+                responsive: true,
+                displaylogo: false,
+                modeBarButtonsToRemove: ["lasso2d", "select2d"]
+            };
+
+            Plotly.newPlot(plot, [points], layout, config).catch(showFallback);
+        })();
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>

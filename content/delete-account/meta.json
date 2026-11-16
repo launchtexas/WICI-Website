@@ -1,0 +1,6 @@
+{
+  "route": "/delete-account",
+  "bodyClass": "",
+  "mainAttrs": "",
+  "layout": "bare"
+}

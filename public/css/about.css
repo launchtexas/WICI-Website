@@ -1,0 +1,278 @@
+/* =========================================
+   WiCi — About page styles
+   Loaded by about.html on top of common.css
+   and home.css (the hero text, section base,
+   and dark contact-band form reuse the
+   .hero-* / .untethered-* styles from there).
+   ========================================= */
+
+/* ============================
+   Vision hero
+   ============================ */
+.hero--about {
+    padding: 88px 0 48px;
+}
+
+.hero--about .hero-title {
+    font-size: var(--fs-hero-sub);
+    max-width: 18ch;
+}
+
+.hero--about .hero-lede {
+    max-width: 58ch;
+    padding-top: 22px;
+}
+
+/* ============================
+   Story — research background + NVIDIA
+   ============================ */
+.about-prose {
+    margin-top: 48px;
+    max-width: 62ch;
+}
+
+.about-prose p {
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    line-height: 1.65;
+    color: var(--ink-soft);
+}
+
+.about-prose p + p {
+    margin-top: 18px;
+}
+
+.about-facts {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+}
+
+.about-fact {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+}
+
+/* Stagger the shared reveal-on-scroll (classes added by js/common.js) */
+.about-fact.reveal:nth-child(2) { transition-delay: 0.08s; }
+.about-fact.reveal:nth-child(3) { transition-delay: 0.16s; }
+.about-then-now figure.reveal:last-child { transition-delay: 0.1s; }
+
+.about-fact-term {
+    display: block;
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+
+.about-fact-desc {
+    font-size: var(--fs-body-s);
+    line-height: 1.55;
+    color: var(--ink-mute);
+}
+
+/* Partner credits — NVIDIA (nv-note component in common.css) + OCP */
+.about-partner {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+}
+
+.about-partner-row {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+/* Align both rows' notes: the label + logo column shares one width */
+.about-partner-row .nv-note {
+    min-width: 340px;
+}
+
+/* OCP wordmark is wider/shorter than the Inception lockup */
+.nv-note-logo--ocp {
+    height: 36px;
+}
+
+.about-partner-note {
+    font-size: var(--fs-body-s);
+    line-height: 1.6;
+    color: var(--ink-mute);
+    max-width: 52ch;
+}
+
+/* ============================
+   Then & now — the DEC legend
+   (Ken Olsen quote + VT100 / WiCi One diptych)
+   ============================ */
+.about-legend {
+    padding-top: 16px;
+}
+
+.about-quote {
+    /* Clear the section header above so the quote reads as its own
+       pull-quote block again, not a subtitle. */
+    margin: 48px 0 0;
+}
+
+.about-quote p {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.22;
+    color: var(--ink);
+    max-width: 26ch;
+}
+
+.about-quote cite {
+    display: block;
+    margin-top: 16px;
+    font-style: normal;
+    font-size: var(--fs-caption);
+    letter-spacing: 0.01em;
+    color: var(--ink-mute);
+}
+
+.about-legend-story {
+    margin-top: 32px;
+    max-width: 62ch;
+}
+
+.about-legend-story p {
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    line-height: 1.65;
+    color: var(--ink-soft);
+}
+
+.about-legend-story p + p {
+    margin-top: 18px;
+}
+
+.about-legend-story a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.about-legend-story a:hover {
+    color: var(--accent-bright);
+}
+
+.about-then-now {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 44px;
+}
+
+.about-then-now figure {
+    margin: 0;
+}
+
+.about-then-now img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--bg-tint);
+}
+
+.about-then-now figcaption {
+    margin-top: 12px;
+    font-size: var(--fs-caption);
+    line-height: 1.55;
+    color: var(--ink-mute);
+}
+
+.about-then-now figcaption strong {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.about-then-now-credit {
+    font-size: var(--fs-caption);
+    opacity: 0.75;
+}
+
+.about-then-now-credit a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.about-then-now-credit a:hover {
+    color: var(--accent-bright);
+}
+
+.about-then-now-link {
+    color: var(--accent-bright);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.about-then-now-link:hover {
+    color: var(--accent-hover);
+}
+
+/* ============================
+   Contact band — reuses the dark
+   .section--untethered form styles
+   ============================ */
+.section--contact .untethered-lede a {
+    color: var(--bg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s var(--ease);
+}
+
+.section--contact .untethered-lede a:hover {
+    color: var(--accent-soft);
+}
+
+/* rgba derived from --bg (var(--bg)), matching home.css's dark-band text */
+.contact-press-note {
+    margin-top: 30px;
+    font-size: var(--fs-caption);
+    letter-spacing: 0.01em;
+    color: rgba(var(--bg-rgb), 0.45);
+}
+
+/* ============================
+   Responsive
+   ============================ */
+@media (max-width: 960px) {
+    .hero--about {
+        padding: 64px 0 32px;
+    }
+    .about-facts {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    .about-partner-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .about-partner-row .nv-note {
+        min-width: 0;
+    }
+    .about-then-now {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+}
+
+@media (max-width: 960px) {
+}
+
+@media (max-width: 520px) {
+}

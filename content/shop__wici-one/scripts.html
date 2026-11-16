@@ -1,0 +1,399 @@
+
+
+
+    <!-- In-page sheets, in the manner of Apple's Buy pages: the two help
+         cards under the Edition step and the Compare step's fine print
+         open these instead of leaving for the product page. Each carries
+         copies of wici-one.html figures — Benchmarks: the #models figures as
+         a per-workload accordion (.bench-*, css/buy.css); Tech specs: the
+         #specs spec grid, then the Compare table with its footnotes (#specs
+         + #footnotes), styled by css/specs.css; keep the copies in sync.
+         Native <dialog>, opened by js/buy.js (data-sheet / data-sheet-close). -->
+    <dialog class="buy-sheet" id="sheet-bench" aria-labelledby="sheet-bench-title">
+        <button type="button" class="buy-sheet-close" data-sheet-close aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <div class="buy-sheet-inner" data-lenis-prevent>
+            <header class="buy-sheet-head">
+                <span class="buy-sheet-kicker">Benchmarks</span>
+                <h2 class="buy-sheet-title" id="sheet-bench-title">Minimum overhead, strong performance.</h2>
+                <p class="buy-sheet-lede">Both editions on open models and creative apps, measured over Wi-Fi 7 on a production WiCi One.</p>
+            </header>
+            <!-- One <details> per workload; the shared `name` makes them
+                 exclusive (one open at a time); js/specs.js takes that
+                 over and slides them open and shut. Each head
+                 shows the workload, the apps it covers, and its row
+                 count; the open group reveals its
+                 table and footnote. Values are the product page's. -->
+            <div class="bench-acc">
+                <details class="bench-group" name="bench" data-workload="llm" open>
+                    <summary class="bench-group-head">
+                        <span class="bench-group-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="bench-group-label">
+                            <span class="bench-group-name">LLM throughput</span>
+                            <span class="bench-group-peek">Kimi K3 · DeepSeek V4.1 Flash · Gemma 4</span>
+                        </span>
+                        <span class="bench-group-count">3 benchmarks</span>
+                    </summary>
+                    <div class="bench-group-body">
+                        <table class="bench-table" aria-label="LLM throughput on both WiCi One editions">
+                            <thead>
+                                <tr><th scope="col">Benchmark<sup>†</sup></th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/kimi.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Kimi K3</span><span class="bench-detail">2.8T params</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>2.5</strong> <span class="bench-unit">tok/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>5</strong> <span class="bench-unit">tok/s</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/deepseek.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">DeepSeek V4.1 Flash</span><span class="bench-detail">748B params</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>8</strong> <span class="bench-unit">tok/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>20</strong> <span class="bench-unit">tok/s</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/gemma.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Gemma 4</span><span class="bench-detail">26B params</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>140</strong> <span class="bench-unit">tok/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>500+</strong> <span class="bench-unit">tok/s</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="bench-note"><sup class="bench-note-marker">†</sup><span>Open-weight models over Wi-Fi 7 on a production WiCi One, close to cloud rates of <a href="https://openrouter.ai/moonshotai/kimi-k3:nitro#providers" target="_blank" rel="noopener">20-40 tok/s</a>. <a href="/article/running-800b-models-with-inferssd">How InferSSD serves large models.</a></span></p>
+                    </div>
+                </details>
+                <details class="bench-group" name="bench" data-workload="image">
+                    <summary class="bench-group-head">
+                        <span class="bench-group-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="bench-group-label">
+                            <span class="bench-group-name">Image &amp; video generation</span>
+                            <span class="bench-group-peek">FLUX.2 Klein · Z-Image-Turbo · Wan 2.2 · MiniMax H3</span>
+                        </span>
+                        <span class="bench-group-count">4 benchmarks</span>
+                    </summary>
+                    <div class="bench-group-body">
+                        <table class="bench-table" aria-label="Image and video generation on both WiCi One editions">
+                            <thead>
+                                <tr><th scope="col">Benchmark<sup>†</sup></th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/flux.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">FLUX.2 Klein</span><span class="bench-detail">1024²</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><span class="bench-variant">Model · 4B</span><strong>~0.49</strong> <span class="bench-unit">img/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><span class="bench-variant">Model · 9B</span><strong>~0.92</strong> <span class="bench-unit">img/s</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/tongyi.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Z-Image-Turbo</span><span class="bench-detail">1024²</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><span class="bench-variant">Model · 6B</span><strong>~0.22</strong> <span class="bench-unit">img/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><span class="bench-variant">Model · 6B</span><strong>~1.19</strong> <span class="bench-unit">img/s</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/tongyi.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Wan 2.2</span><span class="bench-detail">720p</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><span class="bench-variant">Model · TI2V-5B</span><strong>~6.4</strong> <span class="bench-unit">gen fps</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><span class="bench-variant">Model · I2V-A14B</span><strong>~3.0</strong> <span class="bench-unit">gen fps</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/minimax.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">MiniMax H3</span><span class="bench-detail">0.5 MP · native audio</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><span class="bench-variant">Model · 33B</span><strong>~0.7</strong> <span class="bench-unit">gen fps</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><span class="bench-variant">Model · 33B</span><strong>~4.1</strong> <span class="bench-unit">gen fps</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="bench-note"><sup class="bench-note-marker">†</sup><span>Open image models on the WiCi SDK, over Wi-Fi 7 on a production WiCi One.</span></p>
+                    </div>
+                </details>
+                <details class="bench-group" name="bench" data-workload="creative">
+                    <summary class="bench-group-head">
+                        <span class="bench-group-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="bench-group-label">
+                            <span class="bench-group-name">Creative editing</span>
+                            <span class="bench-group-peek">CapCut · Premiere Pro · Audio Memory</span>
+                        </span>
+                        <span class="bench-group-count">3 benchmarks</span>
+                    </summary>
+                    <div class="bench-group-body">
+                        <table class="bench-table" aria-label="Creative editing on both WiCi One editions">
+                            <thead>
+                                <tr><th scope="col">Benchmark<sup>†</sup></th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/capcut.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">CapCut</span><span class="bench-detail">4K export</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>75</strong> <span class="bench-unit">fps</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>90</strong> <span class="bench-unit">fps</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/premiere-pro.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Premiere Pro</span><span class="bench-detail">4K H.264 export</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>70</strong> <span class="bench-unit">fps</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>90</strong> <span class="bench-unit">fps</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/common/logo-mark.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Audio Memory</span><span class="bench-detail">TTFA</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>≤1.2</strong> <span class="bench-unit">s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>≤0.8</strong> <span class="bench-unit">s</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="bench-note"><sup class="bench-note-marker">†</sup><span>CapCut and Premiere Pro unmodified in Driver mode; audio memory on the WiCi SDK. Over Wi-Fi 7 on a production WiCi One.</span></p>
+                    </div>
+                </details>
+                <details class="bench-group" name="bench" data-workload="rendering">
+                    <summary class="bench-group-head">
+                        <span class="bench-group-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="bench-group-label">
+                            <span class="bench-group-name">3D rendering</span>
+                            <span class="bench-group-peek">Blender</span>
+                        </span>
+                        <span class="bench-group-count">1 benchmark</span>
+                    </summary>
+                    <div class="bench-group-body">
+                        <table class="bench-table" aria-label="3D rendering on both WiCi One editions">
+                            <thead>
+                                <tr><th scope="col">Benchmark<sup>†</sup></th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="/images/apps/blender.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Blender</span><span class="bench-detail">Cycles render</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>2,900</strong> <span class="bench-unit">samples/min</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>6,000</strong> <span class="bench-unit">samples/min</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="bench-note"><sup class="bench-note-marker">†</sup><span>Blender unmodified in Driver mode, on its standard benchmark scene, over Wi-Fi 7.</span></p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </dialog>
+    <dialog class="buy-sheet" id="sheet-specs" aria-labelledby="sheet-specs-title">
+        <button type="button" class="buy-sheet-close" data-sheet-close aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <div class="buy-sheet-inner" data-lenis-prevent>
+            <header class="buy-sheet-head">
+                <span class="buy-sheet-kicker">Specs</span>
+                <h2 class="buy-sheet-title" id="sheet-specs-title">Tech specifications</h2>
+                <p class="buy-sheet-lede">What is inside WiCi One, how your apps reach it, and how it compares.</p>
+            </header>
+            <div class="specs-grid">
+                <article class="spec">
+                    <h3 class="spec-name">Wireless AI Computing</h3>
+                    <ul class="spec-lines">
+                        <li>
+                            <span>GPU
+                                <img class="spec-nv" src="/images/common/nvidia-logo.png" alt="">
+                            </span>
+                            <div class="spec-val">
+                                NVIDIA RTX 5060&nbsp;Ti · 16GB GDDR7
+                                <span class="spec-sub">5060 Ti edition</span>
+                                NVIDIA RTX 5090 · 32GB GDDR7
+                                <span class="spec-sub">5090 edition</span>
+                                <span class="spec-sub">AirCompute GPU sharing</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>CPU</span>
+                            <div class="spec-val">
+                                Intel Core 3 100U
+                                <span class="spec-sub">5060 Ti edition</span>
+                                Intel Core Ultra 7 255H
+                                <span class="spec-sub">5090 edition</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>Wi-Fi</span>
+                            <div class="spec-val">
+                                Wi-Fi 7 · 4×4 MIMO · 320MHz
+                                <span class="spec-sub">Router-grade AirLink Multi-Link transport</span>
+                            </div>
+                        </li>
+                    </ul>
+                </article>
+                <article class="spec">
+                    <h3 class="spec-name">Fully Flexible GPU Runtime</h3>
+                    <ul class="spec-lines">
+                        <li>
+                            <span>Driver mode</span>
+                            <div class="spec-val">
+                                WiCi Virtual GPU on macOS, Windows &amp; Linux
+                                <span class="spec-sub">ZeroTrip caching &amp; trace replay</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>SDK mode</span>
+                            <div class="spec-val">
+                                Python · JavaScript · Swift
+                                <span class="spec-sub">Out-of-the-box inference with multimodal support</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>API mode</span>
+                            <div class="spec-val">
+                                OpenAI-compatible endpoint
+                                <span class="spec-sub">Drop-in for existing clients</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="spec-note">
+                        WiCi One is fully application-transparent in Driver mode, inference-optimized through the SDK, and OpenAI-compatible in API mode. Whichever path you take, your applications get full computing flexibility.
+                        <a href="/developers">Build on WiCi <span aria-hidden="true">→</span></a>
+                    </p>
+                </article>
+                <article class="spec">
+                    <h3 class="spec-name">Unified Hierarchical Memory</h3>
+                    <ul class="spec-lines">
+                        <li>
+                            <span>Storage</span>
+                            <div class="spec-val">
+                                NVMe 4 · 1TB
+                                <span class="spec-sub">5060 Ti edition</span>
+                                NVMe 5 · 4TB
+                                <span class="spec-sub">5090 edition</span>
+                                <span class="spec-sub">TurboStream weight paging</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>LLM</span>
+                            <div class="spec-val">
+                                Trillion-parameter models
+                                <table class="spec-subtable">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Kimi K3</th>
+                                            <td>2.8T</td>
+                                            <td>5 tok/s</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">DeepSeek V4.1 Flash</th>
+                                            <td>748B</td>
+                                            <td>20 tok/s</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Gemma 4</th>
+                                            <td>26B</td>
+                                            <td>500+ tok/s</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <span class="spec-sub">Measured on WiCi One 5090 edition, close to <a href="https://openrouter.ai/moonshotai/kimi-k3:nitro#providers" target="_blank" rel="noopener">cloud rates of 20-40 tok/s</a></span>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="spec-note">
+                        TurboStream turns up to 4TB of NVMe into working VRAM: trillion-parameter models, no cloud cost required. State-of-the-art research from our systems researchers and engineers, built into WiCi One.
+                    </p>
+                    <a href="/technology" class="specs-more">Read more about our technologies →</a>
+                </article>
+            </div>
+            <section class="buy-sheet-section" aria-labelledby="sheet-specs-compare-title">
+                <header class="buy-sheet-head buy-sheet-head--section">
+                    <span class="buy-sheet-kicker">Compare</span>
+                    <h3 class="buy-sheet-title buy-sheet-title--section" id="sheet-specs-compare-title">Compute, memory, and work.</h3>
+                    <p class="buy-sheet-lede">WiCi One beside two pocket AI boxes and the Mac Studio M5 Max.</p>
+                </header>
+                <div class="vs-table-wrap">
+                    <table class="vs-table">
+                        <caption class="sr-only">WiCi One compared with pocket AI boxes and the Mac Studio M5 Max</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col" class="is-wici">WiCi One <img class="pi-compare-logo" src="/images/common/logo-lockup.svg" alt="WiCi"></th>
+                                <th scope="col">Pocket AI boxes<sup class="vs-fn">3</sup></th>
+                                <th scope="col">Mac Studio M5 Max</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr style="--one: 9.5;">
+                            <th scope="row">AI compute <small>dense FP16 TFLOPS</small><sup class="vs-fn">1</sup></th>
+                            <td class="is-wici" data-col="WiCi One">
+                                <span class="vs-x">10&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 100%;"></span></span>
+                                <span class="vs-sub">~420 on the 5090 edition; ~95 on the 5060&nbsp;Ti (2.4&times;)</span>
+                            </td>
+                            <td data-col="Pocket AI boxes">
+                                <span class="vs-x">1&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 9.5%;"></span></span>
+                                <span class="vs-sub">~40, estimated from 160 to 275 INT8 TOPS<sup class="vs-fn">1</sup></span>
+                            </td>
+                            <td data-col="Mac Studio M5 Max">
+                                <span class="vs-x">1.8&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 16.7%;"></span></span>
+                                <span class="vs-sub">~70</span>
+                            </td>
+                        </tr>
+                        <tr style="--one: 2;">
+                            <th scope="row">Memory for models</th>
+                            <td class="is-wici" data-col="WiCi One">
+                                <span class="vs-x">50&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 100%;"></span></span>
+                                <span class="vs-sub">Up to 4&nbsp;TB NVMe weight paging (TurboStream)</span>
+                            </td>
+                            <td data-col="Pocket AI boxes">
+                                <span class="vs-x">1&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 2%;"></span></span>
+                                <span class="vs-sub">64 to 80&nbsp;GB LPDDR5</span>
+                            </td>
+                            <td data-col="Mac Studio M5 Max">
+                                <span class="vs-x">0.5&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 0.9%;"></span></span>
+                                <span class="vs-sub">36&nbsp;GB unified, up to 128&nbsp;GB</span>
+                            </td>
+                        </tr>
+                        <tr style="--one: 4.3;">
+                            <th scope="row">Largest model</th>
+                            <td class="is-wici" data-col="WiCi One">
+                                <span class="vs-x">23&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 100%;"></span></span>
+                                <span class="vs-sub">Kimi K3, 2.8T parameters, measured at 5&nbsp;tok/s</span>
+                            </td>
+                            <td data-col="Pocket AI boxes">
+                                <span class="vs-x">1&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 4.3%;"></span></span>
+                                <span class="vs-sub">120B parameters, claimed</span>
+                            </td>
+                            <td data-col="Mac Studio M5 Max">
+                                <span class="vs-x">0.6&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 2.5%;"></span></span>
+                                <span class="vs-sub">~70B on 36&nbsp;GB, estimated<sup class="vs-fn">2</sup></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Serves every device as a local GPU over Wi&#8209;Fi</th>
+                            <td data-col="WiCi One" class="is-wici vs-yes">Yes</td>
+                            <td data-col="Pocket AI boxes" class="vs-no">Standalone box</td>
+                            <td data-col="Mac Studio M5 Max" class="vs-no">Standalone Mac</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Creative apps, unmodified</th>
+                            <td data-col="WiCi One" class="is-wici vs-yes">Yes</td>
+                            <td data-col="Pocket AI boxes" class="vs-no">No discrete GPU</td>
+                            <td data-col="Mac Studio M5 Max" class="vs-no">Mac apps only</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Trillion-parameter models</th>
+                            <td data-col="WiCi One" class="is-wici vs-yes">Yes</td>
+                            <td data-col="Pocket AI boxes" class="vs-no">No</td>
+                            <td data-col="Mac Studio M5 Max" class="vs-no">No</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Price</th>
+                            <td data-col="WiCi One" class="is-wici">From $3,499<span class="vs-sub">5060 Ti edition.</span></td>
+                            <td data-col="Pocket AI boxes">$1,399 to $2,999</td>
+                            <td data-col="Mac Studio M5 Max">From $2,499</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <ol class="specs-compare-notes">
+                    <li>Unit: dense FP16 TFLOPS, the rate most model inference runs at. NVIDIA and Apple publish it. The pocket AI boxes publish sparse INT8 TOPS. Conversion: INT8 to FP16 halves the rate; removing the sparsity assumption halves it again. 160 to 275 sparse INT8 TOPS is therefore 40 to 70 dense FP16 TFLOPS. The 275 figure includes two fixed-function accelerators that do not run general model math. The table uses ~40.</li>
+                    <li>36&nbsp;GB of unified memory holds about 70 billion parameters at 4-bit weights, with room for context. The 128&nbsp;GB configuration holds proportionally more.</li>
+                    <li>Figures as published by the vendors in September 2026. The pocket AI box column covers two current crowdfunded pocket AI computers, and ranges span both. Product names belong to their owners.</li>
+                </ol>
+            </section>
+        </div>
+    </dialog>
+
+    <script src="/js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/specs.js"></script>
+    <script src="/js/buy.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>

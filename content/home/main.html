@@ -1,0 +1,263 @@
+
+
+        <!-- The homepage since Oct 28, 2026: the film
+             hero (later that day; the statement panel of Oct 20 in its
+             framed column until then), then the designer's full-page layout ("WiCi homepage · Inspirux-style
+             layouts" on the canvas): a 1440px frame, a 340px left rail of
+             small caps labels beside a main column, hairlines between rows,
+             entrances as blocks come on screen (css/home.css "The full-page
+             layout", initBlocks in js/home.js). -->
+        <!-- 1 · The film hero: a still from the
+             brand film full bleed under the glass nav, the statement over
+             a white fade with the mission tucked under its first line, and
+             a bar across the foot, "Watch the film". A click on the bar
+             slides the statement out to the right and plays the whole film where the
+             still is, the same box, cropped to fill it, with sound, no
+             dialog; the bar is then the film's progress, the dark fill
+             sweeping across it and the words turning white as it passes;
+             its accent cell reads "Back" and closes the film, the play ring
+             pauses it; Escape or the film's end closes it too (initFilmHero
+             in js/home.js). The preview's
+             looping silent cuts stood here for an hour.
+             Phones: the still at the top, the statement under it, the film
+             in the still's box. The statement panel of Oct 21 to Oct 28,
+             2026 is in git history up to 0631918. -->
+        <section class="fh" id="statement" aria-labelledby="statement-title">
+            <div class="fh-stage">
+                <div class="fh-still" aria-hidden="true"><img src="/images/home/hero-film-platform-poster-2560.webp" alt="" width="2560" height="1296"></div>
+                <video class="fh-film" playsinline preload="none" poster="/images/home/hero-film-platform-poster-2560.webp" aria-label="The WiCi One film" data-next-title="How it works" data-next-av1="/cdn.wici.ai/video/film-explainer-full-av1.mp4" data-next-h264="/cdn.wici.ai/video/film-explainer-full-h264.mp4" data-next-poster="/images/product/film-explainer-poster.webp">
+                    <source src="/cdn.wici.ai/video/film-hero-full-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                    <source src="/cdn.wici.ai/video/film-hero-full-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+                </video>
+                <div class="fh-copy">
+                    <div class="fh-head">
+                        <img class="fh-logo" src="/images/common/logo-stacked-white.svg" alt="WiCi" width="1144" height="1533" decoding="async">
+                        <h1 class="fh-title" id="statement-title">Frontier AI belongs<br>to everyone.</h1>
+                        <p class="fh-mission">WiCi is a systems research lab. We build systems for wireless GPU and local AI.</p>
+                    </div>
+                </div>
+                <button type="button" class="fh-next" hidden><span class="fh-next-lead">Watch next one</span><span class="fh-next-title">How it works · 1:33</span></button>
+            </div>
+            <button type="button" class="fh-bar" aria-label="Watch the film, 1 minute 19 seconds" style="--p:0">
+                <span class="fh-bar-face" aria-hidden="true">
+                    <span class="fh-bar-label">Watch the film</span>
+                    <span class="fh-bar-close" title="Back"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3.5M7.5 4L3.5 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fh-bar-play"><svg class="fh-i-play" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M3 1.5v11l9-5.5z"/></svg><svg class="fh-i-pause" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M2.5 1.5h3v11h-3zM8.5 1.5h3v11h-3z"/></svg></span><span class="fh-bar-mute" title="Mute"><svg class="fh-i-sound" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6h2.3L8 3.3v9.4L4.8 10H2.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10.3 5.8a3 3 0 0 1 0 4.4M12.1 4a5.5 5.5 0 0 1 0 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><svg class="fh-i-muted" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6h2.3L8 3.3v9.4L4.8 10H2.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10.5 6l3.5 3.5M14 6l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                    <span class="fh-bar-time">1:19</span>
+                </span>
+                <span class="fh-bar-face fh-bar-face--fill" aria-hidden="true">
+                    <span class="fh-bar-label">Watch the film</span>
+                    <span class="fh-bar-close" title="Back"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3.5M7.5 4L3.5 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fh-bar-play"><svg class="fh-i-play" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M3 1.5v11l9-5.5z"/></svg><svg class="fh-i-pause" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M2.5 1.5h3v11h-3zM8.5 1.5h3v11h-3z"/></svg></span><span class="fh-bar-mute" title="Mute"><svg class="fh-i-sound" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6h2.3L8 3.3v9.4L4.8 10H2.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10.3 5.8a3 3 0 0 1 0 4.4M12.1 4a5.5 5.5 0 0 1 0 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><svg class="fh-i-muted" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6h2.3L8 3.3v9.4L4.8 10H2.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10.5 6l3.5 3.5M14 6l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                    <span class="fh-bar-time">1:19</span>
+                </span>
+            </button>
+        </section>
+
+        <!-- 2 · Who we are: a label in the left rail, the statement beside
+             it. -->
+        <section class="ix-wrap ix-about" id="about" aria-label="About WiCi">
+            <div class="ix-row" data-anim="rise">
+                <p class="ix-rail ix-label"><span class="ix-brand">WiCi</span> is a systems<br class="ix-br"> research lab.</p>
+                <p class="ix-main ix-statement">We focus on wireless GPU computing and local inference systems for frontier AI. We develop systems for sharing compute across devices while keeping models and data under local control.</p>
+            </div>
+            <div class="ix-row" data-anim="rise">
+                <p class="ix-rail ix-label ix-label--accent">Local compute.<br class="ix-br"> Direct control.</p>
+                <p class="ix-main ix-lead">Running AI locally gives individuals and organizations control over their models, data, and usage. WiCi makes local deployment more practical through wireless GPU access, efficient inference, and shared compute.</p>
+            </div>
+            <div class="ix-row ix-about-more" data-anim="rise">
+                <div class="ix-rail" aria-hidden="true"></div>
+                <div class="ix-main"><a class="ix-arrow" href="/about">Read more about us <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+            </div>
+        </section>
+
+        <!-- 3 · Research: the navy panel with the dot field, the four
+             directions as large accordion rows. -->
+        <section class="ix-systems" id="research" aria-labelledby="ix-sys-title">
+            <canvas class="nl-dots" aria-hidden="true"></canvas>
+            <div class="ix-wrap ix-row ix-pad">
+                <div class="ix-rail ix-rail-stack" data-anim="rise">
+                    <h2 class="ix-label" id="ix-sys-title">Systems for<br>Personal Frontier AI.</h2>
+                    <p class="ix-rail-text">Our research addresses the constraints that make local AI difficult: network latency, limited memory, competing workloads, and real-time response.</p>
+                </div>
+                <div class="ix-main ix-acc" data-accordion>
+                    <div data-anim="row" data-i="0" class="ix-acc-item is-open">
+                        <button type="button" class="ix-acc-head" aria-expanded="true" aria-controls="ix-acc-1"><span class="ix-acc-title">Wireless GPU computing</span><span class="ix-acc-sign" aria-hidden="true"></span></button>
+                        <div class="ix-acc-body" id="ix-acc-1">
+                            <p>GPU software makes thousands of small calls that become expensive over Wi-Fi. Our runtime reduces network overhead through caching, data reuse, and asynchronous execution, keeping applications on the device while GPU computation runs nearby.</p>
+                            <a class="ix-arrow" target="_blank" rel="noopener" href="/article/nearby-gpu-feel-local">Making a Nearby GPU Feel Local  <span class="sr-only">(opens in a new tab)</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        </div>
+                    </div>
+                    <div data-anim="row" data-i="1" class="ix-acc-item">
+                        <button type="button" class="ix-acc-head" aria-expanded="false" aria-controls="ix-acc-2"><span class="ix-acc-title">Storage-backed inference</span><span class="ix-acc-sign" aria-hidden="true"></span></button>
+                        <div class="ix-acc-body" id="ix-acc-2" hidden>
+                            <p>Large models can exceed both GPU memory and system RAM. InferSSD, our open-source engine, keeps expert weights on SSD and streams the working set to the GPU, so larger models run on personal hardware.</p>
+                            <a class="ix-arrow" target="_blank" rel="noopener" href="/article/running-800b-models-with-inferssd">Running 800B-Parameter LLMs on Consumer Hardware with InferSSD  <span class="sr-only">(opens in a new tab)</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        </div>
+                    </div>
+                    <div data-anim="row" data-i="2" class="ix-acc-item">
+                        <button type="button" class="ix-acc-head" aria-expanded="false" aria-controls="ix-acc-3"><span class="ix-acc-title">Shared GPU infrastructure</span><span class="ix-acc-sign" aria-hidden="true"></span></button>
+                        <div class="ix-acc-body" id="ix-acc-3" hidden>
+                            <p>Independent applications compete for GPU memory and often load duplicate model weights. Our scheduling research focuses on reusing those weights and managing memory across workloads while keeping application state separate.</p>
+                            <a class="ix-arrow" target="_blank" rel="noopener" href="/article/gpu-never-learned-to-share">The GPU Never Learned to Share  <span class="sr-only">(opens in a new tab)</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        </div>
+                    </div>
+                    <div data-anim="row" data-i="3" class="ix-acc-item">
+                        <button type="button" class="ix-acc-head" aria-expanded="false" aria-controls="ix-acc-4"><span class="ix-acc-title">Real-time intelligence</span><span class="ix-acc-sign" aria-hidden="true"></span></button>
+                        <div class="ix-acc-body" id="ix-acc-4" hidden>
+                            <p>Responsive AI requires coordinating input, inference, and response timing. Our voice research forms candidate answers while speech is arriving and uses a learned timing policy to decide when to respond.</p>
+                            <a class="ix-arrow" target="_blank" rel="noopener" href="/article/answering-is-not-buzzing">Answering Is Not Buzzing  <span class="sr-only">(opens in a new tab)</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 · Research & Ideas: a featured article and three rows. -->
+        <section class="ix-writing" id="writing" aria-labelledby="ix-writing-title">
+            <div class="ix-wrap ix-row ix-pad">
+                <div class="ix-rail ix-rail-stack" data-anim="rise">
+                    <h2 class="ix-label" id="ix-writing-title">Research &amp; Ideas</h2>
+                    <a class="ix-arrow" href="/research">View all research &amp; writing <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+                <div class="ix-main ix-writing-main">
+                    <p class="ix-statement" data-anim="rise">Research and perspectives on the systems behind local AI.</p>
+                    <a class="ix-feature" data-anim="row" data-i="0" target="_blank" rel="noopener" href="/article/general-and-the-particular"><svg width="28" height="28" viewBox="0 0 16 16" fill="none" class="ix-feature-ext" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <h3>The General and the Particular</h3>
+                        <p>Why interaction, memory, and adaptation belong on local infrastructure. <span class="sr-only">(opens in a new tab)</span></p>
+                    </a>
+                    <ul class="ix-rows">
+                        <li><a data-anim="row" data-i="1" target="_blank" rel="noopener" href="/article/nearby-gpu-feel-local"><span><strong>Making a Nearby GPU Feel Local</strong><span>How the wireless runtime reduces network overhead when applications use a nearby GPU.</span></span> <span class="sr-only">(opens in a new tab)</span><svg width="24" height="24" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+                        <li><a data-anim="row" data-i="2" target="_blank" rel="noopener" href="/article/running-800b-models-with-inferssd"><span><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><span>How InferSSD streams expert weights from SSD, with results on Apple Silicon and NVIDIA systems.</span></span> <span class="sr-only">(opens in a new tab)</span><svg width="24" height="24" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+                        <li><a data-anim="row" data-i="3" target="_blank" rel="noopener" href="/article/answering-is-not-buzzing"><span><strong>Answering Is Not Buzzing</strong><span>How early listening, answer generation and speech timing reduce voice interaction latency.</span></span> <span class="sr-only">(opens in a new tab)</span><svg width="24" height="24" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5 · WiCi One: "The first wireless GPU" at hero size, the device
+             drawn apart and turning inside the first line (initTurntable in
+             js/home.js), then the price in the rail and the copy as one row. -->
+        <section class="ix-product" id="product" aria-labelledby="ix-product-title">
+            <h2 class="sr-only" id="ix-product-title">The first wireless GPU</h2>
+            <div class="ix-mega" aria-hidden="true">
+                <div class="ix-mega-a" data-anim="fromL">
+                    <span>The first</span>
+                    <div class="ix-mega-turn">
+                        <figure class="nl-turn" data-turntable data-frames="images/product/exploded-alpha/" data-count="200" data-ext=".webp">
+                            <img src="/images/product/exploded-alpha/000.webp" width="1200" height="574" alt="" loading="lazy" decoding="async">
+                        </figure>
+                        <p class="ix-drag"><svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h16M4 3L1 6l3 3M14 3l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Drag to rotate</p>
+                    </div>
+                </div>
+                <span class="ix-mega-b" data-anim="fromR">wireless GPU</span>
+            </div>
+            <div class="ix-wrap ix-row ix-product-foot">
+                <div class="ix-rail ix-rail-stack" data-anim="rise">
+                    <p class="ix-label">Introducing <span class="ix-brand">WiCi</span> One</p>
+                    <p class="ix-rail-text">Built for homes, studios, and workplaces.</p>
+                    <!-- The partner credit and the award, the marks alone on
+                         one row. -->
+                    <div class="ix-credits">
+                        <img class="ix-credit-nv" src="/images/common/nvidia-inception.webp" width="1024" height="427" alt="In partnership with NVIDIA Inception Program" loading="lazy">
+                        <a class="ix-credit-ces" href="https://www.ces.tech/ces-innovation-awards/2027/wici-one/" target="_blank" rel="noopener">
+                            <img src="/images/common/ces-innovation-honoree-2027-160.webp" srcset="/images/common/ces-innovation-honoree-2027-160.webp 160w, /images/common/ces-innovation-honoree-2027-320.webp 320w" sizes="32px" width="160" height="200" alt="CES Innovation Awards 2027 (opens in a new tab)" loading="lazy">
+                        </a>
+                    </div>
+                </div>
+                <a class="ix-row-link" href="/wici-one" data-anim="row" data-i="0">
+                    <p><strong>Powerful local AI for everyday devices.</strong> WiCi One combines wireless GPU computing and SSD inference in one local system. Run advanced models, share compute across applications and devices, and keep your data on your network.</p>
+                    <span class="ix-arrow">Explore WiCi One <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 6 · The demos: the player in the main column, the five films as
+             rows under it (initBlocks in js/home.js). -->
+        <section class="ix-wrap ix-row ix-demos-row" aria-label="Demo films">
+            <div class="ix-rail ix-rail-stack" data-anim="rise">
+                <p class="ix-label">Demo films</p>
+                <button type="button" class="ix-arrow" data-play-demo><svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.5v11l9-5.5z"/></svg>Watch the demo</button>
+            </div>
+            <div class="ix-main ix-demos" data-demos>
+                <figure class="film ix-demos-film" data-film data-anim="zoom">
+                    <video controls playsinline preload="none" poster="/images/media/video-models-poster.jpg" aria-label="Local AI on WiCi One">
+                        <source src="/cdn.wici.ai/video/demo-models-full-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                        <source src="/cdn.wici.ai/video/demo-models-full-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+                    </video>
+                    <button type="button" class="film-play" hidden>
+                        <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z" fill="currentColor"/></svg>
+                        <span>Watch the demo</span>
+                        <span class="film-play-time">0:54</span>
+                    </button>
+                </figure>
+                <div class="ix-tabs" role="group" aria-label="Demo films">
+                    <button type="button" data-anim="row" data-i="0" class="ix-tab is-playing" aria-pressed="true" data-av1="cdn.wici.ai/video/demo-models-full-av1.mp4" data-h264="cdn.wici.ai/video/demo-models-full-h264.mp4" data-poster="/images/media/video-models-poster.jpg" data-title="Local AI on WiCi One"><span class="ix-tab-label">For Local AI</span><svg width="26" height="26" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                    <button type="button" data-anim="row" data-i="1" class="ix-tab" aria-pressed="false" data-av1="cdn.wici.ai/video/demo-apps-full-av1.mp4" data-h264="cdn.wici.ai/video/demo-apps-full-h264.mp4" data-poster="/images/media/video-apps-poster.jpg" data-title="AI apps on WiCi One"><span class="ix-tab-label">For AI Apps</span><svg width="26" height="26" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                    <button type="button" data-anim="row" data-i="2" class="ix-tab" aria-pressed="false" data-av1="cdn.wici.ai/video/demo-gaming-full-av1.mp4" data-h264="cdn.wici.ai/video/demo-gaming-full-h264.mp4" data-poster="/images/media/video-gaming-poster.jpg" data-title="4K gaming on WiCi One"><span class="ix-tab-label">For 4K Gaming</span><svg width="26" height="26" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                    <button type="button" data-anim="row" data-i="3" class="ix-tab" aria-pressed="false" data-av1="cdn.wici.ai/video/film-blender-av1.mp4" data-h264="cdn.wici.ai/video/film-blender-h264.mp4" data-poster="/images/partnerships/film-blender-poster.webp" data-title="Blender rendering on WiCi One"><span class="ix-tab-label">For 3D Rendering</span><svg width="26" height="26" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                    <button type="button" data-anim="row" data-i="4" class="ix-tab" aria-pressed="false" data-av1="cdn.wici.ai/video/film-explainer-full-av1.mp4" data-h264="cdn.wici.ai/video/film-explainer-full-h264.mp4" data-poster="/images/media/video-explainer-poster.jpg" data-title="How WiCi One works"><span class="ix-tab-label">How it works</span><svg width="26" height="26" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7 · The press: a hairline grid in the main column. -->
+        <section class="ix-wrap ix-row ix-press-row" aria-label="Press">
+            <div class="ix-rail" data-anim="rise"><p class="ix-label">In the press</p></div>
+            <ul class="ix-main ix-press">
+                <li data-anim="row" data-i="0"><a href="https://gizmodo.com/wici-one-wireless-gpu-hands-on-2000821866" target="_blank" rel="noopener"><img src="/images/product/gizmodo-logo.svg" alt="Gizmodo" loading="lazy"><p>&#8220;A world where local compute isn&#8217;t subordinated to the whims of the tech oligarchs and their pet AI.&#8221;</p></a></li>
+                <li data-anim="row" data-i="1"><a href="https://www.pcmag.com/news/first-wireless-egpu-could-turn-any-wi-fi-7-pc-into-a-gaming-laptop" target="_blank" rel="noopener"><img src="/images/product/pcmag-logo.svg" alt="PCMag" loading="lazy"><p>&#8220;A dedicated AI inferencing device in your home that a variety of devices can connect to.&#8221;</p></a></li>
+                <li data-anim="row" data-i="2"><a href="https://www.engadget.com/2269877/this-external-gpu-uses-wi-fi-to-transform-any-device-into-a-gaming-rig/" target="_blank" rel="noopener"><img src="/images/product/engadget-logo.svg" alt="Engadget" loading="lazy"><p>&#8220;Offers the power of a high-end graphics card over Wi-Fi&nbsp;7 to any compatible device.&#8221;</p></a></li>
+                <li data-anim="row" data-i="3"><a href="https://www.techradar.com/pro/a-wireless-egpu-is-coming-soon-wici-will-sell-a-geforce-rtx-5060-ti-with-16gb-gddr7-that-runs-through-wi-fi-7-but-you-will-actually-be-paying-for-an-entire-pc-a-local-server-by-any-other-name" target="_blank" rel="noopener"><img src="/images/product/techradar-logo.svg" alt="TechRadar" loading="lazy"><p>&#8220;WiCi pushes wireless external graphics beyond conventional eGPU designs.&#8221;</p></a></li>
+                <li data-anim="row" data-i="4"><a href="https://www.tomshardware.com/pc-components/gpus/wici-one-unveils-wireless-wi-fi-7-egpu-with-built-in-4tb-ssd-for-local-ai-usd1-999-box-leverages-wifi-7-to-present-a-remote-card-as-local" target="_blank" rel="noopener"><img src="/images/product/tomshardware-logo.svg" alt="Tom&#8217;s Hardware" loading="lazy"><p>&#8220;WiCi took a clever approach and incorporated a 4&nbsp;TB PCIe&nbsp;5.0 SSD directly into the enclosure.&#8221;</p></a></li>
+            </ul>
+        </section>
+
+        <!-- 8 · Join and build: the photo at the left, careers and developers
+             as two rows on hairlines at the right. -->
+        <!-- WiCi Infer (Nov 10, 2026): the desktop app's block, on the Infer
+             page's line drawing darkened, so the page visibly leaves WiCi One
+             ("there is no clear clue the page content has transitioned",
+             Andy). The rail: the New pill, the label, the line, the icon, the
+             link; the main column: the Infer page's headline sliding in from
+             the right like a row, the benchmark figures (the lead multiple
+             large, the other three machines small; the Infer page's Muse
+             decode figures against llama.cpp, docs/inferssd-benchmarks.json;
+             the numbers count up once on entry, initInferFigures in
+             js/home.js), the link to the full benchmarks, the four promises
+             on one line. Entrances as the other blocks (initBlocks). -->
+        <section class="ix-infer" id="infer" aria-labelledby="ix-infer-title">
+            <div class="ix-wrap ix-row ix-pad">
+                <div class="ix-rail ix-rail-stack" data-anim="rise">
+                    <span class="ix-new">New</span>
+                    <p class="ix-label">Introducing <span class="ix-brand">WiCi</span> Infer</p>
+                    <p class="ix-rail-text">The desktop app for local AI.</p>
+                    <figure class="ix-rail-icon"><img src="/images/infer/app-icon-glass-480.webp" width="480" height="480" alt="" loading="lazy" decoding="async"></figure>
+                    <a class="ix-arrow" href="/wici-infer">Explore WiCi Infer <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+                <div class="ix-main ix-infer-main">
+                    <h2 class="ix-statement ix-infer-title" id="ix-infer-title" data-anim="row" data-i="0">Run large local AI models<br class="ix-br"> on your computer, 17x&nbsp;faster<sup><a href="/wici-infer#footnotes" aria-label="Footnote on the Infer page">†</a></sup>.</h2>
+                    <div class="ix-infer-figures" data-anim="row" data-i="0"><div class="ix-stat ix-stat--lead"><span class="ix-stat-up">Up to</span><strong class="ix-stat-n" data-count="17.8">0×</strong><span class="ix-stat-cap">faster decode than llama.cpp, on DGX Spark</span></div><div class="ix-infer-figures-rest"><div class="ix-stat"><span class="ix-stat-hw">MacBook Pro</span><span class="ix-stat-sub">M5 Max · 48 GB</span><strong class="ix-stat-n" data-count="6.2">0×</strong><span class="ix-stat-cap">faster decode than llama.cpp</span></div><div class="ix-stat"><span class="ix-stat-hw">RTX 5060 Ti</span><span class="ix-stat-sub">8 GB RAM + 16 GB VRAM</span><strong class="ix-stat-n" data-count="3.7">0×</strong><span class="ix-stat-cap">faster decode than llama.cpp</span></div><div class="ix-stat"><span class="ix-stat-hw">RTX 5090</span><span class="ix-stat-sub">32 GB RAM + 32 GB VRAM</span><strong class="ix-stat-n" data-count="9.8">0×</strong><span class="ix-stat-cap">faster decode than llama.cpp</span></div></div></div>
+                    <p class="ix-infer-more" data-anim="rise"><a class="ix-arrow" href="/wici-infer#benchmarks">See all benchmarks <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>
+                    <p class="ix-infer-promise" data-anim="row" data-i="1">Open&nbsp;source · Free · No&nbsp;login · No&nbsp;subscription</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="ix-wrap ix-work" id="build" aria-labelledby="ix-work-title">
+            <div class="ix-work-media" data-anim="zoom">
+                <img src="/images/home/device-flatlay.jpg" alt="WiCi One on a violet box among a headset, a tablet, a laptop, and a Mac mini." width="2000" height="1098" loading="lazy">
+            </div>
+            <div class="ix-work-rows">
+                <div class="ix-work-row" data-anim="row" data-i="0">
+                    <h2 id="ix-work-title">Work on the systems behind personal AI.</h2>
+                    <p>Join researchers and engineers working across networking, GPU systems, and AI inference. Develop new methods and turn them into working systems.</p>
+                    <a class="ix-arrow" target="_blank" rel="noopener" href="/careers">Explore open roles <span class="sr-only">(opens in a new tab)</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+                <div class="ix-work-row" data-anim="row" data-i="1">
+                    <h3>Build with WiCi.</h3>
+                    <p>Access local GPU compute through familiar APIs, SDKs, and supported driver integrations. Bring AI inference into assistants, creative tools, and connected devices.</p>
+                    <a class="ix-arrow" target="_blank" rel="noopener" href="/developers">Explore developer tools <span class="sr-only">(opens in a new tab)</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+            </div>
+        </section>
+    

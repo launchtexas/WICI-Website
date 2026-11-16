@@ -1,0 +1,129 @@
+
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/keep-the-bytes-by-the-gpu.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-09-28">September 2026</time></p>
+                <h1 class="article-title">Bridge the bandwidth gap <em>with a huge SSD cache</em></h1>
+                <p class="article-subtitle">How is WiFi capable of the data transmission supposed to be over PCIe</p>
+            </div>
+        </header>
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">TL;DR</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#tldr">TL;DR</a></li>
+                        <li><a href="#the-link-is-the-scarce-resource">The link is the scarce resource</a></li>
+                        <li><a href="#let-the-result-stay-where-the-next-call-needs-it">Let the result stay where the next call needs it</a></li>
+                        <li><a href="#why-put-4-tb-beside-the-gpu">Why put 4 TB beside the GPU?</a></li>
+                        <li><a href="#predict-the-calls-then-verify">Predict the calls, then verify</a></li>
+                        <li><a href="#the-measurement-that-matters">The measurement that matters</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/keep-the-bytes-by-the-gpu.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li>WiCi Research</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#tldr">TL;DR</a></li>
+                            <li><a href="#the-link-is-the-scarce-resource">The link is the scarce resource</a></li>
+                            <li><a href="#let-the-result-stay-where-the-next-call-needs-it">Let the result stay where the next call needs it</a></li>
+                            <li><a href="#why-put-4-tb-beside-the-gpu">Why put 4 TB beside the GPU?</a></li>
+                            <li><a href="#predict-the-calls-then-verify">Predict the calls, then verify</a></li>
+                            <li><a href="#the-measurement-that-matters">The measurement that matters</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+                    <section class="article-tldr" aria-labelledby="tldr">
+                        <h2 class="article-tldr-title" id="tldr">TL;DR</h2>
+                        <ul>
+                            <li>A PCIe 5.0 x16 link can carry roughly 500 Gb/s in one direction; a practical Wi-Fi path is often gigabit-class. A local device transaction lives near the microsecond scale; a wireless round trip lives near the millisecond scale. Forwarding every byte and every call cannot preserve local-GPU behavior.</li>
+                            <li>Keep reusable state on the GPU side. Active data stays in VRAM, warm state can sit in RAM, and a multi-terabyte SSD backs model weights that would otherwise cross Wi-Fi again. When one GPU call feeds another, pass a logical reference instead of returning a large intermediate to the client and uploading it again.</li>
+                            <li>Saving bytes addresses bandwidth. Caching stable answers, batching independent calls, and replaying validated call patterns address round trips. Real dependencies and client-visible results still have to cross the boundary correctly.</li>
+                        </ul>
+                    </section>
+
+                    <h2 id="the-link-is-the-scarce-resource">The link is the scarce resource</h2>
+                    <p>The application, files, sensors, and interface remain on the client device. The nearby box executes GPU work while the app keeps using its normal graphics or compute interface. That is different from moving the whole application to a remote desktop. It also means a software boundary designed around a local bus now crosses Wi-Fi.</p>
+                    <p>Local GPU software can ask many small questions and move large objects over PCIe inside the computer. Over Wi-Fi, both the data and the waiting become visible. The first useful question is what can stay on the GPU side after it arrives.</p>
+
+                    <figure class="figure">
+                        <h3>Figure 1 — The physical mismatch</h3>
+                        <p>The first row compares a raw PCIe link ceiling with representative wireless goodput. The second shows the scale of a local device interaction versus a wireless round trip. These are scale comparisons, not matched measurements or a prediction of application speed.</p>
+                        <div class="gap-grid" role="img" aria-label="PCIe around 500 gigabits per second and one microsecond versus Wi-Fi around one gigabit per second and one millisecond">
+                            <div></div><div class="gap-head">PCIe inside the machine</div><div class="gap-head">Wi-Fi across the room</div>
+                            <div class="gap-label">Bandwidth</div><div><b>~500 Gb/s</b><span>PCIe 5.0 x16 raw link capacity, one direction.</span></div><div><b>~1 Gb/s</b><span>Gigabit-class application throughput on a practical wireless path.</span></div>
+                            <div class="gap-label">Latency</div><div><b>~1 µs</b><span>Local device-fabric scale.</span></div><div><b>~1 ms</b><span>Wireless round-trip scale, before contention.</span></div>
+                        </div>
+                    </figure>
+
+                    <p>The bus ceiling is not the amount an application actually uses. In our 1080p Cyberpunk 2077 measurements, native host-to-GPU traffic averaged <strong>7.88 Gb/s</strong> while rasterizing and <strong>10.44 Gb/s</strong> with path tracing, with upscaling and frame generation disabled. A separate Wi-Fi 6 measurement reached <strong>1.685 Gb/s</strong> of TCP uplink under favorable line-of-sight conditions. That puts this workload's native traffic about <strong>4.7–6.2 times</strong> above that wireless baseline. They are different test setups, but the comparison shows the actual byte reduction the protocol has to pursue.</p>
+
+                    <div class="equation">Remote time ≈ GPU work + bytes ÷ wireless goodput + blocking calls × RTT <small>Keeping data nearby shrinks the middle term. Removing unnecessary waits shrinks the last one.</small></div>
+                    <p>The last term can dominate even when the byte count is low. If every driver call waits for a wireless reply, the app spends time idle while the GPU is ready. Calls that only enqueue work can proceed without waiting; a true readback or fence still has to preserve its dependency.</p>
+
+                    <h2 id="let-the-result-stay-where-the-next-call-needs-it">Let the result stay where the next call needs it</h2>
+                    <p>Consider two GPU operations in sequence. The first produces a large tensor. The next uses that tensor as an input. If an interface copies the tensor back to the client's RAM and then uploads it for the next operation, the same bytes cross Wi-Fi twice. The client never needed to read them.</p>
+                    <p>GPU APIs already have a useful idea for this: a device pointer or handle names data without containing the data. A wireless GPU runtime has to preserve that identity across machines. The client can hold a logical reference; the GPU box resolves it to an allocation and keeps the bytes in VRAM while they are active. Host RAM can hold selected evicted state; WiCi's SSD path currently centers on model weights. Extending that path to arbitrary GPU results is a separate research problem.</p>
+                    <p>This is more precise than saying we “send a pointer.” A raw address from one process is not a valid address in another machine. The protocol needs a stable mapping from an app-visible reference to the right remote object, with ownership, lifetime, and synchronization preserved. If the CPU actually inspects the tensor, or the app needs a frame for display, those bytes must travel back.</p>
+
+                    <figure class="figure" id="traffic-figure">
+                        <h3>Figure 2 — How much data crosses the room?</h3>
+                        <p>Illustrative traffic accounting for a chain of GPU operations, not a measured WiCi benchmark. Change the number and size of intermediate results. A warm cache keeps the example model on the GPU box; a cold run includes one initial upload.</p>
+                        <div class="traffic-controls">
+                            <label for="steps">GPU operations <output id="steps-value">5</output><input id="steps" type="range" min="2" max="8" step="1" value="5"></label>
+                            <label for="intermediate">Intermediate result <output id="intermediate-value">1.0 GB</output><input id="intermediate" type="range" min="0.25" max="4" step="0.25" value="1"></label>
+                            <label class="cache-toggle" for="warm-cache"><input id="warm-cache" type="checkbox" checked> Model already cached on box</label>
+                        </div>
+                        <div id="traffic-plot" class="traffic-plot" role="img" aria-label="Interactive stacked bars comparing wireless bytes when intermediate GPU results are sent back to the client versus kept on the GPU box"></div>
+                        <div id="traffic-fallback" class="plot-fallback">When the client materializes every intermediate result, each one crosses Wi-Fi twice. With GPU-side references, only new inputs and host-visible outputs need to cross. A cold model load is a separate, one-time transfer.</div>
+                        <div class="traffic-totals"><span>Client reads each result: <b id="client-total">8.02 GB</b></span><span>Results stay by GPU: <b id="gpu-total">0.02 GB</b></span></div>
+                        <div class="plot-key" aria-label="Chart legend"><span><i style="background:#9597cf"></i>First-use model upload</span><span><i style="background:#d85f36"></i>Intermediate transfers</span><span><i style="background:#0f7b6c"></i>Final output</span></div>
+                    </figure>
+
+                    <h2 id="why-put-4-tb-beside-the-gpu">Why put 4 TB beside the GPU?</h2>
+                    <p>A short-lived intermediate should stay in VRAM if possible. It does not need a 4 TB SSD. The drive matters for the larger, longer-lived working set: model weights too large for VRAM, or models repeatedly used by different sessions. Four terabytes is a capacity choice that lets the box retain much more of that working set locally instead of fetching it over Wi-Fi again.</p>
+                    <p>A cache needs a way to recognize a hit. In our inference prototype, the client identifies a model tensor by its content and asks the box whether that tensor is already stored there. On a hit, the identity crosses Wi-Fi; on a miss, the bytes cross once and populate the cache. Identifying tiny objects can cost more than sending them, so the decision has to account for object size and reuse.</p>
+                    <div class="tier-list" role="group" aria-label="GPU-side storage tiers">
+                        <div class="tier"><b>VRAM · hot</b><span>Active tensors and kernels' working data. Fastest, smallest tier.</span></div>
+                        <div class="tier"><b>RAM · warm</b><span>State worth restoring quickly when the active set changes.</span></div>
+                        <div class="tier"><b>SSD · deep</b><span>Model weights that would otherwise be fetched again across Wi-Fi.</span></div>
+                    </div>
+                    <p>The drive is a backing store, not VRAM with a larger capacity label. Restoring weights still moves bytes from SSD toward GPU memory on the box's local PCIe path, sometimes through system RAM depending on the machine and software. The win is that a warm object need not be fetched again over Wi-Fi. Placement, prefetching, eviction, and the real local I/O path determine whether the result feels fast.</p>
+                    <p>There is also a boundary on the cache's usefulness. A live camera frame that has never reached the box cannot be served from its SSD. A rendered frame the client must display cannot remain there forever. The cache helps when data is reused, or when a computation chain can keep its intermediate values near the GPU.</p>
+
+                    <div class="equation">Wi-Fi bytes = new inputs + cache misses + client-visible outputs + changed client state <small>Control messages still cross the link. SSD and GPU memory traffic remain real local costs.</small></div>
+
+                    <h2 id="predict-the-calls-then-verify">Predict the calls, then verify</h2>
+                    <p>Saving bytes does not save the time spent waiting for thousands of small calls. GPU programs often repeat a pattern: allocate, load, launch, synchronize; an LLM decoding the next token may walk much the same call sequence as it did for the previous one. This is where the analogy to branch prediction becomes useful.</p>
+                    <p>A CPU predicts which instruction path comes next so it can keep work moving. A wireless GPU runtime can recognize a known sequence, prepare data before the call arrives, combine compatible calls, or replay a validated trace on the box. When a later call uses an object created by an earlier one, a logical handle can let the client continue while the box resolves the real object. A prediction is useful only if the runtime checks it before the app can observe a wrong answer.</p>
+                    <p>Patterned call batching and trace replay can reduce repeated inference traffic. Extending that idea to general driver calls is a harder research problem: allocations can fail, branches can change, and some effects cannot be rolled back. The safe design predicts where it has evidence, validates at synchronization points, and falls back to ordinary execution when the pattern breaks.</p>
+
+                    <h2 id="the-measurement-that-matters">The measurement that matters</h2>
+                    <p>The right score is not the size of the SSD or the radio's advertised link rate. For each workload, measure how many bytes cross Wi-Fi after warm-up, what fraction of large objects hit the box-side cache, how often a call must block, how much SSD data is restored to VRAM, and what happens at the tail when the cache misses or another device competes for the GPU.</p>
+                    <p>A useful comparison needs a cold run, a warm run, and a run that forces a host-visible readback. It must check output correctness as well as time. If the workload produces new data continuously or requires every intermediate on the client, a large cache cannot erase the link. If its working set is reused and its GPU results feed more GPU work, the wireless link can carry references and small changes while the box does the heavy movement locally.</p>
+                    <p>That is the architectural bet behind putting substantial storage beside a nearby GPU: use capacity and knowledge of the computation to buy back the bandwidth Wi-Fi cannot provide.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/nearby-gpu-feel-local"><figure><img src="/images/research/thumbnails/nearby-gpu-feel-local.webp" alt="" loading="lazy" decoding="async"></figure><strong>Making a Nearby GPU Feel Local</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/gpu-cant-fit-in-your-pocket"><figure><img src="/images/research/thumbnails/gpu-cant-fit-in-your-pocket.webp" alt="" loading="lazy" decoding="async"></figure><strong>Move the GPU Out. Keep It Local.</strong><time datetime="2026-08">August 2026</time></a></li>
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+    

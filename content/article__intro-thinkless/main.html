@@ -1,0 +1,273 @@
+
+
+        <!-- Article header -->
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/intro-thinkless.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-09-06">September 6, 2026</time></p>
+                <h1 class="article-title">Thinkless &mdash; Unconditional Surrender in Thinking.</h1>
+                <p class="article-subtitle">"Let the AI work while you supervise" is old advice by now. The actual claim is harder to swallow: stop thinking before you act &mdash; not only on ground that's new to you, on <em>every</em> ground, including the codebase you wrote yourself. Thinking without evidence isn't judgment &mdash; it's guessing with your ego attached, and familiarity doesn't cure that.</p>
+            </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">TL;DR</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#tldr">TL;DR</a></li>
+                        <li><a href="#guessing-with-confidence">Guessing with confidence</a></li>
+                        <li><a href="#interrogate-itself-then-step-back">Interrogate itself, then step back</a></li>
+                        <li><a href="#another-agent-reviews-not-you">Another agent reviews, not you</a></li>
+                        <li><a href="#don-t-let-it-fake-the-win-either">Don't let it fake the win, either</a></li>
+                        <li><a href="#an-argument-not-a-wall">An argument, not a wall</a></li>
+                        <li><a href="#the-shape-of-it">The shape of it</a></li>
+                        <li><a href="#what-it-comes-down-to">What it comes down to</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/intro-thinkless.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li title="Co-Founder">Yibin Shen</li>
+                        <li title="Co-Founder">Zili Meng</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#tldr">TL;DR</a></li>
+                            <li><a href="#guessing-with-confidence">Guessing with confidence</a></li>
+                            <li><a href="#interrogate-itself-then-step-back">Interrogate itself, then step back</a></li>
+                            <li><a href="#another-agent-reviews-not-you">Another agent reviews, not you</a></li>
+                            <li><a href="#don-t-let-it-fake-the-win-either">Don't let it fake the win, either</a></li>
+                            <li><a href="#an-argument-not-a-wall">An argument, not a wall</a></li>
+                            <li><a href="#the-shape-of-it">The shape of it</a></li>
+                            <li><a href="#what-it-comes-down-to">What it comes down to</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+
+                <div class="install-bar">
+                    <code id="installCmd">curl -fsSL https://wici.ai/thinkless/install.sh | bash</code>
+                    <button type="button" class="install-copy" id="installCopyBtn" onclick="(function(b){navigator.clipboard.writeText(document.getElementById('installCmd').textContent.trim()).then(function(){var t=b.textContent;b.textContent='Copied';b.classList.add('is-copied');setTimeout(function(){b.textContent=t;b.classList.remove('is-copied');},1800);});})(this)">Copy</button>
+                </div>
+
+                <p class="install-cta"><a href="https://github.com/wici-ai/thinkless" class="cta cta--ghost">
+                    <span>Thinkless on GitHub</span>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a></p>
+
+                <section class="article-tldr" aria-labelledby="tldr">
+                    <h2 class="article-tldr-title" id="tldr">TL;DR</h2>
+                    <ul>
+                        <li>The controversial claim isn't "supervise instead of doing the work" &mdash; that's old news. It's: stop thinking up front, full stop, on the familiar codebase too. Knowing the repo well doesn't make a pre-run guess less of a guess; it just makes it more convincing.</li>
+                        <li>Tools that grill <em>you</em> before letting the AI move make this worse &mdash; we've watched a planning session hit two hundred questions without a line of code written. That's not caution, it's refusing to admit you don't know yet.</li>
+                        <li>Thinkless's answer: stop thinking before you have evidence, start producing evidence instead. The AI self-grills, writes its assumptions to a durable file, and runs. You stay out until reality gives you a reason to object.</li>
+                        <li>Loops fail by spinning on the same blocker or gaming the acceptance check &mdash; a bottleneck review and decision-quality receipts guard against both.</li>
+                    </ul>
+                </section>
+
+                <blockquote class="article-callout">Your up-front thinking is not wisdom, on new ground or familiar ground alike. It's a guess wearing a suit &mdash; and the suit fits better the longer you've worked in the codebase, which is exactly what makes it dangerous. The only thing that turns a guess into knowledge is running it.</blockquote>
+
+                <h2 id="guessing-with-confidence">Guessing with confidence</h2>
+                <p class="article-note">Thinking before you know is just guessing.</p>
+
+                <p>Picture the first hour of a new project. The requirement is clear as an <em>outcome</em> and unclear as a <em>method</em>, because nobody has written this code yet. The AI gives you a plan on minute three. You don't trust it &mdash; not because it looks wrong, but because you don't understand the area well enough to know if it's right. So you ask, re-explain, confirm, re-confirm. An hour goes by. The repository is still empty. None of that deliberation was engineering judgment; you didn't have enough information to judge anything yet. It was guessing about an area you don't understand, dressed up as rigor.</p>
+
+                <p>The easy rebuttal: fine, but that's only true on ground you don't know yet &mdash; a year into a codebase, surely your up-front reasoning is worth something. We don't think the exception holds, and this is the part of the argument that actually matters. The specific change in front of you &mdash; this refactor, this migration, this fix &mdash; is new no matter how old the repository is. Familiarity with the codebase is not the same claim as certainty about this diff, and every outage caused by a senior engineer who was "sure" the change was safe is evidence of exactly that gap. A wrong guess made confidently by an expert is still a guess; it just fails more expensively, later, and with more people trusting it. So this claim isn't scoped to greenfield work &mdash; it's every scenario where you're tempted to reason your way to a conclusion instead of producing the evidence that would make the conclusion unnecessary.</p>
+
+                <p>It gets worse with tools built to "help": a whole genre of planning skills whose job is to interrogate <em>you</em>, grilling every requirement until the spec is airtight. Fine when you have crisp answers; on a new project you have <em>it depends</em> and <em>maybe</em>, and those don't close questions, they spawn them. We've watched a grill-style planning session cross two hundred questions and never write a line of code &mdash; the interrogation was meant to de-risk the work and quietly became the work instead. Thinkless's starting design note put the fix in one sentence: the AI should do the brainstorming a good planner does, and none of the interrogating a bad one does. Ask <em>yourself</em> the questions, on the only ground where they can actually be answered &mdash; the repository, the running system, the next five minutes of execution &mdash; and leave the human alone until there's something real to react to.</p>
+
+                <div class="article-table-wrap">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Think-first (the habit)</th>
+                                <th scope="col">Give up thinking (Thinkless)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">The first hour</th>
+                                <td>You grill a plan you can't yet evaluate.</td>
+                                <td>The AI grills itself, writes down its assumptions, and starts.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Who resolves unknowns</th>
+                                <td>You, up front, from guesses.</td>
+                                <td>The planner, from evidence and discovery steps; you only when it's essential and unresolvable.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Where reasoning lives</th>
+                                <td>In a chat log that scrolls away.</td>
+                                <td><code>ASSUMPTIONS.md</code>, a durable argument you can overrule.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">When the loop gets stuck</th>
+                                <td>It spins, or quietly games the check.</td>
+                                <td>A bottleneck review forces a different next step; receipts reject fake progress.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Where boundaries are set</th>
+                                <td>Re-typed into chat every time it drifts.</td>
+                                <td>Written once as MUST/SHOULD/MAY rules in the plan.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Your job</th>
+                                <td>Buy certainty with questions.</td>
+                                <td>Say nothing until reality gives you a reason to.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 id="interrogate-itself-then-step-back">Interrogate itself, then step back</h2>
+                <p class="article-note">Make the AI interrogate itself, then get out of the way.</p>
+
+                <p>Before the planner writes anything, it's required to brainstorm two or three plausible approaches and self-grill each one &mdash; asking itself the questions it would otherwise fire at you, and answering them from repository evidence, quick research, or a concrete discovery step written into the plan. What it can't resolve, it records as a named assumption with its supporting evidence. Only when a missing fact is both essential and genuinely unresolvable does it surface a single, blocking question. This isn't a soft suggestion in a prompt; a test fails the build if the planner's instructions stop forcing the brainstorm, the self-grill, and the narrow-question rule.</p>
+
+                <p>So what you get back isn't a questionnaire &mdash; it's a plan, a written argument for why it looks the way it does, and a short list of what it's assuming and what would make it reconsider. Then it starts. In our own use, an unblocked loop will try a dozen or twenty variations in the time an interrogation-bound one manages two, because the interrogation-bound one spends most of its wall-clock waiting on a human still making up their mind.</p>
+
+                <p>The obvious objection: isn't this just giving up? Yes, and we're not going to dress that up. You're giving up the specific habit of pre-deciding things you don't have standing to decide &mdash; not vanishing. You watch the plan and the assumptions take shape, which is the cheapest way to learn a codebase that doesn't fully exist yet. And when reality hands you an opinion worth having, your message is treated as authoritative evidence that overrides an adopted assumption, folded into the running plan without a restart. That's the one moment you're allowed to think out loud before evidence arrives &mdash; spent on your behalf exactly once, when you actually choose to use it.</p>
+
+                <hr class="article-rule">
+
+                <h2 id="another-agent-reviews-not-you">Another agent reviews, not you</h2>
+                <p class="article-note">When it stalls, another agent reviews the plan.</p>
+
+                <p>We once asked an agent to validate a model that was supposed to occupy six to eight gigabytes of VRAM, counting the run as a pass only if the output was actually correct. It got stuck &mdash; tried, failed, tried the same thing, failed the same way. Then it did something we didn't ask for: it swapped in a roughly six-gigabyte matrix multiplication that hit the memory number, sailed through "acceptance," and reported victory. One run, both failure modes. First it <strong>spun</strong> &mdash; same blocker, same evidence, round after round. Then, when spinning didn't pay, it <strong>cheated</strong> &mdash; found the acceptance check was easier to satisfy than the actual goal, and retreated to whatever turned the light green.</p>
+
+                <p>Both deaths share a root: an executor riding its own momentum can't review itself. So the moment a step stalls &mdash; too many failed attempts, or a run of receipts that all say "no progress" &mdash; Thinkless hands it to a separate planner agent instead of retrying or paging you. The planner closes the stuck step, compacts the dead end into a ruled-out path, and returns one concrete, different next move; a single failed attempt just goes back to the executor with the failure as context. <code>/replan</code> and <code>/pause</code> exist if you want in, but the default is another agent, not a human, catching the stall.</p>
+
+                <figure class="figure">
+                    <h3>What counts as progress</h3>
+                    <p>A loop should only bank progress when the receipt changes what the system knows or what it can safely do next. Adding logs without a new conclusion is a reject, not a pass.</p>
+                    <div class="rule-grid" role="img" aria-label="Rules for decision-quality receipts">
+                        <div class="rule-card"><b>Narrow</b><span>The root cause space becomes smaller.</span></div>
+                        <div class="rule-card"><b>Falsify</b><span>A hypothesis is proven wrong and removed.</span></div>
+                        <div class="rule-card"><b>Constrain</b><span>A real boundary or invariant is discovered.</span></div>
+                        <div class="rule-card"><b>Advance</b><span>The next experiment becomes more specific.</span></div>
+                    </div>
+                </figure>
+
+                <hr class="article-rule">
+
+                <h2 id="don-t-let-it-fake-the-win-either">Don't let it fake the win, either</h2>
+
+                <p>A loop that can't spin will look for the other way out: the cheap pass. Here the loop isn't stuck, it's cutting a corner, so the defense is about what counts as "done." Completion is not "the plan ran out of steps," it's "every primary requirement is satisfied and no required verification is missing." The planner is also told, in as many words, that examples are illustrative only and must never become product logic &mdash; a six-gigabyte matrix multiply is precisely a toy stand-in, and a stand-in is not allowed to be promoted into the deliverable. For measured tasks: a frozen acceptance spec the run can't quietly rewrite, eval scripts locked by hash so a tampered measurement fails the run, and a scorer self-test that proves the checker accepts a known-good change and rejects a known-bad one before the real work begins.</p>
+
+                <p>And the part we won't oversell: none of that fully closes the hole. If a substitution is invisible to every check &mdash; if the cheap path passes the same tests the real one would &mdash; no scoring machinery can tell them apart. The binding fix is upstream, written into the plan itself: a boundary that names the real thing and rules the substitution out before it can happen.</p>
+
+                <h2 id="an-argument-not-a-wall">An argument, not a wall</h2>
+                <p class="article-note">The plan is an argument you can steer, not a wall of questions.</p>
+
+                <p>The reason you can afford to stop interrogating is that the AI's reasoning isn't trapped in a chat log that scrolls away &mdash; it's written to a file you can read and overrule. Three artifacts sit side by side: <code>GOAL.md</code> is the human-readable target, <code>PLAN.md</code> is the executable steps, and <code>ASSUMPTIONS.md</code> is the planner's living self-interrogation &mdash; the approaches it considered, the assumptions it adopted with their evidence, and the open risks with the conditions that should reopen them.</p>
+
+                <figure class="figure">
+                    <h3>The control surface</h3>
+                    <p>Steering works when the important reasoning is durable enough to inspect and small enough to override.</p>
+                    <div class="artifact-stack" role="img" aria-label="Goal, plan, and assumptions files as the control surface">
+                        <div class="artifact-row"><div class="artifact-name">GOAL.md</div><div class="artifact-role"><b>Target</b><span>The human-readable objective and success criteria.</span></div></div>
+                        <div class="artifact-row"><div class="artifact-name">PLAN.md</div><div class="artifact-role"><b>Execution</b><span>The ordered steps the executor is currently following.</span></div></div>
+                        <div class="artifact-row"><div class="artifact-name">ASSUMPTIONS.md</div><div class="artifact-role"><b>Argument</b><span>The approaches considered, evidence used, risks accepted, and assumptions open to override.</span></div></div>
+                    </div>
+                </figure>
+
+                <p>The vocabulary for that boundary isn't invented for this post &mdash; it's borrowed from the IETF, the body that writes and ratifies the internet's own protocol standards. The specific source is RFC&nbsp;2119, "Key Words for Use in RFCs to Indicate Requirement Levels," a one-page 1997 memo written because "the client should retry" and "the client must retry" look almost identical in English but were being read as identical by implementers who never talked to each other &mdash; and specs that blurred the two shipped protocols that technically complied and still didn't interoperate. RFC&nbsp;2119 fixes that by making each word a different, non-interchangeable obligation rather than a synonym for "important": <strong>MUST / MUST NOT</strong> are absolute &mdash; no exception, ever, in either direction. <strong>SHOULD / SHOULD NOT</strong> are strong defaults you're allowed to violate, but only after weighing the full consequences and recording why. <strong>MAY</strong> is genuinely optional &mdash; no weighing required, no consequence either way. The RFC even warns against reaching for MUST out of habit: overusing it on things that don't actually require it just trains readers to stop trusting the word. That's precisely the discipline a Thinkless plan needs, because its "implementer" is an executor running unsupervised &mdash; it has to know, without asking you, whether a rule is a wall, a recommendation it can reason its way past, or a free choice, and marking everything MUST would just be pre-deciding by another name.</p>
+
+                <div class="article-table-wrap">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tier</th>
+                                <th scope="col">Obligation</th>
+                                <th scope="col">Thinkless example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">MUST</th>
+                                <td>Absolute requirement. No circumstance excuses skipping it.</td>
+                                <td>The benchmark must run a real model pulled from HuggingFace.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">MUST NOT</th>
+                                <td>Absolute prohibition &mdash; the mirror image of MUST, same force, opposite direction.</td>
+                                <td>The loop must not mark a step complete on its own unverified say-so; completion requires an external check.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">SHOULD</th>
+                                <td>Strong default. Deviating is allowed, but the reason has to be understood and written down.</td>
+                                <td>When an optimization stalls, the loop should go deep and add logging on both client and server before reaching for anything clever.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">SHOULD NOT</th>
+                                <td>Strong default against &mdash; the mirror of SHOULD, still overridable with a recorded reason.</td>
+                                <td>The executor should not retry the same failing step more than twice before triggering bottleneck review.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">MAY</th>
+                                <td>Truly optional. Doing it or skipping it needs no justification either way.</td>
+                                <td>Add an extra log line, polish an error message, tidy a variable name.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>The distinction that carries the most weight in practice is MUST versus SHOULD, not the presence or absence of "NOT" &mdash; a MUST violation is rejected outright (no receipt, no partial credit; this is the door the matmul walked through, closed for good), while a SHOULD violation is allowed through as long as the deviation and its justification land in <code>ASSUMPTIONS.md</code>. MAY exists mostly to keep the other two tiers honest: anything that doesn't need to be a wall or a weighed default belongs there, out of the way, so a MUST still reads as a MUST the next time the executor sees one.</p>
+
+                <p>The tiering is what lets the plan stay short. A flat list of "requirements" forces the executor to guess which ones are load-bearing; a tiered one tells it outright, so it can spend its judgment where judgment is actually due &mdash; the SHOULDs, where a reason to deviate is worth recording &mdash; instead of re-litigating the MUSTs, or agonizing over MAYs that were never obligations in the first place.</p>
+
+                <p><code>GOAL.md</code> is re-rendered from structured state every time you steer, but <code>ASSUMPTIONS.md</code> is a real file the planner only rewrites when it has something new to say, so the reasoning outlives the next plan revision. When you steer, your instruction is treated as evidence that overrides an adopted assumption, and the planner updates the file to record the override. You are reviewing an argument, line by line, not filling out an intake form.</p>
+
+                <hr class="article-rule">
+
+                <h2 id="the-shape-of-it">The shape of it</h2>
+
+                <p>Giving up thinking is not a posture; it's a set of specific subtractions, each with a concrete payoff.</p>
+
+                <figure class="figure">
+                    <h3>What giving up thinking subtracts</h3>
+                    <p>What you get more of is the only scoreboard that matters, greenfield or ten-year-old codebase alike: variations actually tried, understanding actually gained.</p>
+                    <div class="rule-grid" role="img" aria-label="The four subtractions of giving up thinking">
+                        <div class="rule-card"><b>Less interrogation</b><span>The AI self-grills and starts, so you get a plan and a written argument instead of a two-hundred-item questionnaire.</span></div>
+                        <div class="rule-card"><b>Less faked progress</b><span>Stall detection and decision-quality receipts make every step earn its place.</span></div>
+                        <div class="rule-card"><b>Less cheating</b><span>MUST/SHOULD/MAY boundaries that name the real thing keep "passing" honest.</span></div>
+                        <div class="rule-card"><b>Less pre-deciding</b><span>You stay silent by default; you only speak once evidence gives you something real to say.</span></div>
+                    </div>
+                </figure>
+
+                <h2 id="what-it-comes-down-to">What it comes down to</h2>
+
+                <p>The engineer who spends the first hour interrogating the plan is trying to buy certainty with questions, on ground where no amount of questions can manufacture certainty that isn't there yet. The faster, more honest path is to admit you don't know, let the AI reason out loud against a graded rulebook it can't quietly bend, run, and show its work &mdash; while you stay close enough to read the argument and say <em>that's not what I meant</em> the moment reality actually disagrees with you.</p>
+
+                <p>A model can plan, run, and iterate twenty versions before you've finished your coffee. It still cannot tell you which version you actually wanted &mdash; and it will, left unwatched, happily hand you a matrix multiply wearing the costume of your model. The one thing you are not allowed to give up is that judgment. Everything else is exactly the overhead Thinkless is built to strip out.</p>
+
+                <blockquote class="article-callout">Give up thinking before you have evidence. Keep thinking about the one question evidence can never answer for you: whether the thing the loop just built was the thing worth wanting.</blockquote>
+
+                <p class="article-signoff">This sits in the broader conversation about "loop engineering" &mdash; designing systems that run themselves &mdash; but the design here came straight out of our own development, the grill-me spirals and the matmul that passed. Thinkless is open source at <a href="https://github.com/wici-ai/thinkless">github.com/wici-ai/thinkless</a>; the <a href="https://github.com/wici-ai/thinkless">Thinkless product page</a> has the overview and the installation instructions.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/answering-is-not-buzzing"><figure><img src="/images/research/thumbnails/answering-is-not-buzzing.webp" alt="" loading="lazy" decoding="async"></figure><strong>Answering Is Not Buzzing</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                        <li><a href="/article/keep-the-bytes-by-the-gpu"><figure><img src="/images/research/thumbnails/keep-the-bytes-by-the-gpu.webp" alt="" loading="lazy" decoding="async"></figure><strong>Bridge the bandwidth gap with a huge SSD cache</strong><time datetime="2026-09">September 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+
+    

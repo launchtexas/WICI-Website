@@ -1,0 +1,1454 @@
+/* =========================================
+   WiCi One product page, the Buy page's pieces (css/product-now.css)
+   Loaded by wici-one.html on top of product.css: the product bar, the
+   purchase card and its email signup, the press strip, the Buy band and
+   its email signup, the closing card and its email signup, the FAQ pill.
+   Everything is scoped to those pieces or to .is-now, which <html>
+   carries in the markup since Oct 2, 2026, when the page's signup mode
+   was dropped (archive/wici-one-signup-mode) and this, its ?now mode,
+   became the page. The page lived at wici-one-now.html until Sept 28,
+   2026.
+   ========================================= */
+
+/* ============================
+   Product bar — Apple's product local nav: a tinted strip under the
+   site nav, the product name on the left, the starting price and the
+   one violet Buy pill on the right. Since Oct 20, 2026
+, it is fixed
+   under the nav (64px, 56px on phones) and out of the page's flow, so
+   the hero sits straight under the nav, and it is hidden until the
+   hero has scrolled out from under the nav: initBarPastHero in
+   js/product-now.js adds `is-shown` the moment #overview's bottom edge
+   passes the nav's, and the bar fades and slides down into place
+   (back up and away when the page scrolls back). Its z-index sits
+   below the nav's so the phone menu still drops over it. Without the
+   script the bar stays shown.
+   ============================ */
+/* The bars over the photo hero (`is-over-hero` on <html>, set by
+   product-now.js in the head before the first paint and kept by
+   initBarPastHero while the photo's bottom edge is under the nav's):
+   the nav keeps its frosted white surface and ink type, as on every
+   other page once scrolled (without this it would be bare over the
+   photo until the page scrolls, common.css `is-scrolled`), and under
+   it the announcement bar is a dark glass with white type, from the
+   designer's Figma (Oct 22, 2026). The nav keeps its white background and the phone hero tucks under the
+   bars. */
+html.is-over-hero .nav::before {
+    opacity: 1;
+    /* No fade: the class is on before the first paint, and past it the
+       scroll's own `is-scrolled` holds the surface. */
+    transition: none;
+}
+
+html.is-over-hero .announce {
+    background: rgba(0, 0, 0, 0.35);
+    color: var(--bg);
+}
+
+html.is-over-hero .announce-link {
+    color: var(--bg);
+}
+
+.pnow-bar {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background:
+        linear-gradient(rgba(var(--accent-rgb), 0.07), rgba(var(--accent-rgb), 0.07)),
+        var(--bg-soft);
+    /* No hairline under it. */
+}
+
+.is-bar-watched .pnow-bar {
+    opacity: 0;
+    transform: translateY(-12px);
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), visibility 0s 0.3s;
+}
+
+.is-bar-watched .pnow-bar.is-shown {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    visibility: visible;
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), visibility 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .is-bar-watched .pnow-bar,
+    .is-bar-watched .pnow-bar.is-shown {
+        transition: none;
+    }
+}
+
+.pnow-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 56px;
+    /* The nav row's measure (common.css .nav-inner), so the name under the
+       lockup and Buy under the links line up (Oct 27, 2026). */
+    width: calc(100% - 48px);
+    max-width: 1360px;
+    padding-inline: 64px;
+}
+
+.pnow-bar-name {
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.pnow-bar-buy {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.pnow-bar-price {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+/* The full price struck through beside the offer price, for a visitor
+   with a known code. */
+.pnow-bar-was {
+    margin-right: 0.1em;
+    color: var(--ink-mute);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+}
+
+.pnow-bar-was[hidden] { display: none; }
+
+.pnow-bar-cta {
+    display: inline-flex;
+    align-items: center;
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s var(--ease);
+}
+
+.pnow-bar-cta:hover {
+    background: var(--accent-hover);
+}
+
+.pnow-bar-cta:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* The device stage (product.css .device-features) pins at top: 0 and
+   its text layers sit 56px down, clear of the 64px nav alone; the product
+   bar adds 56px, so on this page the layers start below both, and the
+   intro layer keeps its eyebrow at that edge instead of centring into
+   the bar on short viewports. On phones the layers sit 24px down under
+   a 56px nav and a 48px bar, and the feature layers' partnership badge
+   reached under the bar, so every layer starts 120px down, top-aligned. */
+@media (min-width: 721px) {
+    .is-now .device-layer {
+        padding-top: 136px;
+    }
+    .is-now .device-layer--hero {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 720px) {
+    /* The feature layers pull their partnership badge up by badge height
+       plus gap (68px NVIDIA, 46px Wi-Fi) to keep every slide's title on
+       one baseline, so the layers start 192px down: titles at 192, the
+       NVIDIA badge at 124, 19px under the bar's 105. The centred render moves
+       down by half the nav-plus-bar height so the copy keeps its
+       distance from it, as on the product page. */
+    .is-now .device-layer {
+        padding-top: 192px;
+        justify-content: flex-start;
+    }
+    .is-now .device-figure {
+        padding-top: 104px;
+        box-sizing: border-box;
+    }
+}
+
+/* ============================
+   Purchase card (#editions) — the editions list beside the copy where
+   the signup mode's newsletter form sits. Under the press notices since
+   Sept 29, 2026 (it was under the hero); the section keeps
+   .section--quickcta's 96px foot before the Big Idea.
+   ============================ */
+
+/* The card in two columns: the
+   copy at the left, and at the right, centred against it, the price and
+   Buy as one compact block with the small print and the collapsed signup
+   under them. */
+.qc-card--buy {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 20px 64px;
+    align-items: center;
+}
+
+.qc-card--buy .qc-text {
+    gap: 12px;
+}
+
+.qc-card--buy .qc-body {
+    max-width: 56ch;
+}
+
+/* The block starts where its column does rather than hugging the card's
+   right edge. */
+.qc-buy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-self: start;
+    gap: 12px;
+}
+
+/* The price and Buy on one row: the figure at
+   the left in the lede size, the full price struck through beside it for
+   a visitor with a known code (js/common.js initOfferLines; hidden in the
+   markup otherwise), Buy at the row's end. */
+.qc-buy-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    width: 100%;
+    min-width: 260px;
+}
+
+.qc-from {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--bg);
+}
+
+.qc-from-was {
+    margin-right: 0.1em;
+    font-weight: 400;
+    color: rgba(var(--bg-rgb), 0.55);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+}
+
+.qc-from-was[hidden] { display: none; }
+
+/* Purchase CTAs run accent-first on the dark card, like the newsletter
+   buttons did (the shared primary is ink, invisible on this ground). */
+.qc-card--buy .cta--primary {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.qc-card--buy .cta--primary:hover {
+    background: var(--accent-hover);
+}
+
+.qc-card--buy .qc-fine {
+    margin: 0;
+}
+
+/* Launch week (js/common.js shows it), over the small print on the
+   dark card. */
+.qc-launch {
+    margin: 0;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--accent-on-dark);
+}
+
+.qc-launch strong { font-weight: 600; }
+
+.qc-launch + .qc-policies { margin-top: 0; }
+
+/* The Buy button's small print: the ship time and the three policies
+   (shop/policies), quiet on the dark card. */
+.qc-policies {
+    margin: 0;
+    max-width: 360px;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.7);
+}
+
+.qc-policies a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--bg-rgb), 0.4);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s var(--ease);
+}
+
+.qc-policies a:hover {
+    text-decoration-color: currentColor;
+}
+
+/* The block's last line, the mode's upper email signup, collapsed by
+   default: one quiet line a little apart from the small print, the whole
+   line the <summary> of a native <details>; open, the card's dark-tuned
+   one-row form (the .qc-card--merged .nl-row input rules apply) and its
+   fine print unfold beneath. */
+.qc-updates {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.qc-updates > summary {
+    list-style: none;
+    width: fit-content;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.7);
+}
+
+.qc-updates > summary::-webkit-details-marker {
+    display: none;
+}
+
+.qc-updates > summary strong {
+    font-weight: 600;
+    color: var(--bg);
+}
+
+.qc-updates > summary strong::after {
+    content: " \203A";
+    font-weight: 400;
+}
+
+.qc-updates > summary:focus-visible {
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+.qc-card .qc-updates-form {
+    max-width: 560px;
+    margin-top: 14px;
+    gap: 12px;
+}
+
+/* ============================
+   Press notices (#press) — the six outlets that covered the Sept 24,
+   2026 unveiling: an "As seen in" label, Engadget's mark and its line
+   centred on two lines at four fifths of section-title size in the
+   display sans, then the other five as a row of
+   equal columns with hairlines between them, each outlet's mark at the
+   top left over its line in the body sans. The marks are the outlets' own logos in their brand colours
+; each has
+   its own height (--h), keyed by the item's data-outlet. TechRadar
+   replaced TechSpot on Oct 2, 2026, and the same day the row was
+   ordered by reach: biggest in the middle on one line, biggest first
+   when it wraps or stacks (see the order rules below). Gizmodo replaced
+   Wccftech on Oct 5, 2026.
+   The whole card is the link. Only in ?now mode; the homepage and the signup mode
+   get it after launch.
+   ============================ */
+.pnow-press {
+    /* After the specs and above the closing card's "Buy WiCi One" since
+       Oct 5, 2026 (under the hero until Oct 2, then between the highlights
+       and the Buy band for three days): 72px of white over the label,
+       40px under the quotes before the card. */
+    padding: 72px 0 40px;
+    text-align: center;
+}
+
+.pnow-press-label {
+    display: block;
+    margin-bottom: 28px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.pnow-press-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.pnow-press-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 12px;
+    border-radius: 10px;
+}
+
+.pnow-press-quote {
+    margin: 0;
+}
+
+.pnow-press-quote p {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    text-wrap: balance;
+}
+
+.pnow-press-quote .nb {
+    white-space: nowrap;
+}
+
+/* The lead notice: Engadget's line on two lines, at four fifths of
+   section-title size within 1000px (a px cap: ch here would measure the
+   17px body font, not the quote). */
+.pnow-press-lead {
+    max-width: 1000px;
+    margin: 0 auto 56px;
+}
+
+.pnow-press-lead .pnow-press-quote p {
+    font-size: calc(var(--fs-h2-sub) * 0.8);
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+}
+
+.pnow-press-lead .pnow-press-card {
+    gap: 20px;
+}
+
+/* The other five: equal columns under a hairline across the row, with
+   a hairline between each pair hanging from it, the mark at the top
+   left over the line, in the body sans. */
+.pnow-press-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    text-align: left;
+}
+
+.pnow-press-list li {
+    padding: 20px 28px 4px;
+    border-left: 1px solid var(--line);
+}
+
+/* The first column in the row's order (see below) has no rule. */
+.pnow-press-list [data-outlet="pcmag"] {
+    padding-left: 0;
+    border-left: 0;
+}
+
+.pnow-press-list .pnow-press-card {
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.pnow-press-list .pnow-press-quote p {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: 0;
+    text-wrap: pretty;
+}
+
+/* Every card in the row reserves one height for its logo slot, so the
+   five lines start level. */
+.pnow-press-source {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pnow-press-list .pnow-press-source {
+    height: 34px;   /* the logos half again as large since Oct 16, 2026 */
+    justify-content: flex-start;
+}
+
+.pnow-press-source img {
+    display: block;
+    height: var(--h, 14px);
+    width: auto;
+}
+
+.pnow-press-lead .pnow-press-source img { --h: 32px; }                        /* Engadget */
+.pnow-press-list [data-outlet="techradar"] .pnow-press-source img { --h: 20px; }     /* a lowercase wordmark + radar mark, so a touch taller */
+.pnow-press-list [data-outlet="tomshardware"] .pnow-press-source img { --h: 16px; }  /* a long wordmark, kept small */
+.pnow-press-list [data-outlet="pcmag"] .pnow-press-source img { --h: 29px; }         /* a square badge, so taller than the wordmarks */
+.pnow-press-list [data-outlet="networkchuck"] .pnow-press-source img { --h: 34px; }  /* the channel's face mark, beside its name */
+.pnow-press-list [data-outlet="networkchuck"] .pnow-press-source { gap: 10px; }
+.pnow-press-name { font-family: var(--font-display); font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: var(--ink); }
+.pnow-press-meta { margin-top: -4px; padding: 6px 10px; border-radius: 999px; corner-shape: round; background: var(--bg-soft); font-family: var(--font-sans); font-size: var(--fs-micro); font-weight: 600; line-height: 1; color: var(--ink-mute); white-space: nowrap; }   /* the video's view count */
+.pnow-press-list [data-outlet="gizmodo"] .pnow-press-source img { --h: 19px; }       /* a bold, compact wordmark */
+
+/* The five are in the markup by reach, the biggest first, which is the
+   order they stack in under 961px. In the row they take the designer's
+   order: PCMag, Gizmodo, TechRadar, Tom's Hardware, NetworkChuck. */
+@media (min-width: 961px) {
+    .pnow-press-list [data-outlet="pcmag"] { order: 1; }
+    .pnow-press-list [data-outlet="gizmodo"] { order: 2; }
+    .pnow-press-list [data-outlet="techradar"] { order: 3; }
+    .pnow-press-list [data-outlet="tomshardware"] { order: 4; }
+    .pnow-press-list [data-outlet="networkchuck"] { order: 5; }
+}
+
+/* Under 961px the five stack under the hairline, one between each
+   pair. */
+@media (max-width: 960px) {
+    .pnow-press-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .pnow-press-list li,
+    .pnow-press-list [data-outlet="pcmag"] {
+        padding: 20px 0;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+    }
+    .pnow-press-list li:first-child {
+        border-top: 0;
+    }
+    .pnow-press-list li:last-child {
+        padding-bottom: 0;
+    }
+}
+
+/* Phones: a little tighter. */
+@media (max-width: 720px) {
+    .pnow-press {
+        padding: 56px 0 32px;
+    }
+    .pnow-press-label {
+        margin-bottom: 24px;
+    }
+    .pnow-press-lead {
+        margin-bottom: 40px;
+    }
+}
+
+/* ============================
+   Buy band (#choose, before the FAQ since Oct 2, 2026, when it traded
+   places with the closing card, which now follows the specs) — "Which
+   WiCi One is right for you?" on a light ground with wave lines (the
+   designer's mock, Oct 1, 2026). In ?now
+   mode the band trades product.css's violet gradient for a near-white
+   mist that deepens into a pale lavender, under
+   images/product/wave-lines.svg (as wide as the band, centred on the
+   cards) and the homepage hero's grain; the title and notes turn ink
+. On it, two edition cards side by side, a deep-violet one
+   for the 5060 Ti and a white one for the 5090. Left: a small-caps "for…" line, the edition's name,
+   the GPU and its GDDR7, the price, its own Buy pill into
+   shop/wici-one?edition=. Right, beside a hairline: one sentence on
+   memory, storage and use, then a "Selected benchmarks" label with a
+   "See all" link into #models over two figures from #models, their
+   captions in a second column.
+   ============================ */
+.is-now .section--reserve {
+    position: relative;
+    isolation: isolate;
+    padding: 64px 0 56px;
+    /* The wave layer is wider than the list it hangs on. clip where
+       supported (hidden otherwise): a hidden box can still be scrolled
+       sideways by a script or a text-selection drag, which would slide
+       the cards off-centre; a clipped one cannot. */
+    overflow: hidden;
+    overflow: clip;
+    /* Scene colours from the design (DESIGN.md), run as the designer's
+       Figma gradient (Oct 2, 2026): white (the press strip's until Oct 5,
+       2026; the highlights' grey band sits above since) turns to the hero
+       mist over the band's first sixth, so the band
+       reads as a new section, then eases to the hero lavender at 50% on
+       white at the foot. */
+    background: linear-gradient(to bottom,
+        var(--bg-card) 0%,
+        var(--bg-card) 2%,
+        var(--hero-mist) 18%,
+        color-mix(in srgb, var(--hero-lavender) 50%, var(--bg-card)) 100%);
+    color: var(--ink);
+}
+
+/* The design's grain, as on the homepage hero panel (home.css): fine
+   noise blended over the fill and the waves, under the content. */
+.is-now .section--reserve::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* The grain fades in over the band's first 32px: a blended layer
+       whose top edge lands on a fractional pixel drew a faint hairline
+       against the white strip above (seen on phones, Oct 2, 2026). */
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 32px);
+    mask-image: linear-gradient(to bottom, transparent, #000 32px);
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='256'%20height='256'%3E%3Cfilter%20id='n'%20x='0'%20y='0'%20width='100%'%20height='100%'%20color-interpolation-filters='sRGB'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='1.1'%20numOctaves='3'%20stitchTiles='stitch'%20seed='5694'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type='linear'%20slope='0'%20intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect%20width='100%'%20height='100%'%20filter='url%28%23n%29'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    mix-blend-mode: overlay;
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* Wider than the page container: the pair of cards is about 1307px, so side by side the block's
+   gutters drop to 18px and the pair fits from 1360px up. */
+.pnow-choose {
+    max-width: 1360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+@media (min-width: 1360px) {
+    .pnow-choose {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+}
+
+.pnow-choose .reserve-title {
+    max-width: 16ch;
+    margin: 0 auto;
+    color: var(--ink);
+}
+
+.pnow-choose .reserve-title em {
+    color: inherit;
+}
+
+/* Each card is as wide as its copy column plus its list, so the pair
+   sits centred at its natural width, about 1324px; under 1360px they
+   stack (below). */
+.pnow-tiles {
+    position: relative;
+    list-style: none;
+    margin: 40px auto 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 24px;
+}
+
+/* The wave lines, the band's width and centred on the cards: across
+   the row on desktop (the hump rising beside the title, as drawn), on
+   the seam between the two cards once they stack. On desktop the layer
+   keeps its drawn height at any width (wider screens stretch it
+   sideways only), so its lowest line always runs about 49px under the
+   cards and the notes start below it. Under the grain (-1), over the
+   fill. */
+.pnow-tiles::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    left: 50%;
+    top: 50%;
+    width: max(100vw, 1512px);
+    height: 565px;
+    transform: translate(-50%, -50%);
+    background: url("../images/product/wave-lines.svg") center / 100% 100% no-repeat;
+    pointer-events: none;
+}
+
+.pnow-tile {
+    --tile-kicker: var(--accent);
+    --tile-rule: var(--line-strong);
+    --tile-cap: var(--ink-mute);
+    --tile-link: var(--accent);
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 36px 32px;
+    border-radius: 45px;
+    background: var(--bg-card);
+    color: var(--ink);
+    text-align: left;
+    box-shadow: 0 24px 60px -36px rgba(var(--ink-rgb), 0.35);
+}
+
+/* The dark card: the design's deep violet (a scene colour, DESIGN.md),
+   white copy, lavender small print. On the 5060 Ti since Oct 1, 2026,
+   when the two cards swapped colours (it was the 5090's). */
+.pnow-tile--deep {
+    --pnow-deep: #56558e;
+    --tile-kicker: rgba(var(--accent-soft-rgb), 0.9);
+    --tile-rule: rgba(var(--accent-soft-rgb), 0.6);
+    --tile-cap: rgba(var(--accent-soft-rgb), 0.85);
+    --tile-link: var(--bg);
+    background: var(--pnow-deep);
+    color: var(--bg);
+}
+
+/* The left column says what the edition is and sells it: the
+   small-caps line, the name, the GPU and its memory, the price, the
+   pill. It is as wide as the edition's name, then the same 40px before
+   the hairline in both cards: the small-caps line and the GPU line
+   give the column no width of their own, so the shorter "5090 edition"
+   pulls its hairline in and those two lines may run a little into the
+   gap. */
+.pnow-tile-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 40px;
+}
+
+.pnow-tile-kicker {
+    margin: 0;
+    font-family: var(--font-sans);
+    /* A step under the section kicker, so "For maximum performance"
+       holds one line in the copy column. */
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    line-height: var(--lh-title);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    /* No width of its own: "For maximum performance" may run a little
+       past the name into the gap. */
+    width: 0;
+    min-width: 100%;
+    color: var(--tile-kicker);
+}
+
+.pnow-tile-name {
+    margin: 24px 0 0;
+    font-family: var(--font-display);
+    /* Between the h3-lg and h2-sub roles: the design's 42px on its
+       1512px frame (an exemption noted in DESIGN.md). */
+    font-size: clamp(32px, 3.1vw, 42px);
+    font-weight: 500;
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-title);
+    color: inherit;
+    white-space: nowrap;
+}
+
+/* The GPU and its memory, close under the name it belongs to. */
+.pnow-tile-spec {
+    margin: 10px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: 1.3;
+    white-space: nowrap;
+    width: 0;
+    min-width: 100%;
+}
+
+/* The price, in the price-figure role (DESIGN.md: h3-lg, display 500). */
+.pnow-tile-price {
+    margin: 22px 0 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+}
+
+/* The pill is pinned to the card's foot so both cards' buttons sit on
+   one line whatever sits above. */
+.pnow-tile-buy {
+    margin-top: auto;
+    padding-top: 24px;
+}
+
+/* The page's Buy pill, at the hero button's size (15px, 13px
+   24px; the markup's cta--large is overridden). Violet on the white
+   card, lavender with violet type on the deep one. */
+.pnow-tile-cta {
+    padding: 13px 24px;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: var(--fs-button);
+}
+
+.pnow-tile-cta:hover {
+    background: var(--accent-hover);
+}
+
+.pnow-tile--deep .pnow-tile-cta {
+    background: var(--hero-lavender);
+    color: var(--pnow-deep);
+}
+
+.pnow-tile--deep .pnow-tile-cta:hover {
+    background: var(--accent-soft);
+}
+
+.pnow-tile--deep .pnow-tile-cta:focus-visible {
+    outline-color: var(--bg);
+}
+
+/* The right column, beside the hairline and centred against the left:
+   one sentence on what the edition is for, then a sample of the
+   benchmarks. One width in both cards, so the sentence wraps the same
+   way (four lines) and the pair stays about 1307px wide. */
+.pnow-tile-detail {
+    box-sizing: content-box;
+    width: 260px;
+    padding: 0 0 0 28px;
+    border-left: 1px solid var(--tile-rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: 1.3;
+}
+
+.pnow-tile-for {
+    margin: 0;
+    /* The looser line spacing. */
+    line-height: 1.4;
+    color: inherit;
+    text-wrap: balance;
+}
+
+/* Over the two figures: a "Selected benchmarks" label and a "See all"
+   link into #models, so the pair reads as a sample of the table. */
+.pnow-tile-bench-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.pnow-tile-bench-label {
+    margin: 0;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--tile-cap);
+}
+
+.pnow-tile-bench-all {
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--tile-link);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s var(--ease);
+}
+
+.pnow-tile-bench-all:hover {
+    text-decoration-color: currentColor;
+}
+
+.pnow-tile-bench-all:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* The two figures: no bullets, each with its caption in a second
+   column (subgrid; a fixed figure column where it is missing). */
+.pnow-tile-figs {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: max-content max-content;
+    row-gap: 10px;
+    white-space: nowrap;
+}
+
+.pnow-tile-figs li {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-items: baseline;
+}
+
+.pnow-tile-cap {
+    padding-left: 12px;
+    color: var(--tile-cap);
+}
+
+@supports not (grid-template-columns: subgrid) {
+    .pnow-tile-figs li {
+        grid-template-columns: 5.6em max-content;
+    }
+}
+
+/* Launch week (js/common.js shows it), in the note's place 56px under
+   the cards; the note follows it closely. */
+.pnow-choose-launch {
+    margin: 56px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--accent-bright);
+}
+
+.pnow-choose-launch strong { font-weight: 600; }
+
+.pnow-choose-launch:not([hidden]) + .pnow-choose-note { margin-top: 8px; }
+
+/* 56px under the cards on desktop: below the lowest wave line. */
+.pnow-choose-note {
+    margin: 56px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink);
+}
+
+.pnow-choose-note a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--ink-rgb), 0.45);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s var(--ease);
+}
+
+.pnow-choose-note a:hover {
+    text-decoration-color: currentColor;
+}
+
+.pnow-choose-note a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* Under the note, the band's email signup: the purchase card's one
+   line, centred like the note, its second half bold, over the shared
+   one-row form on a centred column, recoloured for the light band
+   (product.css's .reserve-form rules dress it for the violet one). It
+   starts open since Oct 3, 2026 (the <details> carries `open`), and
+   stands 28px clear of the note above so it reads as its own block
+   (6px before, when it was one collapsed line under the note). */
+.pnow-choose-updates {
+    margin-top: 28px;
+    text-align: center;
+}
+
+.pnow-choose-updates > summary {
+    list-style: none;
+    display: inline-block;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink);
+}
+
+.pnow-choose-updates > summary::-webkit-details-marker {
+    display: none;
+}
+
+.pnow-choose-updates > summary strong {
+    font-weight: 600;
+}
+
+.pnow-choose-updates > summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+.pnow-choose-updates .pnow-choose-form {
+    margin: 16px auto 0;
+    max-width: 520px;
+    text-align: left;
+}
+
+.pnow-choose-form .nl-row input {
+    border-color: var(--line);
+}
+
+.pnow-choose-form .nl-success,
+.pnow-choose-form .nl-success strong {
+    color: var(--ink);
+}
+
+.pnow-choose-form .signup-notice--on-dark {
+    color: var(--ink-mute);
+}
+
+/* ============================
+   Closing card (#closing) — one statement, one action, beside the 360°
+   turntable on a white card (product.css's scale render, its wash, the
+   dark callout, and the frosted panel are gone). The turntable takes
+   the left column and the copy the right, 480px wide and ending on the
+   container's edge. Under 960px the two stack, turntable first.
+   ============================ */
+.pnow-close .signup-card {
+    background: var(--bg);
+}
+
+.pnow-close .signup-card::after {
+    content: none;
+}
+
+.pnow-close-content {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+    column-gap: clamp(56px, 7vw, 96px);
+    /* The signup row's hairline sits close under the turntable: 36px,
+       about 18px under the drag hint. */
+    row-gap: 36px;
+}
+
+/* The turntable's 1024×576 frame keeps the device inside its middle 66%
+   (x 174 to 850 of 1024, y 105 to 468 of 576, over all 200 frames), so
+   the frame is drawn larger than its column and centred on it: at 175%
+   the device's widest turn runs 7.75% past the column on each side,
+   inside the content padding on the left and the gap on the right, and
+   the transparent rest of the frame overhangs unseen. The vertical
+   margins take the frame's empty top and bottom back out of the layout.
+   The still (frame 0) holds the place until js/product-now.js has its
+   first frame and swaps in its canvas, the same frame at the same size. */
+.pnow-close-media {
+    position: relative;
+    margin: 0;
+    pointer-events: none;
+}
+
+.pnow-close-media img,
+.pnow-close-media canvas {
+    display: block;
+    width: 175%;
+    max-width: none;
+    height: auto;
+    margin: -12% -37.5%;
+}
+
+.pnow-close-media.is-live img,
+.pnow-close-media:not(.is-live) canvas {
+    display: none;
+}
+
+/* Once every frame is in, a sideways drag turns the device. The column
+   takes the drag, not the overhanging frame, which would lie over the
+   copy; page scrolling stays with the browser (pan-y). */
+.pnow-close-media.is-ready {
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.pnow-close-media.is-ready:active {
+    cursor: grabbing;
+}
+
+.pnow-close-media.is-ready img,
+.pnow-close-media.is-ready canvas {
+    pointer-events: none;
+}
+
+/* The drag hint: a quiet pill centred under the device, hung just past
+   the figure's lower edge (the device's lowest turn ends 30px above
+   it). It appears with the drag itself and goes with the first one. */
+.pnow-close-hint {
+    position: absolute;
+    left: 50%;
+    bottom: -18px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px 5px 10px;
+    border-radius: 999px; corner-shape: round;
+    background: var(--bg-soft);
+    color: var(--ink-mute);
+    font-size: var(--fs-caption);
+    font-weight: 500;
+    line-height: 16px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity 0.4s var(--ease);
+}
+
+.pnow-close-media.is-ready .pnow-close-hint {
+    opacity: 1;
+}
+
+.pnow-close-media.is-dragged .pnow-close-hint {
+    opacity: 0;
+}
+
+.pnow-close .signup-text {
+    width: 100%;
+    max-width: 480px;
+}
+
+.pnow-close-copy {
+    /* The two sentences run on as one paragraph: the block's flex column and the paragraph boxes go, so
+       the second sentence follows the first on the same line. */
+    display: block;
+    max-width: 40ch;
+    margin-top: 24px;
+    font-size: var(--fs-lead);
+}
+
+.pnow-close-copy p {
+    display: inline;
+}
+
+/* The last pill beside a quiet text link into the buy page's Compare
+   step: choose, or buy. */
+.pnow-close-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    margin-top: 36px;
+}
+
+.pnow-close-cta {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.pnow-close-cta:hover {
+    background: var(--accent-hover);
+}
+
+.pnow-close-link {
+    font-family: var(--font-sans);
+    font-size: var(--fs-button);
+    font-weight: 600;
+    color: var(--accent-bright);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.pnow-close-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.pnow-close-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* Under the turntable and the copy, across the whole card, for
+   visitors not ordering today: the mode's one email signup
+   (data-form-name bottom-now-cta, bound like every other .nl-form by
+   js/product.js). A hairline across both columns, then one row: the
+   lead on the left, level with the field, and on the right the shared
+   one-row form, its optional note and the fine print (the designer's
+   layout, Oct 2, 2026; it sat in the copy column before). */
+.pnow-close-form {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: none;
+    margin-top: 0;
+    padding-top: 40px;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+    display: grid;
+    /* The lead's own width first, the form at most 540px in what is left
+. */
+    grid-template-columns: max-content minmax(0, 540px);
+    justify-content: space-between;
+    column-gap: 48px;
+    row-gap: 12px;
+    align-items: start;
+}
+
+.pnow-close-form > * {
+    grid-column: 2;
+}
+
+/* One line at the card-title size, its bold
+   part set like the rest, centred on the field beside it. */
+.pnow-close-form-lead {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    margin: 0;
+    white-space: nowrap;
+    font-family: var(--font-sans);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.pnow-close-form-lead strong {
+    font-weight: inherit;
+}
+
+/* The fine print on one line across both columns, flush with the form's
+   right edge (the same request; it broke in the 540px column). */
+.pnow-close-form .signup-notice {
+    grid-column: 1 / -1;
+    width: 0;                /* spanning both columns, it must not size them */
+    min-width: 100%;
+    white-space: nowrap;
+    text-align: right;
+}
+
+/* ============================
+   Under 1360px the two-column card no longer fits beside its twin, so
+   each card turns into one column (the name, GPU and price, then the
+   sentence and figures under a hairline, then a full-width pill) and
+   the two stay side by side, equal widths, down to 721px: a narrow
+   desktop window or a tablet still compares the editions at a glance
+   (Oct 2, 2026; they stacked below 1360px before).
+   ============================ */
+@media (max-width: 1359px) {
+    .pnow-tiles {
+        width: 100%;
+    }
+    /* The lines keep their drawn proportions inside the pair's height,
+       so the note can sit closer. */
+    .pnow-tiles::before {
+        width: max(100vw, 1100px);
+        height: auto;
+        aspect-ratio: 1512 / 565;
+    }
+    .pnow-choose-note {
+        margin-top: 36px;
+    }
+    .pnow-tile {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 28px 28px 26px;
+    }
+    /* The left column dissolves so the right one can sit between the
+       price and the pill, under a hairline. */
+    .pnow-tile-main {
+        display: contents;
+    }
+    .pnow-tile-name {
+        margin-top: 14px;
+    }
+    .pnow-tile-spec {
+        margin-top: 8px;
+    }
+    .pnow-tile-price {
+        margin-top: 16px;
+    }
+    .pnow-tile-detail {
+        order: 1;
+        width: auto;
+        margin-top: 20px;
+        padding: 20px 0 0;
+        border-left: 0;
+        border-top: 1px solid var(--tile-rule);
+    }
+    /* Pinned to the foot, so the two pills sit level when one sentence
+       runs a line longer than the other; the pill keeps its own width,
+       as in the two-column card. */
+    .pnow-tile-buy {
+        order: 2;
+        margin-top: auto;
+        padding-top: 22px;
+    }
+}
+
+/* ============================
+   Under 960px the closing card stacks on one centred column: the
+   turntable, then the copy. At 160% the device's widest turn runs 2.8%
+   past the column on each side, inside the side padding. The gap holds
+   the drag hint, which hangs 14px into it.
+   ============================ */
+@media (max-width: 960px) {
+    .pnow-close-content {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+        gap: 36px;
+        padding-top: 40px;
+    }
+    .pnow-close-hint {
+        bottom: -14px;
+    }
+    .pnow-close-media {
+        width: 100%;
+        max-width: 520px;
+    }
+    .pnow-close-media img,
+    .pnow-close-media canvas {
+        width: 160%;
+        margin: -10% -30%;
+    }
+    /* Stacked: the lead over the field. */
+    .pnow-close-form {
+        grid-template-columns: minmax(0, 1fr);
+        padding-top: 32px;
+    }
+    .pnow-close-form > *,
+    .pnow-close-form-lead {
+        grid-column: 1;
+    }
+    .pnow-close-form-lead {
+        grid-row: auto;
+        align-self: start;
+        margin-bottom: 8px;
+        white-space: normal;
+        text-align: center;
+    }
+    .pnow-close-form .signup-notice {
+        white-space: normal;
+        text-align: center;
+    }
+}
+
+/* ============================
+   Phones — the two cards stack across the 20px gutters, each still one
+   column; the closing card keeps its stack, the turntable across the
+   gutters and the copy full width under it.
+   ============================ */
+@media (max-width: 720px) {
+    .is-now .section--reserve {
+        padding: 56px 0 48px;
+    }
+    .pnow-tiles {
+        flex-direction: column;
+        margin-top: 32px;
+        gap: 16px;
+    }
+    /* The lines at their drawn size (1512 by 565), centred on the
+       seam: a phone shows the middle stretch, unsqueezed. */
+    .pnow-tiles::before {
+        width: 1512px;
+    }
+    .pnow-tile {
+        padding: 24px 20px 22px;
+        border-radius: 35px;
+    }
+    .pnow-tile-cta {
+        width: 100%;
+        justify-content: center;
+    }
+    .pnow-choose-note {
+        margin-top: 28px;
+    }
+    .pnow-close-content {
+        padding: 28px 20px 48px;
+    }
+    .pnow-close .signup-text {
+        max-width: none;
+    }
+    .pnow-close-copy {
+        font-size: var(--fs-body);
+    }
+    .pnow-close-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 18px;
+        margin-top: 28px;
+    }
+    .pnow-close-cta {
+        justify-content: center;
+    }
+    .pnow-close-link {
+        text-align: center;
+    }
+    /* The stacked row form's reorder (product.css) puts the lead first
+       by default; the hairline block just tightens. */
+    .pnow-close-form {
+        padding-top: 24px;
+    }
+}
+
+/* ============================
+   FAQ — the Buy button under the shipping answer, and the policy links
+   in the answers.
+   ============================ */
+.faq-a .faq-cta {
+    margin: 4px 0 12px;
+}
+
+.faq-a > p > a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--accent-rgb), 0.55);
+    text-underline-offset: 3px;
+    transition: color 0.2s var(--ease), text-decoration-color 0.2s var(--ease);
+}
+
+.faq-a > p > a:hover {
+    color: var(--accent-bright);
+    text-decoration-color: currentColor;
+}
+
+/* ============================
+   Phones
+   ============================ */
+@media (max-width: 720px) {
+    .pnow-bar {
+        top: 56px;
+    }
+    /* The Benchmarks accordion's sticky heads pin under the bar
+       (56px nav + 48px bar), see product.css. */
+    .is-now {
+        --pin-top: 104px;
+    }
+    .pnow-bar-inner {
+        height: 48px;
+        width: 100%;
+        padding: 0 20px;
+    }
+    .pnow-bar-buy {
+        gap: 12px;
+    }
+    .pnow-bar-cta {
+        height: 32px;
+        padding: 0 14px;
+    }
+    /* One column: the price at the left and Buy at the right across the
+       card's width, the small print free to run; the signup's button runs
+       the form's width. */
+    .qc-card--buy {
+        grid-template-columns: 1fr;
+    }
+    .qc-buy {
+        width: 100%;
+    }
+    .qc-policies {
+        max-width: none;
+    }
+    .qc-updates .cta--primary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Close the hardware page with the standalone local-AI app. */
+.pnow-infer { background: var(--bg); }
+.pnow-infer-layout { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 64px; }
+.pnow-infer-image { display: block; overflow: hidden; border-radius: 26px; }
+.pnow-infer-image img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; object-position: 65% center; }
+.pnow-infer-copy h2 { max-width: 19ch; font-family: var(--font-display); font-size: var(--fs-h2-sub); font-weight: 500; line-height: var(--lh-display); letter-spacing: var(--ls-display); }
+.pnow-infer-copy p { margin-top: 20px; max-width: 42ch; font-size: var(--fs-body); color: var(--ink-soft); line-height: var(--lh-body); }
+.pnow-infer-copy p + p { margin-top: 12px; }
+.pnow-infer-link { display: inline-flex; align-items: center; gap: 14px; margin-top: 24px; font-size: var(--fs-body); font-weight: 500; }
+.pnow-infer-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 960px) { .pnow-infer-layout { gap: 36px; } }
+@media (max-width: 720px) { .pnow-infer-layout { grid-template-columns: 1fr; gap: 28px; } }

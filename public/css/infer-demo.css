@@ -1,0 +1,65 @@
+/* The native App owns its UI styles; these rules frame the demo and its narrow navigation. */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body { display: flex; flex-direction: column; background: var(--bg); font-family: var(--font-sans); }
+.demo-window-bar { --demo-window-close: #ff5f57; --demo-window-minimize: #febc2e; --demo-window-maximize: #28c840; display: flex; flex: 0 0 44px; align-items: center; gap: 8px; padding-inline: 18px; background: var(--bg-soft); border-bottom: 1px solid var(--line); }
+.demo-window-dot { width: 12px; height: 12px; border-radius: 50%; corner-shape: round; }
+.demo-window-dot--close { background: var(--demo-window-close); }
+.demo-window-dot--minimize { background: var(--demo-window-minimize); }
+.demo-window-dot--maximize { background: var(--demo-window-maximize); }
+#root { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+#root input, #root textarea { outline-offset: 2px; }
+#root :focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px; }
+#root * { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+#root [data-infer-scroll="vertical"] { scrollbar-gutter: stable; }
+#infer-demo-topnav { flex-shrink: 0; padding: 6px 8px; gap: 4px; }
+#infer-demo-tophead { min-height: 24px; }
+#infer-demo-tophead h1 svg { width: 97px; height: 18px; }
+#infer-demo-tophead [dir="auto"] { font-size: var(--fs-micro); }
+#infer-demo-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
+#infer-demo-nav > div { min-width: 0; }
+#infer-demo-nav [role="button"] { min-height: 44px; height: 44px; padding: 4px 2px; gap: 3px; flex-direction: column; justify-content: center; }
+#infer-demo-nav [role="button"] > div { min-width: 0; font-size: var(--fs-micro); line-height: 1.2; text-align: center; white-space: nowrap; }
+#infer-demo-nav svg { width: 14px; height: 14px; flex-shrink: 0; }
+.demo-disclosure { margin-left: auto; color: var(--ink-mute); font-size: var(--fs-micro); line-height: var(--lh-body); text-align: right; }
+#demo-notice:empty { display: none; }
+#demo-notice { position: fixed; z-index: 100; top: 52px; right: 12px; max-width: calc(100% - 24px); padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--accent-bright); font-size: var(--fs-caption); line-height: var(--lh-body); pointer-events: none; }
+.demo-noscript { padding: 32px; font-size: var(--fs-body); }
+@media (max-width: 600px) {
+    #infer-chat-layout { flex-direction: column; }
+    #infer-chat-conversations { width: 100%; max-height: 104px; flex-shrink: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+    #infer-chat-conversations > div:first-child { flex-direction: row; align-items: center; justify-content: space-between; }
+    #infer-chat-conversations > div:first-child > :first-child { flex-shrink: 0; padding-inline: 12px; }
+    #infer-chat-conversations > div:first-child > :last-child { flex: 1; min-width: 0; }
+    .demo-window-bar { flex-basis: 30px; gap: 5px; padding-inline: 10px; }
+    .demo-window-dot { width: 8px; height: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* The explicit iframe bridge owns boundary handoff, avoiding double chaining. */
+html, body, #root [data-infer-scroll="vertical"] { overscroll-behavior-y: contain; }
+
+/* While the page owns scrolling, neither native momentum nor a fresh swipe
+   may move a pane underneath the approaching download sheet. */
+.infer-page-scroll #root [data-infer-scroll="vertical"] { overflow-y: hidden !important; }
+.infer-page-scroll #root { touch-action: pan-x pinch-zoom; }
+
+/* Non-scrolling phone embed: compact chrome with clickable navigation.
+   Swipes are the browser's: they chain straight to the page around this frame. */
+.infer-static-preview, .infer-static-preview body, .infer-static-preview #root [data-infer-scroll="vertical"] { overscroll-behavior-y: auto; }
+.infer-static-preview #infer-download-dock { display: none; }
+.infer-static-preview #infer-home-launcher,
+.infer-static-preview #infer-home-board > div:last-child,
+.infer-static-preview #infer-home-board > div:first-child > :last-child { display: none; }
+.infer-static-preview #root [data-infer-scroll="vertical"] { overflow: hidden !important; scrollbar-gutter: auto; }
+.infer-static-preview #infer-demo-nav [role="button"] { height: 34px; min-height: 34px; padding-block: 2px; }
+.infer-static-preview #infer-demo-topnav { padding-block: 4px; }
+.infer-static-preview #infer-home [data-infer-scroll="vertical"] > div { padding: 14px 16px !important; gap: 14px !important; }
+.infer-static-preview #infer-home-model-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.infer-static-preview #infer-home-model-stats > div:first-child { grid-column: 1 / -1; }
+.infer-static-preview #infer-home-model-stats > div { padding: 6px 0 !important; }
+.infer-static-preview #infer-home-model-stats > div:last-child { padding-left: 12px !important; }
+.infer-static-preview #infer-home-hardware-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.infer-static-preview #infer-home-hardware-stats > div { padding: 8px 0 !important; border: 0 !important; }
+.infer-static-preview #infer-home-hardware-stats > div > div:nth-child(2) { font-size: var(--fs-caption) !important; }

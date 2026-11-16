@@ -1,0 +1,273 @@
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making a Nearby GPU Feel Local | WiCi Research</title>
+    <meta name="description" content="What has to cross the link when the GPU leaves the device: why the wireless bottleneck is round-trip latency, not bandwidth, and how a protocol keeps a nearby GPU feeling local.">
+    <meta property="og:image" content="https://wici.ai/images/common/og-device-flatlay.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WiCi One on a violet box among a headset, a tablet, a laptop, and a Mac mini.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="article:published_time" content="2026-09-08">
+    <link rel="preload" href="/css/fonts/test-financier-display-medium-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/articles.css">
+    <link rel="icon" type="image/png" href="/images/common/favicon.png">
+    <link rel="apple-touch-icon" href="/images/common/apple-touch-icon.png">
+    <style>
+      /* ---------------------------------------------------------------
+         Article-specific components only (figures, charts, matrices,
+         claims, sliders). The global shell — nav, header/title, prose
+         typography, footer — comes from common.css + articles.css above.
+         Custom palette vars below alias the site tokens (see docs/DESIGN.md).
+         --------------------------------------------------------------- */
+      :root {
+        /* --ink, --line, --accent come from common.css; the aliases below
+           follow the shared tokens so a palette change reaches this page. */
+        --muted: var(--ink-mute);
+        --panel: var(--bg-card);
+        --accent-2: #d85f36;   /* article chart colors: remote / warm */
+        --accent-3: #9597cf;   /* article chart colors: secondary violet */
+        --dark: var(--bg-dark);
+        --soft: var(--bg-tint);
+      }
+
+      .claim {
+        margin: 34px 0;
+        padding: 22px 24px;
+        border-left: 5px solid var(--accent);
+        background: #fff;
+        font-size: 23px;
+        line-height: 1.28;
+        font-weight: 800;
+        box-shadow: 0 14px 42px rgba(var(--ink-rgb), .08);
+      }
+
+      .figure {
+        margin: 38px 0 42px;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: var(--panel);
+        box-shadow: 0 18px 48px rgba(var(--ink-rgb), .08);
+      }
+
+      .figure h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+        line-height: 1.25;
+      }
+
+      .figure p {
+        margin: 0 0 18px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.45;
+      }
+
+      /* Fig 1 — static 2x2 link matrix (matches the neighbor article's style). */
+      .link-matrix {
+        display: grid;
+        grid-template-columns: 108px repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .matrix-corner,
+      .matrix-head,
+      .matrix-axis,
+      .matrix-cell {
+        min-height: 82px;
+        padding: 14px;
+        border: 1px solid #dfe5ec;
+        border-radius: 13px;
+        background: #fff;
+      }
+
+      .matrix-corner {
+        background: transparent;
+        border-color: transparent;
+      }
+
+      .matrix-head {
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--dark);
+        font-size: 14px;
+        font-weight: 820;
+        text-align: center;
+        line-height: 1.2;
+      }
+
+      .matrix-axis {
+        display: grid;
+        align-items: center;
+        color: var(--dark);
+        background: var(--soft);
+        font-size: 14px;
+        font-weight: 820;
+      }
+
+      .matrix-cell b {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 22px;
+        line-height: 1.05;
+      }
+
+      .matrix-cell span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.32;
+      }
+
+      .matrix-cell.fast b { color: var(--accent-bright); }
+      .matrix-cell.slow b { color: var(--accent-2); }
+
+      /* Fig 2 — interactive round-trip race (Plotly + sliders). */
+      .sim-controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+
+      .control {
+        padding: 14px;
+        border: 1px solid #dfe5ec;
+        border-radius: 13px;
+        background: #fbfcfd;
+      }
+
+      .control label {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+        color: var(--dark);
+        font-size: 13px;
+        font-weight: 780;
+      }
+
+      .control output {
+        color: var(--accent-bright);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--accent);
+      }
+
+      .plot-shell {
+        position: relative;
+        min-height: 360px;
+        border: 1px solid #dfe5ec;
+        border-radius: 13px;
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .plot {
+        width: 100%;
+        min-height: 360px;
+      }
+
+      .plot-fallback {
+        display: none;
+        padding: 18px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .plot-fallback b { color: var(--dark); }
+
+      /* Fig 3 — static N-shrink bar: horizontal fill scaled to the call count. */
+      .nbar {
+        display: grid;
+        gap: 12px;
+      }
+
+      .nbar-row {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .nbar-label {
+        color: var(--dark);
+        font-size: 14px;
+        font-weight: 720;
+        line-height: 1.25;
+      }
+
+      .nbar-track {
+        position: relative;
+        height: 46px;
+        border-radius: 13px;
+        background: #f1f3f5;
+        overflow: hidden;
+      }
+
+      .nbar-fill {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 12px;
+        border-radius: 13px;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 760;
+        white-space: nowrap;
+      }
+
+      .nbar-fill.naive { background: var(--accent-2); }
+      .nbar-fill.wici { background: var(--accent); }
+
+      @media (max-width: 720px) {
+        .sim-controls { grid-template-columns: 1fr; }
+        .nbar-row { grid-template-columns: 1fr; gap: 6px; }
+        .figure { padding: 18px; }
+        .claim { font-size: 20px; padding: 18px; }
+      }
+
+      .sources {
+        margin-top: 52px;
+        padding-top: 26px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .sources h2 {
+        margin: 0 0 14px;
+        font-size: 22px;
+        color: var(--ink);
+      }
+
+      .sources ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .sources li { font-size: 14px; color: var(--muted); }
+      .sources li + li { margin-top: 8px; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: .01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+    <script src="/js/tracking.js"></script>

@@ -1,0 +1,1651 @@
+/* =========================================
+   WiCi — Common base styles
+   Shared by every page: home, product, careers.
+   Includes fonts, root variables, reset,
+   typography helpers, container, navigation,
+   section base, CTA, footer, reveal animation,
+   "Stay tuned" tooltip, and shared responsive
+   rules (nav, footer, container, body).
+   ========================================= */
+
+@font-face {
+    font-family: "Financier Display";
+    src: url("fonts/test-financier-display-medium-italic.woff2") format("woff2");
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* GT Standard test — S (text sizes) and L (display sizes), 400/500/700 */
+@font-face {
+    font-family: "GT Standard S";
+    src: url("fonts/gt-standard-s-regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT Standard S";
+    src: url("fonts/gt-standard-s-medium.woff2") format("woff2");
+    /* 500–650 so the 550/600/650 used across the site don't snap up to bold */
+    font-weight: 500 650;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT Standard S";
+    src: url("fonts/gt-standard-s-bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT Standard L";
+    src: url("fonts/gt-standard-l-regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT Standard L";
+    src: url("fonts/gt-standard-l-medium.woff2") format("woff2");
+    /* 500–650 so the 550/600/650 used across the site don't snap up to bold */
+    font-weight: 500 650;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "GT Standard L";
+    src: url("fonts/gt-standard-l-bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    /* White ground (as in the Figma) + the violet family from the "Website Ideas" Figma
+       (Sept 2026). Text greys are unchanged; accent, dark bands, and the
+       tints moved from blue to violet. */
+    --bg: #ffffff;
+    --bg-tint: #ebebed;
+    --bg-soft: #f5f5f7;          /* the quietest tint: a section ground one step off white */
+    --bg-card: #ffffff;
+    --bg-dark: #56558e;          /* WiCi purple: the deepest colour in the set, so the dark bands are it */
+    --ink: #1d1d1f;
+    --ink-soft: #3a3a3c;
+    --ink-mute: #6e6e73;
+    --line: #d2d2d7;
+    --line-strong: #c6c6cb;
+    --accent: #56558e;           /* WiCi purple: the flat-lay photo's box, images/home/device-flatlay.jpg, its average over the box: buttons, tabs, focus rings, bands */
+    --accent-hover: #6664a5;     /* one step lighter, the box's lit face: hover on light grounds (it went darker, #575784, before Oct 28) */
+    --accent-soft: #e8e8f2;      /* (#e8e9f6 before) */
+    --accent-on-dark: #c0bfe4;   /* accent-colored text on --bg-dark bands (3.8:1; #a9abe0 on navy before) */
+    --accent-on-dark-rgb: 192, 191, 228;
+    --bg-neutral: #efeff4;       /* Figma "Neutral": quiet panel ground (Big Idea stage) */
+    --bg-cool: #d6e0e8;          /* Figma "Color 3": cool section ground */
+    --line-cool: #66778a;        /* Figma "Color 7" darkened to clear 3:1 on --bg-cool */
+    --success: #34c759;
+    --error: #b42318;
+
+    /* RGB channels of the tokens above, for tints/scrims/shadows written as
+       rgba(var(--ink-rgb), 0.18). Keep each in sync with its hex when the
+       palette changes; nothing else in css/ should spell these channels. */
+    --bg-rgb: 255, 255, 255;
+    --bg-dark-rgb: 86, 85, 142;
+    --ink-rgb: 29, 29, 31;
+    --accent-rgb: 86, 85, 142;
+    --accent-soft-rgb: 232, 232, 242;
+
+    /* Hand-tuned steps: a brighter accent for hover on dark cards, and the
+       success/error tints that stay legible on the dark bands. */
+    --accent-bright: #6664a5;    /* the same step lighter as --accent-hover, the box's lit face: purple type on light grounds (kickers, ems, links) and hover on dark cards (5.3:1 on white; #7376c8 before) */
+    --success-bright: #30d158;
+    --error-on-dark: #ffb4ab;
+
+    /* Hero art (homepage + WiCi One heroes, from the "Website Ideas" Figma):
+       mist-to-lavender panel fill and the violet pill text. */
+    --hero-mist: #edf4f5;
+    --hero-lavender: #c6c5df;    /* (#c0b8d7 before) */
+    --hero-violet: #56558e;
+
+    /* Typography */
+    --font-display: "GT Standard L", "Google Sans Flex", Arial, Helvetica, sans-serif;
+    --font-sans: "GT Standard S", "Google Sans Flex", Arial, Helvetica, sans-serif;
+    --font-base: 17px;
+    --line-height-base: var(--lh-body);
+    --letter-spacing-base: normal;
+
+    /* Line-height and letter-spacing roles (see DESIGN.md). Display =
+       hero/h2 tiers, title = h3 tiers, body = all reading text; caps =
+       every uppercase kicker/label. Body copy has no tracking. */
+    --lh-display: 1.05;
+    --lh-title: 1.15;
+    --lh-body: 1.5;
+    --ls-display: -0.03em;
+    --ls-title: -0.02em;
+    --ls-caps: 0.12em;
+
+    /* Type scale — semantic roles. Fluid tiers replace per-page @media
+       shrinks; fixed tiers are device-independent. Weights: 400 body,
+       500 display headings, 600 small titles/labels/buttons. */
+    --fs-hero: clamp(56px, 7.5vw, 96px);      /* grand page hero */
+    --fs-hero-sub: clamp(38px, 4.6vw, 64px);  /* secondary page hero */
+    --fs-h2: clamp(40px, 6.25vw, 80px);       /* statement section title */
+    --fs-h2-sub: clamp(36px, 4.4vw, 56px);    /* quiet/feature section title */
+    --fs-h3-lg: clamp(24px, 2.2vw, 28px);     /* large card/tile title */
+    --fs-h3: 20px;                            /* card/item title */
+    --fs-lead: 18px;                          /* ledes, prominent body */
+    --fs-body: 16px;                          /* default copy */
+    --fs-body-s: 15px;                        /* dense copy, list items */
+    --fs-button: 15px;                        /* CTAs (weight 600) */
+    --fs-kicker: 16px;                        /* section eyebrows (weight 600) */
+    --fs-caption: 13px;                       /* fine print, footnotes */
+    --fs-micro: 12px;                         /* uppercase labels (weight 600) */
+
+    /* Layout */
+    --container: 1200px;
+    --container-narrow: 760px;
+    --radius: 22px;
+
+    /* Motion */
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100%;
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
+}
+
+/* Horizontal-overflow guard on <body> ONLY — it propagates to the
+   viewport from there while <html>'s own overflow stays visible.
+   `clip` on <html> makes Chrome silently ignore every programmatic
+   scroll (scrollTo/scrollTop writes clamp to 0, wheel unaffected),
+   which broke hash-link offsets and the device auto lock-in. */
+body {
+    overflow-x: clip;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Lenis (initSmoothScroll in js/common.js) marks the root .lenis while it
+   runs: its own recommended rules, so the native smooth scrolling above
+   and the page's height do not fight it, and a held page (a menu, a
+   sheet, a dialog open) does not scroll under it. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+body {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-base);
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    width: 100%;
+    position: relative;
+}
+
+img, svg { display: block; max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+
+input, textarea { font: inherit; color: inherit; }
+
+::selection { background: var(--accent); color: var(--bg); }
+
+/* ---- Container ---- */
+.container {
+    width: 100%;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 28px;
+}
+
+.container--narrow { max-width: var(--container-narrow); }
+
+.container--wide { max-width: 1320px; }
+
+/* Visually hidden (table captions, labels for assistive tech) */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---- Typography helpers ---- */
+.serif-italic {
+    font-family: "Financier Display", Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.2em;
+    line-height: 1;
+    letter-spacing: 0.03em;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+.section-kicker {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-kicker);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 24px;
+}
+
+/* ============================
+   Announcement bar (event)
+   Sits under the sticky nav in normal flow on every page (above it until
+   Oct 20, 2026), so it scrolls away while the nav stays; it paints over
+   the top of the heroes that tuck under the nav. A soft accent tint with
+   ink type and the accent pill, in place of the navy. No close button: it shows
+   on every visit while the event is on.
+   ============================ */
+.announce {
+    position: relative;
+    z-index: 2;
+    background: var(--accent-soft);
+    color: var(--ink);
+}
+
+.announce-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 10px;
+    min-height: 40px;
+    padding: 8px 16px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: 1.4;
+    color: var(--ink);
+    text-align: center;
+}
+
+.announce-link strong { font-weight: 600; }
+
+.announce-sep { color: rgba(var(--ink-rgb), 0.35); }
+
+/* The call, an accent pill on the tint. */
+.announce-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 4px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    line-height: 1.3;
+    transition: background 0.2s var(--ease);
+}
+
+.announce-cta svg { transition: transform 0.25s var(--ease); }
+.announce-link:hover .announce-cta { background: var(--accent-hover); }
+.announce-link:hover .announce-cta svg { transform: translateX(3px); }
+
+@media (max-width: 720px) {
+    /* On phones the bar is a grid: the lead over the place at the left,
+       set tight like a two-line paragraph, and the pill
+       at the right, centred on both lines and thicker than the desktop
+       one. */
+    .announce-link {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        column-gap: 12px;
+        row-gap: 0;
+        align-items: center;
+        justify-content: normal;
+        padding: 8px 16px;
+        font-size: var(--fs-caption);
+        text-align: left;
+    }
+    .announce-link strong { grid-column: 1; grid-row: 1; }
+    .announce-link > span:not(.announce-sep):not(.announce-cta) { grid-column: 1; grid-row: 2; }
+    .announce-sep { display: none; }
+    .announce-cta {
+        grid-column: 2;
+        grid-row: 1 / 3;
+        align-self: center;
+        margin-left: 0;
+        padding: 7px 14px;
+    }
+}
+
+/* ============================
+   Navigation
+   ============================ */
+/* Plain sticky bar, desktop and phones alike: the lockup logo at the
+   left, the links in a row pushed to the right, on a translucent
+   surface — no floating pill, no scroll choreography. */
+.nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+/* The frosted surface lives on a pseudo-element rather than the header
+   itself: a backdrop-filter on the header would make it the containing
+   block for the fixed-position mobile menu sheet and pin the sheet
+   inside the bar. */
+.nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(var(--bg-rgb), 0.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    /* Bare at the top of the page; the surface fades in once the page
+       scrolls under the bar (is-scrolled from common.js). */
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+}
+
+.nav.is-scrolled::before {
+    opacity: 1;
+}
+
+.nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 64px;
+    /* The row is the homepage's on every page: 24px in from the screen's edges, 1360px at most, and its
+       content 64px inside that, so it runs 44px past the 1200px container
+       on each side on a wide screen. The product page's product bar and
+       the buy page's price bar follow it. */
+    width: calc(100% - 48px);
+    max-width: 1360px;
+    padding-inline: 64px;
+}
+
+.nav-brand {
+    display: inline-flex;
+    align-items: center;
+    /* Markup keeps the link groups either side of the brand (the old
+       centered layout); the brand leads the row and pushes both groups
+       to the far right. */
+    order: -1;
+    margin-right: auto;
+    color: var(--ink);
+}
+
+.nav-brand img {
+    display: block;
+    height: 28px;
+    width: auto;
+    /* The lockup's wordmark sits low in its box (the mark's waves rise
+       above it); lifting the image 3px puts the wordmark on the links'
+       optical centre line. */
+    transform: translateY(-3px);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-link {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    transition: color 0.2s var(--ease);
+}
+.nav-link:hover { color: var(--accent-bright); }
+
+/* Activity hint: a small accent badge beside a nav label, saying
+   what's live on that page (e.g. the WiCi One giveaway). Applies to
+   desktop and mobile nav links alike. */
+.nav-link--activity {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-activity-badge,
+.nav-status-badge {
+    padding: 4px 9px;
+    border-radius: 999px; corner-shape: round;
+    background: rgba(var(--accent-rgb), 0.12);
+    color: var(--accent-bright);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* Holds only the burger — hidden on desktop so the empty box and its
+   flex gap don't push the logo off-center. */
+.nav-cta {
+    display: none;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+}
+.nav-toggle span {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    background: var(--ink);
+    transition: transform 0.25s var(--ease), opacity 0.2s var(--ease);
+}
+.nav-toggle.is-open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle.is-open span:nth-child(2) { opacity: 0; }
+.nav-toggle.is-open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.nav-mobile {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px 28px 28px;
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+}
+.nav-mobile.is-open { display: flex; }
+
+.nav-mobile-link {
+    padding: 14px 0;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+}
+.nav-mobile-link:last-of-type { border-bottom: none; margin-bottom: 12px; }
+
+/* ---- Solutions dropdown ----
+   "Solutions" is a link to the solutions index that also opens a panel
+   of the five solution pages on hover, focus, or click (common.js
+   toggles .is-open for touch and keyboard). Desktop only: the phone
+   drawer lists the same links flat under a group label. */
+.nav-drop {
+    position: relative;
+}
+
+.nav-drop-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-drop-btn.is-current,
+.nav-link.is-current {
+    color: var(--accent-bright);
+}
+
+.nav-drop-chev {
+    transition: transform 0.2s var(--ease);
+}
+
+.nav-drop:hover .nav-drop-chev,
+.nav-drop.is-open .nav-drop-chev {
+    transform: rotate(180deg);
+}
+
+.nav-drop-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    /* Hung from the trigger's right edge: the links sit at the right
+       end of the bar, so a menu opening rightward would run off the
+       screen (three dropdowns since Oct 26, 2026). */
+    right: -18px;
+    min-width: 320px;
+    padding: 4px 0;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    box-shadow: 0 2px 10px -6px rgba(var(--ink-rgb), 0.18);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.18s var(--ease), transform 0.18s var(--ease), visibility 0s linear 0.18s;
+    z-index: 60;
+}
+
+/* Invisible bridge over the gap so the pointer can travel down into
+   the panel without closing it. */
+.nav-drop-menu::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -10px;
+    height: 10px;
+}
+
+.nav-drop:hover .nav-drop-menu,
+.nav-drop:focus-within .nav-drop-menu,
+.nav-drop.is-open .nav-drop-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+}
+
+/* Rows separated by hairlines, flush to the panel edges; the title is
+   set like a nav link and turns accent on hover and for the current page. */
+.nav-drop-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 11px 18px 12px;
+}
+
+.nav-drop-item + .nav-drop-item {
+    border-top: 1px solid var(--line);
+}
+
+.nav-drop-item:focus-visible {
+    outline: none;
+}
+
+.nav-drop-item-title {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--ink);
+    transition: color 0.15s var(--ease);
+}
+
+.nav-drop-item:hover .nav-drop-item-title,
+.nav-drop-item:focus-visible .nav-drop-item-title,
+.nav-drop-item[aria-current] .nav-drop-item-title {
+    color: var(--accent-bright);
+}
+
+.nav-drop-item-desc {
+    font-size: var(--fs-caption);
+    line-height: 1.35;
+    color: var(--ink-mute);
+    white-space: nowrap;
+}
+
+/* Solutions group in the phone drawer: a row that expands its links
+   (common.js toggles hidden + aria-expanded; the chevron turns down). */
+.nav-mobile-group-btn {
+    width: 100%;
+    text-align: left;
+}
+
+.nav-mobile-group-btn[aria-expanded="true"]::after {
+    transform: rotate(90deg);
+}
+
+.nav-mobile-sub[hidden] {
+    display: none;
+}
+
+.nav-mobile-sub {
+    display: flex;
+    flex-direction: column;
+    padding: 2px 0 8px 18px;
+    border-left: 2px solid var(--line);
+    margin: 0 0 6px 6px;
+}
+
+.nav-mobile-sub .nav-mobile-link--sub {
+    padding: 10px 0;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.nav-mobile-sub .nav-mobile-link--sub::after {
+    width: 30px;
+    height: 30px;
+    background-size: 12px 12px;
+}
+
+/* Lock page scroll while the mobile menu is open (toggled by common.js) */
+html.nav-menu-open,
+html.nav-menu-open body {
+    overflow: hidden;
+}
+
+/* ============================
+   Section base
+   ============================ */
+.section {
+    padding: 60px 0;
+    position: relative;
+}
+
+.section-header {
+    margin-bottom: 72px;
+    max-width: 28ch;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h2-sub);
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+}
+
+.section-title em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--accent-bright);
+}
+
+.section-subtitle {
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    margin-top: 30px;
+    font-weight: 400;
+}
+
+/* Offer lines (js/common.js, initOfferLines): shown only when the
+   visitor's code, or the launch code, is one the site knows; `hidden`
+   must win over the display a line's own class gives it. */
+[data-offer-line][hidden] { display: none !important; }
+
+/* ============================
+   Inline film (shared)
+   A film waiting behind its poster, played in place: `<figure class="film"
+   data-film>` around a plain `<video controls preload="none" poster>`, which
+   works by itself, and a play pill over the poster that js/common.js
+   (initFilms) shows; the first click starts the film with sound under the
+   site's own controls below. Used by the homepage's demos, the product
+   page's Developer Experience section, the Technology page's overview,
+   the creators page, the launch recap and the reviewer guide; each page
+   sets the figure's width and margins.
+   ============================ */
+.film {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    background: #000;
+    overflow: hidden;
+}
+
+.film video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.film-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* Its own width: an element placed at left 50% is otherwise fitted
+       into the half of the figure to its right, which squeezes the icon
+       out on phones. */
+    width: max-content;
+    max-width: calc(100% - 24px);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 24px 13px 20px;
+    border: 1px solid rgba(var(--bg-rgb), 0.7);
+    border-radius: 999px;
+    background: rgba(var(--ink-rgb), 0.6);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(var(--ink-rgb), 0.2);
+    color: var(--bg);
+    font-family: var(--font-sans);
+    font-size: var(--fs-button);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.film-play svg { flex: none; }
+.film-play[hidden] { display: none; }
+.film-play:hover { background: rgba(var(--ink-rgb), 0.8); border-color: var(--bg); }
+.film-play:active { transform: translate(-50%, -50%) scale(0.97); }
+.film-play:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.film-play-time {
+    font-weight: 400;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The site's own controls, built by js/common.js (buildFilmControls, which adds .film--own
+   to the figure; the solutions pages' .sol-film takes them too) in the
+   manner of the product page's demo stage (.rooms-ctl): dark glass squares with white glyphs over a
+   soft scrim at the foot of the picture, the progress line between them
+   (--p on .film-ui is the film's progress), the time in the caption size.
+   The bar is there once the film has started (is-started) and rests
+   while it plays (is-idle); the knob on the line shows on hover, focus
+   and while a drag is on (is-seeking). */
+.film--own { -webkit-user-select: none; user-select: none; }
+.film--own video { cursor: pointer; }
+.film--own.is-started.is-idle video { cursor: none; }
+.film-ui {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 2;
+    padding: 56px 20px 20px;
+    background: linear-gradient(to top, rgba(var(--ink-rgb), 0.55), rgba(var(--ink-rgb), 0));
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--ease);
+}
+.film--own.is-started .film-ui { opacity: 1; pointer-events: auto; }
+.film--own.is-started.is-idle .film-ui { opacity: 0; pointer-events: none; }
+.film-bar { display: flex; align-items: center; gap: 12px; }
+.film-btn {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    padding: 11px;
+    border: 1px solid rgba(var(--bg-rgb), 0.7);
+    border-radius: 16px;
+    background: rgba(var(--ink-rgb), 0.55);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    box-shadow: 0 4px 8px rgba(var(--ink-rgb), 0.25);
+    color: var(--bg);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.film-btn svg { display: block; width: 100%; height: 100%; }
+.film-btn:hover { background: rgba(var(--ink-rgb), 0.8); border-color: var(--bg); }
+.film-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* Glyph swaps (js/common.js toggles the classes on the figure). */
+.film-btn .film-i-play, .film-btn .film-i-muted, .film-btn .film-i-unfull { display: none; }
+.film--own.is-paused .film-btn .film-i-play { display: block; }
+.film--own.is-paused .film-btn .film-i-pause { display: none; }
+.film--own.is-muted .film-btn .film-i-muted { display: block; }
+.film--own.is-muted .film-btn .film-i-sound { display: none; }
+.film--own.is-fullscreen .film-btn .film-i-unfull { display: block; }
+.film--own.is-fullscreen .film-btn .film-i-full { display: none; }
+.film-track {
+    flex: 1 1 auto;
+    position: relative;
+    height: 24px;
+    min-width: 48px;
+    cursor: pointer;
+    touch-action: none;   /* the page's pan-y would take a horizontal drag */
+}
+.film-track::before,
+.film-track-fill {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 3px;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+.film-track::before { right: 0; background: rgba(var(--bg-rgb), 0.35); }
+.film-track-fill { width: calc(var(--p, 0) * 100%); background: var(--bg); }
+.film-track-knob {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--p, 0) * 100%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    corner-shape: round;
+    background: var(--bg);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.15s var(--ease);
+}
+.film-track:hover .film-track-knob,
+.film-track:focus-visible .film-track-knob,
+.film--own.is-seeking .film-track-knob { transform: translate(-50%, -50%) scale(1); }
+.film-track:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.film-time {
+    flex: none;
+    color: var(--bg);
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+}
+.film--own:fullscreen { border-radius: 0; }
+.film--own:fullscreen video { object-fit: contain; }
+@media (max-width: 720px) {
+    .film-ui { padding: 40px 12px 12px; }
+    .film-bar { gap: 8px; }
+    .film-btn { width: 36px; height: 36px; padding: 9px; border-radius: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .film-ui, .film-btn, .film-track-knob { transition: none; }
+}
+
+/* Corners: every rounded corner on the site is Apple's continuous-curvature corner. Cards, panels, pictures, dialogs, chips and fields take corner-shape: superellipse(2), the squircle, from the universal rule below, with their radii 1.6 times what they were (the VI page's equivalence: Figma's smoothing at 0.6 makes a corner of r span 1.6r along the edge, and a superellipse corner spans its radius, so a squircle at 1.6r is the smoothed corner at r; --radius is 22px, 14 before, and the pages' 18px cards are 29px); radii of 2 to 4px, seams, dots and focus rings, were not scaled. Every pill button and field keeps its 999px radius, clamped by the browser to half the height, and takes superellipse(1.56), the exponent the VI page's smoothing comes to at that radius, so the end is between a semicircle and a squircle. Circles (border-radius: 50%) and the pills that are not buttons, badges, chips, tracks and hints, say corner-shape: round in their own rules, since at half the height a squircle end is a flattened blob, not a pill. Browsers without corner-shape (Firefox) draw plain round corners at the larger radii. */
+*, ::before, ::after { corner-shape: superellipse(2); }
+.cta, .announce-cta, .nav-mobile-cta, .film-play, .dev-submit, .fh-next, .policies-tab, .pnow-bar-cta, .rooms-tab, .rooms-play-full, .nl-row input, .float-cta, .signup-pop-skip, .tour-media-tab, .sol-film-full { corner-shape: superellipse(1.56); }
+
+/* ============================
+   CTA buttons (shared)
+   ============================ */
+.cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 999px;
+    font-size: var(--fs-button);
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease),
+                border-color 0.2s var(--ease), transform 0.25s var(--ease);
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.cta svg { transition: transform 0.25s var(--ease); }
+.cta:hover svg { transform: translateX(3px); }
+
+.cta--primary {
+    background: var(--ink);
+    color: var(--bg);
+}
+.cta--primary:hover { background: var(--accent); }
+
+.cta--ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line-strong);
+}
+.cta--ghost:hover {
+    border-color: var(--ink);
+    background: var(--bg-tint);
+}
+
+.cta--large {
+    padding: 18px 32px;
+    font-size: var(--fs-body);
+}
+
+.cta:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.cta:disabled,
+.cta[disabled] {
+    opacity: 0.55;
+    cursor: default;
+}
+
+/* Submit-button success state, applied by js/signup.js once the
+   request settles: a plain label swap — no animation — with the
+   button turned success-green. The :disabled variant out-ranks the
+   .cta disabled fade so the confirmation stays fully legible. */
+button.is-sent,
+button.is-sent:disabled {
+    opacity: 1;
+    background: var(--success);
+    color: #ffffff;
+}
+
+/* Collection-time notice shared by newsletter and access forms. */
+.signup-notice {
+    margin: 14px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    line-height: 1.5;
+    color: var(--ink-mute);
+    text-align: center;
+}
+
+.signup-notice--on-dark {
+    color: rgba(var(--bg-rgb), 0.62);
+}
+
+.signup-notice a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.signup-submit-error {
+    margin: 14px 0 0;
+    color: var(--error);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.signup-submit-error--on-dark {
+    color: var(--error-on-dark);
+}
+
+.signup-submit-error a {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* ============================
+   "In partnership with NVIDIA" credit (shared)
+   ============================ */
+/* Small-caps label beside the official horizontal lockup (used with
+   NVIDIA's approval). The lockup is black-on-transparent, so this only
+   works on light backgrounds. Pages set placement (margins/alignment)
+   in their own stylesheets. */
+.nv-note {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.nv-note-label {
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.nv-note-logo {
+    display: block;
+    /* Sized for the Inception lockup's two text tiers (NVIDIA +
+       program line) — tall enough that both stay legible. */
+    height: 54px;
+    width: auto;
+}
+
+/* ============================
+   Footer
+   ============================ */
+.footer {
+    padding: 80px 0 36px;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(5, 1fr);
+    gap: 40px;
+    padding-bottom: 64px;
+}
+
+.footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.footer-col--brand {
+    gap: 16px;
+}
+
+.footer-brand {
+    display: inline-flex;
+    align-items: center;
+    color: var(--ink);
+}
+
+.footer-brand img {
+    height: 36px;
+    width: auto;
+    display: block;
+}
+
+.footer-tagline {
+    font-family: var(--font-sans);
+    color: var(--ink-soft);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    max-width: 24ch;
+}
+
+/* Instagram, LinkedIn and Discord under the tagline: the brands' own marks
+   (Simple Icons 9.21.0, CC0), in the footer links' grey. */
+.footer-social {
+    list-style: none;
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;    /* 32px under the tagline with the column's 16px gap */
+}
+
+.footer-social a {
+    display: inline-flex;
+    color: var(--ink-mute);
+    transition: color 0.18s var(--ease);
+}
+
+.footer-social a:hover {
+    color: var(--ink);
+}
+
+.footer-social svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.footer-col-title {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);    /* the list's size, bold, no uppercase */
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+
+/* One line under a column's title on what it is: the WiCi One
+   column's "The first wireless GPU for frontier AI". */
+.footer-col-desc {
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    line-height: 1.35;
+    color: var(--ink-mute);
+    margin: -14px 0 6px;    /* 6px under the title (the column's 14px gap less this, plus the title's 6px), 20px over the list */
+}
+
+.footer-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-list a {
+    color: var(--ink-mute);
+    font-size: var(--fs-body-s);
+    transition: color 0.18s var(--ease);
+}
+
+.footer-list a:hover {
+    color: var(--ink);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+}
+
+.footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 22px;
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+}
+
+.footer-legal a {
+    color: var(--ink-mute);
+    transition: color 0.18s var(--ease);
+}
+
+.footer-legal a:hover {
+    color: var(--ink);
+}
+
+/* The cache token, inside the copyright and shown only while it is
+   hovered, so the build a page was served with can be read off its foot
+   without being on show; the sweep's sed catches it
+   with the asset URLs. The footer's address went the same hour. */
+.footer-legal .footer-version {
+    margin-left: 12px;
+    color: var(--ink-mute);
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
+}
+.footer-copyright:hover .footer-version { opacity: 1; }
+
+.footer-copyright {
+    color: var(--ink-mute);
+}
+
+/* ============================
+   Reveal animation
+   ============================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================
+   "Stay tuned" tooltip
+   ============================ */
+.stay-tuned-tooltip {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 2px));
+    background: var(--bg-dark);
+    color: var(--bg);
+    padding: 7px 12px;
+    border-radius: 11px;
+    font-size: var(--fs-caption);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+    z-index: 1000;
+    box-shadow: 0 6px 20px rgba(var(--ink-rgb), 0.18);
+}
+
+.stay-tuned-tooltip::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    transform: translateX(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    background: var(--bg-dark);
+}
+
+.stay-tuned-tooltip.is-visible {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 10px));
+}
+
+/* ============================
+   Responsive — shared layout
+   (nav, footer, container, body)
+   ============================ */
+@media (max-width: 960px) {
+    .nav-inner { gap: 16px; }
+    .nav-links { gap: 22px; }
+    .nav-link { font-size: 14px; }
+    /* Too tight for the badge beside the flanking links — the mobile
+       menu sheet keeps its own copy. */
+    .nav-links .nav-activity-badge { display: none; }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 40px 32px;
+    }
+    .footer-col--brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 720px) {
+    /* ---- Phone header + drawer ----
+       One header unit, all solid surfaces. Bar: a 56px row, lockup at
+       the left, burger at the right. Drawer: an opaque panel hung
+       directly below the bar, filling the rest of the screen. While
+       open, the header is fixed to the viewport and the page behind is
+       frozen (common.js), so nothing can move; nothing is translucent,
+       so nothing can show through. */
+    .nav {
+        height: 56px;
+        /* The solid open-state ground fades out in step with the
+           drawer on close instead of snapping off. */
+        transition: background-color 0.18s var(--ease);
+    }
+    .nav-links { display: none; }
+
+    .nav-inner {
+        position: relative;
+        z-index: 2;                      /* bar row above the drawer */
+        justify-content: space-between;
+        gap: 0;
+        height: 56px;
+        width: 100%;
+        padding: 0 20px;
+    }
+
+    .nav-brand img { height: 30px; }
+
+    .nav-cta { display: flex; }
+
+    .nav-toggle {
+        display: flex;
+        width: 38px;
+        height: 38px;
+        border-radius: 16px;
+    }
+
+    .nav.is-menu-open {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--bg);
+    }
+
+    .nav-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: absolute;
+        top: 56px;
+        left: 0;
+        right: 0;
+        height: calc(100vh - 56px);
+        height: calc(100dvh - 56px);
+        z-index: 1;
+        padding: 24px 20px 40px;
+        border-top: none;
+        background: var(--bg);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        transition: opacity 0.18s var(--ease), transform 0.18s var(--ease),
+                    visibility 0s linear 0.18s;
+    }
+    .nav-mobile.is-open {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+    }
+
+    .nav-mobile-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 0;
+        border-bottom: none;
+        font-size: clamp(28px, 7.4vw, 34px);
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        line-height: 1.15;
+        color: var(--ink);
+    }
+    .nav-mobile-link:last-of-type { margin-bottom: 0; }
+
+    /* Activity link: keep the title on one line, badge tucks under it */
+    .nav-mobile-link.nav-link--activity {
+        display: grid;
+        grid-template-columns: 1fr 40px;
+        column-gap: 10px;
+        row-gap: 8px;
+        align-items: center;
+    }
+    .nav-mobile-link.nav-link--activity .nav-activity-badge {
+        grid-column: 1;
+        justify-self: start;
+    }
+    .nav-mobile-link.nav-link--activity::after {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: center;
+    }
+
+    /* Circled chevron affordance (chevron stroke = --ink) */
+    .nav-mobile-link::after {
+        content: "";
+        flex: none;
+        width: 40px;
+        height: 40px;
+        margin-left: auto;
+        border: 1px solid var(--line);
+        border-radius: 50%; corner-shape: round;
+        background: var(--bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M5 3l4 4-4 4' fill='none' stroke='%231d1d1f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+    }
+
+    .nav-mobile-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 30px;
+        padding: 17px 28px;
+        border-radius: 999px;
+        background: var(--accent);
+        color: var(--bg-card);
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .nav-mobile-cta:active { background: var(--accent-hover); }
+
+    .nav-mobile-secondary {
+        margin-top: 34px;
+        border-top: 1px solid var(--line);
+    }
+    .nav-mobile-secondary a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 2px;
+        border-bottom: 1px solid var(--line);
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--ink-soft);
+    }
+    .nav-mobile-secondary a:last-of-type { border-bottom: none; }
+    .nav-mobile-secondary a::after {
+        content: "";
+        width: 12px;
+        height: 12px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M5 3l4 4-4 4' fill='none' stroke='%231d1d1f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 12px 12px no-repeat;
+        opacity: 0.55;
+    }
+
+    .section { padding: 80px 0; }
+
+    .container { padding: 0 20px; }
+
+    .section-header { margin-bottom: 48px; }
+
+    .footer { padding: 64px 0 28px; }
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 36px 24px;
+        padding-bottom: 48px;
+    }
+    .footer-col--brand { grid-column: 1 / -1; }
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+}
+
+/* ============================
+   Physical-intelligence figures — the 200 ms latency budget bar
+   chart and the on-site / on-robot / cloud comparison table. Shared
+   by physical-intelligence.html (full size) and index.html (the
+   --compact variants side by side). Markup: .pi-budget > .pi-bars >
+   .pi-bar(--budget|--wici|--over) and .pi-compare-wrap > table.pi-compare
+   with .is-wici on the WiCi column.
+   ============================ */
+/* Budget chart: horizontal bars on a 200 ms scale, in a white card.
+   The track is the budget with gridlines every 50 ms; single measure,
+   so one hue. The WiCi bar wears the accent, the tail bar runs past
+   the right edge in the navy. */
+.pi-budget {
+    margin: 0 0 56px;
+    max-width: 1000px;
+    padding: 34px 36px 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 29px;
+}
+
+.pi-budget-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: var(--lh-title);
+    color: var(--ink);
+    max-width: 34ch;
+    margin-bottom: 30px;
+}
+
+.pi-bars {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.pi-bar,
+.pi-bar-axis {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr) 170px;
+    gap: 22px;
+    align-items: center;
+}
+
+.pi-bar-label {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+}
+
+.pi-bar-logo {
+    height: 16px;
+    width: auto;
+    position: relative;
+    top: 1px;
+}
+
+/* The track is the 200 ms budget: a light tint with a hairline every
+   50 ms, and the fill anchored at 0. */
+.pi-bar-track {
+    display: block;
+    height: 20px;
+    border-radius: 0 10px 10px 0;
+    background:
+        linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 25% 100% repeat-x,
+        rgba(var(--ink-rgb), 0.05);
+    overflow: hidden;
+    position: relative;
+}
+
+.pi-bar-fill {
+    display: block;
+    height: 100%;
+    width: var(--w, 0%);
+    min-width: 4px;
+    border-radius: 0 10px 10px 0;
+    background: var(--ink-mute);
+}
+
+.pi-bar--budget .pi-bar-fill {
+    background: rgba(var(--accent-rgb), 0.12);
+    border: 1px dashed rgba(var(--accent-rgb), 0.6);
+    border-left: 0;
+}
+
+.pi-bar--wici .pi-bar-fill {
+    background: var(--accent);
+}
+
+.pi-bar--over .pi-bar-fill {
+    background: linear-gradient(90deg, var(--bg-dark) 62%, rgba(var(--bg-dark-rgb), 0) 100%);
+    border-radius: 0;
+}
+
+/* Overflow marker: three dots past the track's right edge */
+.pi-bar--over .pi-bar-track::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 28px;
+    background: radial-gradient(circle, var(--ink-mute) 1.5px, transparent 2px) 0 50% / 9px 9px repeat-x;
+    background-size: 9px 100%;
+}
+
+.pi-bar-val {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: 1.1;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.pi-bar--wici .pi-bar-val {
+    color: var(--accent-bright);
+}
+
+.pi-bar-val small {
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.35;
+    color: var(--ink-mute);
+    white-space: normal;
+}
+
+.pi-bar-axis {
+    margin-top: 10px;
+}
+
+.pi-bar-ticks {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--line-strong);
+    padding-top: 8px;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+}
+
+.pi-budget-note {
+    margin: 18px 0 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.pi-compare-wrap {
+    overflow-x: auto;
+    border-radius: 29px;
+    border: 1px solid rgba(var(--ink-rgb), 0.12);
+    background: var(--bg-card);
+}
+
+.pi-compare {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.pi-compare th,
+.pi-compare td {
+    padding: 16px 20px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+}
+
+.pi-compare tbody tr:last-child th,
+.pi-compare tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.pi-compare thead th {
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    padding-top: 20px;
+    padding-bottom: 14px;
+}
+
+/* The WiCi column is labelled with the lockup, not the name */
+.pi-compare-logo {
+    display: block;
+    height: 26px;
+    width: auto;
+    margin-top: 8px;
+}
+
+.pi-compare tbody th {
+    font-weight: 600;
+    color: var(--ink);
+    width: 22%;
+}
+
+.pi-compare .is-wici {
+    background: var(--accent-soft);
+    color: var(--ink);
+    font-weight: 500;
+}
+
+.pi-compare thead th.is-wici {
+    color: var(--ink);
+}
+
+@media (max-width: 960px) {
+    .pi-budget {
+        padding: 26px 22px 24px;
+    }
+    .pi-bar,
+    .pi-bar-axis,
+    .pi-budget--compact .pi-bar,
+    .pi-budget--compact .pi-bar-axis {
+        grid-template-columns: minmax(0, 1fr) 120px;
+        gap: 14px;
+        row-gap: 6px;
+    }
+    .pi-bar-label {
+        grid-column: 1 / -1;
+    }
+    .pi-bar-axis > span:first-child {
+        display: none;
+    }
+}

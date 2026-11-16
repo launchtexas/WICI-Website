@@ -1,0 +1,157 @@
+
+
+        <!-- Article header -->
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/gpu-never-learned-to-share.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-09-09">September 9, 2026</time></p>
+                <h1 class="article-title">The GPU Never Learned to <em>Share.</em></h1>
+                <p class="article-subtitle">CPUs have scheduled cycles for sixty years. GPUs are only now learning to schedule VRAM.</p>
+            </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">TL;DR</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#tldr">TL;DR</a></li>
+                        <li><a href="#one-pipeline-one-owner">One pipeline, one owner</a></li>
+                        <li><a href="#the-homogeneous-era-is-ending">The homogeneous era is ending</a></li>
+                        <li><a href="#cycles-vs-vram">Cycles vs. VRAM</a></li>
+                        <li><a href="#why-this-is-hard">Why this is hard</a></li>
+                        <li><a href="#why-this-matters-for-wici">Why this matters for WiCi</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/gpu-never-learned-to-share.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li title="Member of Technical Staff (Intern)">Michael Wang</li>
+                        <li title="Member of Technical Staff (Intern)">Zijie Li</li>
+                        <li title="Co-Founder">Yibin Shen</li>
+                        <li title="Co-Founder">Zili Meng</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#tldr">TL;DR</a></li>
+                            <li><a href="#one-pipeline-one-owner">One pipeline, one owner</a></li>
+                            <li><a href="#the-homogeneous-era-is-ending">The homogeneous era is ending</a></li>
+                            <li><a href="#cycles-vs-vram">Cycles vs. VRAM</a></li>
+                            <li><a href="#why-this-is-hard">Why this is hard</a></li>
+                            <li><a href="#why-this-matters-for-wici">Why this matters for WiCi</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+
+                <section class="article-tldr" aria-labelledby="tldr">
+                    <h2 class="article-tldr-title" id="tldr">TL;DR</h2>
+                    <ul>
+                        <li>For most of their history, GPUs assumed a single dominant tenant: one game, one render job, one training run. That assumption held because, for decades, it mostly matched reality.</li>
+                        <li>Local AI breaks it. One machine can now run several independent model processes side by side, an always-on AI-native OS layer, and the traditional mix of gaming, streaming, and creative tools &mdash; all reaching for the same chip at once.</li>
+                        <li><strong>CPUs schedule cycles. GPUs must schedule VRAM.</strong> A CPU's schedulable resource is renewable and nearly free to hand off: save a register file, move on, microseconds. A GPU's schedulable resource in AI workloads is multi-gigabyte resident state that cannot be paused for free. That difference is why GPU scheduling still lags CPU scheduling by decades.</li>
+                        <li>Datacenter answers exist &mdash; MIG, MPS, time-slicing &mdash; but each trades flexibility for isolation, none of them reach consumer silicon, and the software ones still cost real throughput the moment more than one workload actually contends for the chip.</li>
+                        <li>We think the fix has to schedule at a different unit than a page or a process &mdash; something closer to the individual memory allocation. This post is about making the problem precise; the mechanism is its own post.</li>
+                    </ul>
+                </section>
+
+                <div class="claim">CPUs learned to share sixty years ago. GPUs are only now being asked to.</div>
+
+                <h2 id="one-pipeline-one-owner">One pipeline, one owner</h2>
+
+                <p>For most of computing history, a GPU had exactly one job. Graphics processors began as fixed-function pipelines built to accelerate a single rendering task for a single running application: one game, one 3D scene, one frame at a time. Even after GPUs became programmable, general-purpose compute engines, most systems kept scheduling kernels from one application at a time; only once GPUs moved into datacenter and virtualization settings did researchers begin retrofitting the <a href="https://arxiv.org/pdf/1803.06958">time- and space-multiplexing techniques CPUs had used for decades</a> onto GPU hardware.</p>
+
+                <p>CPUs had solved the identical underutilization problem decades earlier, and they solved it with an architecture change, not a workaround. Batch-processing computers of the 1950s sat idle waiting on a tape drive or a printer while a program blocked on I/O. Multiprogramming fixed the easy version of that problem by keeping several programs resident in memory, so the operating system could switch to another the instant one stalled. By the 1960s the idea had matured into true <a href="https://en.wikipedia.org/wiki/Time-sharing">time-sharing</a>: MIT's Compatible Time-Sharing System, John McCarthy's 1959 memo arguing that shared, interactive computing would multiply programmer productivity, and the Multics project that followed it &mdash; a name literally short for "Multiplexed Information and Computing Service." A computer with one processor could feel, to every person logged into it, like their own.</p>
+
+                <p>GPUs never needed that trick, for a simple reason: they had no tenants to share among. A gaming GPU ran one game. A workstation GPU rendered one scene. A training GPU ran one job to convergence. Scheduling among tenants is only a hard problem once tenants exist and compete for the same chip, and for almost the entire history of the GPU, they didn't.</p>
+
+                <h2 id="the-homogeneous-era-is-ending">The homogeneous era is ending</h2>
+
+                <p>That condition is ending from three directions at once, and none of them is hypothetical.</p>
+
+                <h3>Many independent AI processes, one machine</h3>
+                <p>Local and edge LLM deployment is now a deliberate architecture choice, not a fallback. A 2024 Linux Foundation survey found that <a href="https://www.linuxfoundation.org/hubfs/LF%20Research/lfr_genai24_111924.pdf">38% of organizations already self-host generative-AI models on premises, and 16% run them locally on edge or end-user devices</a>, citing data control, cost, sovereignty, and latency as the drivers. That local serving is already visible at internet scale: a Shodan-based scan by Cisco Talos <a href="https://blogs.cisco.com/security/detecting-exposed-llm-servers-shodan-case-study-on-ollama">found 1,139 exposed Ollama instances, 214 of them actively hosting live models</a>. Ollama's own serving policy assumes concurrency is normal, <a href="https://docs.ollama.com/faq">defaulting to three loaded models at once on a GPU host</a>.</p>
+                <p>On one developer machine, that concurrency looks like an editor assistant, a command-line coding agent, a notebook kernel, and a chat UI, launched independently, each keeping its own process, lifetime, and CUDA context, and often loading the same base model into separate memory. Three or four tools, each reasonable on its own, add up to a GPU working-set problem no one of them created.</p>
+
+                <h3>An AI-native OS layer that never turns off</h3>
+                <p>Personal AI is also moving into the operating system itself. At Build 2026, <a href="https://windowsforum.com/threads/microsoft-build-2026-windows-ai-shifts-from-copilot-pcs-to-local-agents-on-any-hardware.423563/">Microsoft described Windows AI Foundry as a routing layer that selects models across NPU, GPU, and CPU</a> depending on what a task needs and what's available. Local AI on the GPU is also no longer gated behind Copilot+ NPU hardware: as of June 2026, <a href="https://www.windowslatest.com/2026/06/11/microsoft-is-killing-the-copilot-pc-advantage-brings-windows-11s-local-ai-to-rtx-30-pcs-with-6gb-vram/">Windows 11's local Language Model APIs run on any NVIDIA GeForce RTX 30-series-or-newer GPU with at least 6&nbsp;GB of VRAM</a>, not just NPU-equipped Copilot+ PCs. A background OS feature that indexes, summarizes, or captions your activity now competes for the same GPU as whatever you're actually running.</p>
+
+                <h3>The traditional mix hasn't gone anywhere</h3>
+                <p>Meanwhile the workload GPUs were already juggling hasn't disappeared. Windows has managed multiple simultaneous GPU consumers &mdash; games, browsers, video capture, overlays, desktop composition &mdash; ever since <a href="https://devblogs.microsoft.com/directx/hardware-accelerated-gpu-scheduling/">Hardware-Accelerated GPU Scheduling</a> moved scheduling decisions off a dedicated CPU thread and onto the GPU itself. Add a local model to that mix and the contention stops being latent: <a href="https://medium.com/@lyx_62906/context-kills-vram-how-to-run-llms-on-consumer-gpus-a785e8035632">you can run a big local model or a demanding game on a consumer GPU, but rarely both at once</a>, because both are drawing from the same fixed pool of VRAM.</p>
+
+                <p>None of these three is new by itself. What's new is that they now land on the same consumer GPU, at the same time, on hardware that was never designed to referee between them.</p>
+
+                <h2 id="cycles-vs-vram">Cycles vs. VRAM</h2>
+                <p class="article-note">The resource that breaks the analogy.</p>
+
+                <p>It is tempting to treat this as a solved problem wearing a new hat: CPUs figured out scheduling in the 1960s, so give the GPU a scheduler and move on. That undersells what actually made CPU time-sharing cheap, and it is worth being precise about what a scheduler is multiplexing in each case.</p>
+
+                <p>A CPU scheduler multiplexes <strong>cycles</strong>: time on a core. Cycles are renewable &mdash; the next one is always coming &mdash; and handing them to a different tenant is nearly free. A context switch saves a register file and a small amount of kernel state, on the order of microseconds. Because the resource itself costs almost nothing to hand off, an OS can switch tenants dozens of times per second and every user feels like the machine is theirs alone.</p>
+
+                <p>A GPU scheduler, for AI workloads, has to multiplex something else: <strong>VRAM</strong>. Model weights, KV-cache, and workspace state for a modern local model are gigabytes of resident, load-bearing memory, and unlike a register file, most of it cannot be reconstructed for free. Moving it means real bytes crossing a real bus, and evicting it before serving the next tenant means the previous tenant has to be restored before it can run again. GPU context switching does not inherit the "basically free" property that made CPU time-sharing painless &mdash; it is a different problem wearing the same name.</p>
+
+                <figure class="figure">
+                    <h3>Figure 1 &mdash; Two different scarce resources</h3>
+                    <p>The scheduler's job looks the same on paper &mdash; give every tenant a fair, timely turn &mdash; but what actually gets handed off is not.</p>
+                    <div class="link-matrix" role="img" aria-label="Comparison of what a CPU scheduler and a GPU scheduler each multiplex">
+                        <div class="matrix-corner"></div>
+                        <div class="matrix-head">CPU<br>schedules cycles</div>
+                        <div class="matrix-head">GPU<br>schedules VRAM</div>
+                        <div class="matrix-axis">What's moved</div>
+                        <div class="matrix-cell"><b>Time on a core</b><span>A slice of an inherently renewable resource.</span></div>
+                        <div class="matrix-cell"><b>Resident bytes</b><span>Model weights, KV-cache, workspace state.</span></div>
+                        <div class="matrix-axis">Renewability</div>
+                        <div class="matrix-cell"><b>Constant supply</b><span>The next cycle always arrives on its own.</span></div>
+                        <div class="matrix-cell"><b>Fixed pool</b><span>Bytes must be evicted before they can be reused.</span></div>
+                        <div class="matrix-axis">Switch cost</div>
+                        <div class="matrix-cell"><b>~microseconds</b><span>Save a register file, resume elsewhere.</span></div>
+                        <div class="matrix-cell"><b>~seconds</b><span>Move gigabytes across a bus, or restore from disk.</span></div>
+                    </div>
+                </figure>
+
+                <p>The industry has already tried to close that gap in the datacenter, and the results show the tradeoff rather than hide it. NVIDIA's Multi-Instance GPU statically partitions a chip into hardware-isolated slices with <a href="https://openmetal.io/resources/blog/mig-vs-time-slicing-gpu-sharing/">near-zero scheduling overhead, because isolation is enforced in silicon rather than decided by a scheduler</a> &mdash; but the partitions are fixed-size, so a workload that doesn't match a profile wastes whatever doesn't fit. Time-slicing keeps the whole chip flexible instead, letting a software scheduler rotate through workloads on one physical GPU, but <a href="https://research.colfax-intl.com/sharing-nvidia-gpus-at-the-system-level-time-sliced-and-mig-backed-vgpus/">that flexibility costs real throughput once multiple workloads genuinely contend for the chip</a>, with the overhead worsening as more workloads try to share it at once. Neither answer reaches a consumer GPU at all; MIG and enterprise time-slicing are datacenter-tier features.</p>
+
+                <p>Buying more VRAM doesn't dissolve the problem either, because VRAM is the most expensive place to leave a byte at rest: GPU memory runs well over an order of magnitude more per gigabyte than DDR5 system memory, and roughly two orders of magnitude above PCIe 5 NVMe storage, which is exactly why serious systems keep a memory hierarchy instead of treating VRAM as infinite. That gap is compounding on the consumer side right now: memory fabs have shifted GDDR production capacity toward HBM for datacenter accelerators, and <a href="https://www.xda-developers.com/nvidia-reportedly-cut-gpu-production-by-40-percent-2026-memory-crisis/">Nvidia is reportedly cutting consumer GPU supply by 30&ndash;40% through early 2026</a> as a result. The scarce resource is not getting less scarce.</p>
+
+                <h2 id="why-this-is-hard">Why this is hard</h2>
+
+                <p>Granting that VRAM, not cycles, is what a GPU scheduler has to move, the engineering problem breaks into four distinct difficulties.</p>
+
+                <p><strong>Classification is a one-sided proof problem.</strong> CUDA's allocation and copy APIs expose addresses, sizes, and streams &mdash; not what the bytes inside an allocation mean. Deciding that a large allocation is an immutable model weight, and therefore safe to share across processes, has to be right every time: a false positive can share a private prompt or a live KV-cache and corrupt another process's data, while a false negative only costs some memory. That asymmetry means classification has to work like a positive proof rather than a best guess, and it has to run without slowing down the token-generation path it exists to protect.</p>
+
+                <p><strong>Moving memory at line rate is a different problem from moving it at all.</strong> A model's resident state is scattered across many separate allocations, but fast storage only approaches its rated bandwidth with large, aligned, asynchronous requests at deep queue depth. A naive mechanism that simply copies each allocation as it finds it turns eviction into thousands of small, serialized transfers &mdash; the movement becomes part of the request's critical path instead of hiding behind a background flush.</p>
+
+                <p><strong>The cost of serving one request depends on what you served last.</strong> Unlike a CPU scheduler's roughly fixed time slice, a GPU residency decision is stateful: serving one client can leave a model resident and cheap for the next request, or force a different client's private state into a slow restore, or evict a group before its state is safely saved. FCFS and LRU-style policies don't see any of that; they know when something was last touched, not what it will cost to make the next thing runnable.</p>
+
+                <p><strong>Sharing physical memory across processes without merging their execution is its own protocol problem.</strong> The obvious shortcut &mdash; make every local tool join one shared serving runtime &mdash; doesn't fit local tools that need their own lifetimes, plugins, and execution contexts. The primitives that let one process hand physical memory to another exist, but they don't come with the layer on top of that: verification that shared bytes are genuinely immutable, an ownership protocol between the first process to load something and every later one, and a safe fallback when detection fails.</p>
+
+                <p>Existing tools each pick a control granularity, and each one is wrong for local AI in the same direction: too coarse, or too blind, to tell a duplicated model weight apart from the private state sitting right next to it. Page-level memory management increases apparent capacity but throws away the information that a given page belongs to an immutable weight tensor shared by three processes rather than a private buffer belonging to one of them. Whole-process checkpointing goes the other way: it recovers memory by suspending an entire application, which is powerful for coarse-grained recovery but moves far more state than the one duplicated object that actually caused the pressure. Serving frameworks that pool requests behind one shared runtime solve sharing cleanly, but only for callers willing to give up their own process and execution path &mdash; a fine trade for a hosted service, a bad one for an editor plugin or a CLI tool that needs to keep running as itself. The unit that's actually missing sits between a page and a process: something closer to the individual large memory allocation, big enough to be the thing causing pressure, small enough to leave everything else about the client process untouched.</p>
+
+                <h2 id="why-this-matters-for-wici">Why this matters for WiCi</h2>
+
+                <p>We've written before about why the flagship GPU a personal AI system needs has to leave the mobile device (<a href="/article/gpu-cant-fit-in-your-pocket">Move the GPU Out. Keep It Local.</a>) and about what has to happen to the protocol so that GPU still feels local once it does (<a href="/article/nearby-gpu-feel-local">Making a Nearby GPU Feel Local</a>). This post is about what happens once it's there: a nearby GPU box is not one user's dedicated accelerator. It's shared &mdash; a phone's agent, a laptop's renderer, a background memory service, and whatever the OS itself is quietly running, all reaching for the same chip. That's a scheduling problem before it's anything else, and it's the same problem CPUs solved sixty years ago, for a resource that behaves nothing like a CPU's.</p>
+
+                <p>This is the layer we're building at WiCi: a scheduler that treats VRAM as the thing being multiplexed, not an afterthought sitting underneath a scheduler built for cycles. The mechanism &mdash; how we classify, move, and schedule that memory &mdash; is its own post. What matters here is getting the problem statement right first: any system that puts one GPU behind more than one independent, live client &mdash; a shared workstation, an edge box, a nearby accelerator serving a phone and a laptop at once &mdash; is going to hit the same wall CPUs hit in the 1950s: a scarce resource, several tenants, and no scheduler that understands what it's actually moving. GPUs are only now being asked to share. Getting the resource model right &mdash; VRAM, not cycles &mdash; is the difference between a scheduler that works and one that just adds latency to look busy.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                        <li><a href="/article/ssd-is-the-new-vram"><figure><img src="/images/research/thumbnails/ssd-is-the-new-vram.webp" alt="" loading="lazy" decoding="async"></figure><strong>The SSD Is the New VRAM</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/sglang-ssd-expert-pack"><figure><img src="/images/research/thumbnails/sglang-ssd-expert-pack.webp" alt="" loading="lazy" decoding="async"></figure><strong>WiCi x SGLang: Running Trillion Parameter LLMs on Consumer Hardware with SSD Expert Pack</strong><time datetime="2026-08">August 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+
+    

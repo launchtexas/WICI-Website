@@ -1,0 +1,5597 @@
+/* =========================================
+   WiCi One — Product page
+   Page-specific styles for wici-one.html only.
+   Includes the product hero, big shared
+   typography, the Big Idea pinned section, the
+   device scrollytelling, why-it-matters,
+   use cases, app, highlights mosaic,
+   newsletter signup, the closing callout, FAQ, and compatible apps.
+   Loads on top of common.css.
+   ========================================= */
+
+/* ============================
+   Big shared typography
+   ============================ */
+.big-eyebrow {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-kicker);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--accent-bright);
+    margin-bottom: 24px;
+}
+
+.big-eyebrow--accent { color: var(--accent-bright); }
+
+.big-section-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-hero-sub);
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+    margin: 0;
+}
+
+.big-section-title em {
+    font-style: normal;
+    color: inherit;
+    font-weight: 500;
+}
+
+.big-section-title--center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.big-section-lede {
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 28px auto 0;
+    text-align: center;
+    /* No single word stranded on the last line of a long lede. */
+    text-wrap: pretty;
+}
+
+/* The lede's key claim sits on a translucent violet marker, the
+   light-surface twin of the physical-intelligence page's dark-band
+   highlight (same weight as the body, full ink). */
+.big-section-lede strong {
+    font-weight: inherit;
+    color: var(--ink);
+    background: rgba(var(--accent-rgb), 0.14);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.14);
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.big-figure {
+    margin: 80px auto 0;
+    width: 100%;
+    max-width: 1100px;
+    border-radius: 38px;
+    overflow: hidden;
+    background: var(--bg-tint);
+    aspect-ratio: 16 / 10;
+    position: relative;
+}
+
+.big-figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Full-bleed variant: breaks out of any container to span the full viewport
+   and renders at the image's native aspect ratio (no cropping). */
+.big-figure--bleed {
+    max-width: none;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    border-radius: 0;
+    aspect-ratio: auto;
+    background: transparent;
+    height: auto;
+}
+
+.big-figure--bleed img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ============================
+   1. Hero
+   A centred product-launch hero in the manner of Apple's iPhone pages:
+   eyebrow, the big headline with the lede in small ink under it, the
+   device render on its lavender gradient stage filling the container,
+   then the pricing pill with the sign-up button and the NVIDIA credit
+   centred beneath. The hero is white and only
+   eases into the page grey through its bottom padding.
+   ============================ */
+.phero {
+    /* Tucks under the sticky nav bar (64px tall on desktop, 56px on
+       phones), which keeps its frosted white surface while the photo is
+       behind it (product-now.css, `is-over-hero`). */
+    margin-top: -64px;
+    padding: 0 0 48px;
+    position: relative;
+    z-index: 0;
+    text-align: center;
+    background: linear-gradient(to bottom, var(--bg-card) calc(100% - 48px), var(--bg) 100%);
+}
+
+/* The photo panel (Oct 22, 2026, the designer's Figma, node 1173:1766):
+   the desk photo covering a 1512 x 982 frame, so 64.95vw tall up to
+   982px, its left edge on the frame's and its foot on the frame's foot
+   (the Figma's crop), with the frame's shade over it and the copy at
+   the lower left. */
+.phero-photo {
+    position: relative;
+    /* 64.95vw, 500px at least and 982px at most, except past 1920px, where
+       it grows with the width again (51.15vw) so the scene keeps its
+       1.96 shape instead of the title crowding the device. */
+    height: clamp(500px, 64.95vw, max(982px, 51.15vw));
+    overflow: hidden;
+    text-align: left;
+    color: var(--bg);
+}
+
+/* The photo and the copy, after the designer's frame (node 1173:1766),
+   measured at every 100px from 1920 down. Her frame sets the copy 96px from the
+   left edge, not on the 1200px content column, and the photo 110% of
+   the panel's width with its left edge held, so the device, 36.7% to
+   82% across the picture, lands at 40% to 90% of the panel at every
+   width; the copy's inset is 6.35vw
+   (96px at 1512 were it alone) and from 1290px up it follows the device:
+   the device's left edge, 40.37% of the panel, less the title's 4.85em
+   and 1.25em of air (439px at the title's 72px: 171px at 1512, 336 at
+   1920), and the title is capped at
+   4.8vw under 1500px, so from 1290 to 1500 the air is 1.25em of the
+   shrinking title too; under 1290px the inset is 6.35vw and the air
+   grows to about 2em at 760. The vertical slack is spent 80% at the top,
+   so the device's top clears the bars and the desk's edge stays near
+   the foot, as in her crop. */
+.phero-photo {
+    --phero-inset: max(28px, 6.35vw, 40.37vw - 439px);
+}
+
+.phero-photo-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 110%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    object-position: 0% 80%;
+}
+
+.phero-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(205deg, rgba(0, 0, 0, 0) 19%, rgba(0, 0, 0, 0.25) 61%);
+    pointer-events: none;
+}
+
+/* The copy sits at the left, centred on the part of the photo the
+   visitor sees under the bars: from the announcement bar's foot (the
+   bar sits in the flow over the panel, 41px tall on desktop; the nav's
+   64px are the panel's own first rows, hence the top padding) to the
+   panel's foot, or to the first screen's foot where the panel runs past
+   it, as on most laptops. */
+.phero-copy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    height: min(100%, calc(100vh - 41px));
+    max-width: none;
+    padding: 64px 28px 0 var(--phero-inset);
+}
+
+.phero-eyebrow {
+    font-family: var(--font-sans);
+    /* --fs-h3-lg until late on Oct 26, 2026, when the copy came down a
+       size. */
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--bg);
+    margin: 0 0 8px;
+}
+
+.phero-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--bg);
+    margin: 0;
+    /* Two lines, "Untethered" over "GPU Power", as drawn, three quarters
+       of the hero token; under 1500px capped at 4.8vw
+       so it stays clear of the device. */
+    font-size: min(calc(var(--fs-hero) * 0.75), 4.8vw);
+    max-width: 6.4em;
+}
+
+/* The lede under the headline, in white on the photo. */
+.phero-lede {
+    font-family: var(--font-sans);
+    /* 18px at 1512, growing with the screen from 1640px up to 20px at
+       1820, and shrinking under
+       1100px, 1.65vw down to 12px, so it never runs past three lines in
+       the narrow column left of the device. */
+    font-size: max(12px, min(var(--fs-lead), 1.65vw), min(20px, 1.1vw));
+    line-height: var(--lh-body);
+    color: var(--bg);
+    /* A narrow measure, 22em at most, and never
+       past 16px short of the device (its left edge is at 40.37% of the
+       panel: 423px of room from 1290px up, where the inset follows the
+       device, 34.02vw less 16px below), three lines from 900 to 1920. */
+    max-width: min(22em, 423px, calc(34.02vw - 16px));
+    margin: 18px 0 0;
+    text-wrap: pretty;
+}
+
+/* ============================
+   Quick CTA — single dark conversion card under the hero: the
+   early-access hook on the left (first word when preorders open, at
+   the early-signup price), the newsletter capture on the right.
+   Signing up is the only action.
+   ============================ */
+.section--quickcta {
+    padding: 8px 0 96px;
+    background: var(--bg);
+}
+
+.qc-card {
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: 38px;
+    padding: 44px 48px;
+}
+
+.qc-card--merged {
+    position: relative;
+    overflow: hidden;
+    /* Dark card with a navy drift and a soft accent glow rising from
+       the form side — same mood as the preorder section, one card. */
+    background:
+        radial-gradient(90% 170% at 82% 12%, rgba(var(--accent-rgb), 0.25) 0%, rgba(var(--accent-rgb), 0) 55%),
+        linear-gradient(120deg, #17181a 0%, #111725 60%, #0c1526 100%);
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 20px 48px;
+    align-items: center;
+}
+
+.qc-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Dark-tuned frosted input (the shared `.nl-row input` is calibrated
+   for light/photo backgrounds and reads as a grey slab here). */
+.qc-card--merged .nl-row input {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: var(--bg);
+}
+
+.qc-card--merged .nl-row input::placeholder {
+    color: rgba(var(--bg-rgb), 0.55);
+}
+
+.qc-card--merged .nl-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* Dark-tuned disclosure + textarea to match the frosted input above. */
+.qc-card--merged .nl-more summary { color: var(--bg); }
+
+.qc-card--merged .nl-more summary:hover,
+.qc-card--merged .nl-more[open] summary { color: var(--bg); }
+
+.qc-card--merged .nl-textarea {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: var(--bg);
+}
+
+.qc-card--merged .nl-textarea::placeholder { color: rgba(var(--bg-rgb), 0.55); }
+
+.qc-card--merged .nl-textarea:focus {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.qc-fine {
+    margin: 10px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    color: rgba(var(--bg-rgb), 0.55);
+}
+
+.qc-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h3-lg);
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--bg);
+    margin: 0;
+}
+
+/* The free-device offer carries the card — same accent lift as the
+   closing callout's highlight. */
+.qc-title em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--accent-soft);
+}
+
+/* The price before the early-signup saving: same type as the title, dimmed,
+   so the new price reads first. */
+.qc-title del {
+    color: rgba(var(--bg-rgb), 0.55);
+    text-decoration-thickness: 1px;
+}
+
+.qc-body {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.78);
+    margin: 0;
+}
+
+.qc-card .nl-form { max-width: none; width: 100%; margin-top: 0; }
+.qc-card .nl-success { text-align: left; color: var(--bg); }
+
+/* ============================
+   Highlights mosaic (closing summary)
+   ============================ */
+.section--highlights {
+    padding: 140px 0 160px;
+    background: var(--bg-tint);
+}
+
+.highlights-header {
+    text-align: left;
+    margin-bottom: 56px;
+}
+
+.section--highlights .big-section-title {
+    margin-left: 0;
+    text-align: left;
+}
+
+/* The cards run in one row inside a snap rail that bleeds to the
+   viewport (Apple's "Why Apple is the best place" pattern). Desktop
+   cards are a fixed 360px, so how many show per row follows the screen
+   (about 3.5 at 1440px, closer to 5 at 1920px) with the next one
+   peeking in; phones show 1.3. The scroller is initRails in
+   js/product.js. */
+.section--highlights { overflow: hidden; }
+
+.hl-grid {
+    /* Viewport edge → container content edge (`.container`: 1200px cap,
+       28px side padding). Spelled out rather than as a percentage
+       because scroll-padding resolves percentages against the
+       scrollport, not the container. */
+    --hl-gutter: max(28px, calc((100vw - var(--container)) / 2 + 28px));
+    display: flex;
+    gap: 14px;
+    margin: 0 calc(-1 * var(--hl-gutter));
+    padding: 0 var(--hl-gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--hl-gutter);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.hl-grid::-webkit-scrollbar { display: none; }
+
+.hl-card {
+    flex: 0 0 360px;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-card);
+    border-radius: 29px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+.hl-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 50px -28px rgba(var(--ink-rgb), 0.18);
+}
+
+/* The "wide" modifier used to stretch a card across the full row.
+   The mosaic now uses uniform tiles, so the modifier just keeps the
+   warm-tone treatment and the body-first stacking order without
+   changing the card's footprint. */
+.hl-card--wide {
+    flex-direction: column;
+    aspect-ratio: 1 / 1;
+}
+
+/* Dark variant: photo full-bleed under a top-anchored dark scrim, with
+   the title and caption rendered in white. Used for cards whose photos
+   are too rich/dark for a light scrim to keep the copy readable. */
+.hl-card--dark .hl-card-image::after {
+    background: linear-gradient(180deg,
+        rgba(var(--bg-dark-rgb), 0.65) 0%,
+        rgba(var(--bg-dark-rgb), 0.32) 45%,
+        rgba(var(--bg-dark-rgb), 0) 100%);
+}
+
+.hl-card--dark .hl-card-title {
+    color: var(--bg);
+}
+
+.hl-card--dark .hl-card-caption {
+    color: rgba(var(--bg-rgb), 0.78);
+}
+
+.hl-card-body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    padding: 26px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.hl-card--wide .hl-card-body {
+    padding: 28px 30px;
+    max-width: none;
+}
+
+.hl-card-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h3-lg);
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+    margin: 0;
+    max-width: 18ch;
+}
+
+.hl-card-caption {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 32ch;
+}
+
+.hl-card--wide .hl-card-caption {
+    font-size: var(--fs-body-s);
+    max-width: 32ch;
+}
+
+.hl-card-image {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    padding: 0;
+}
+
+.hl-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s var(--ease);
+}
+
+.hl-card:hover .hl-card-image img {
+    transform: scale(1.04);
+}
+
+/* Top scrim keeps the dark overlaid copy readable across varied photos. */
+.hl-card-image::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 55%;
+    background: linear-gradient(180deg,
+        rgba(var(--bg-rgb), 0.78) 0%,
+        rgba(var(--bg-rgb), 0.55) 45%,
+        rgba(var(--bg-rgb), 0) 100%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Internal x-ray render with a baked-in studio backdrop. The card's
+   own background continues that backdrop's vertical gradient, so the
+   16:9 image melts seamlessly into the square tile: the 22% / 78%
+   stops sit exactly where the vertically centered image's top and
+   bottom edges land, using colors sampled from those edge rows. */
+.hl-card-image--contain {
+    /* Card is square, so the 28% top padding shifts the centered image
+       down by 14% of the card; the gradient stops below move in step
+       (image edges now land at 36% / 92%). */
+    padding: 28% 0 0;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg,
+        #d2d6d9 0%, #b9bfc5 36%, #111418 92%, #0a0c10 100%);
+}
+
+.hl-card-image--contain::after {
+    display: none;
+}
+
+.hl-card-image--contain img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ============================
+   3. The Big Idea
+   ============================ */
+/* The Big Idea flows with the page: a neutral panel holding the
+   eyebrow, headline, lede, the exploded-view render, and the claim.
+   Section bg is intentionally transparent so the panel reads against
+   the page colour. */
+.section--idea {
+    position: relative;
+    padding: 0;
+    background: transparent;
+    color: var(--ink-soft);
+}
+
+.idea-stage {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 32px 0;
+}
+
+/* The "stage" backdrop (a square-edged panel wearing the Figma's
+   device-stage gradient) is rendered as a real element rather than a `::before` so
+   painting order alone (it's the first child) keeps it behind the
+   headline / image without needing `z-index: -1` (the claim under
+   the image is positioned, so it paints above it too). */
+.idea-stage-backdrop {
+    position: absolute;
+    inset: 0;
+    /* The Figma's device-stage gradient (272:221 in frame 228:4287),
+       top to bottom of the panel: white → neutral → cool → lavender
+       → two greys → cool, with every stop below the top mixed well
+       toward white so the stage stays airy and the x-ray renders'
+       glass shells don't pop against it. The two greys are
+       Figma "Color 6" / "Color 9" — scene colours, not text tokens. */
+    background: linear-gradient(180deg,
+        var(--bg-card) 0%,       /* starts on the white of the section above */
+        var(--bg-neutral) 10%,
+        color-mix(in srgb, var(--bg-cool) 60%, var(--bg-card)) 24%,
+        color-mix(in srgb, var(--hero-lavender) 50%, var(--bg-card)) 40%,
+        color-mix(in srgb, #bec4c3 45%, var(--bg-card)) 59%,
+        color-mix(in srgb, #979ca1 40%, var(--bg-card)) 80%,
+        color-mix(in srgb, var(--bg-cool) 60%, var(--bg-card)) 90%,
+        var(--bg) 100%);   /* lands on the white ground of the section below */
+    pointer-events: none;
+}
+
+.section--idea .big-eyebrow {
+    color: var(--ink);   /* the design sets this eyebrow in ink, not accent */
+    position: relative;
+}
+
+.section--idea .big-section-title em {
+    /* "come to you." must stay intact, so on narrow screens the
+       headline can only break after "GPU". Desktop still fits on
+       one line. Scoped here: longer ems elsewhere would overflow. */
+    white-space: nowrap;
+}
+
+.section--idea .big-section-title {
+    color: var(--ink);
+}
+
+.section--idea .big-section-lede {
+    color: var(--ink-soft);
+}
+
+/* Override the generic full-bleed figure inside the Big Idea stage so
+   it shares the stage's reference width (and not the wider 100vw,
+   which on classic-scrollbar systems is ~15px wider than the section).
+   Without this, the image visibly extends a few pixels past the dark
+   backdrop on each side once both are scaled by the same factor.
+
+   The figure's height is derived from its width using the source image's
+   intrinsic aspect ratio, so the full image is shown without cropping
+   instead of being clipped by a fixed viewport-height cap. */
+.section--idea .big-figure {
+    /* 80px under the lede: the room the exploded frames spill into,
+       see the film's rule below. */
+    margin-top: 80px;
+}
+
+/* The exploded-view render floats in a centred column well inside the
+   stage's edges (it is a product render on the neutral ground, not a
+   full-bleed photo), at its own width so nothing is cut; phones keep
+   the landscape cut, inset to the text gutters (see the 720px block).
+   It is a transparent film (`.big-figure--film`), 1620 by 774 (1080 by
+   516 on phones, the same framing).
+
+   The film's frame is far taller than the device most of the time: the
+   closed device fills about rows 220 to 610 of the 774, and only the
+   exploded frames reach up to row 60 and down to 720. So the figure's
+   layout box is rows 140 to 690 of the frame: the film keeps
+   its full width and runs over the box's top and bottom edges into the
+   80px margin above and the claim's margin below, where the exploded
+   frames land (about 52px up and 21px down at full width, inside the
+   margins, 40px clear of the lede and well clear of the claim), and the closed
+   device sits about 145px under the text instead of 200. `min-height:
+   0` keeps the box at the ratio: with the default `auto` a box with an
+   aspect ratio grows to its content, the whole film. */
+.section--idea .big-figure--bleed {
+    width: min(100% - 96px, 1040px);
+    aspect-ratio: 1620 / 550;
+    min-height: 0;
+    max-height: none;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: visible;
+    /* Square-cornered like the stage backdrop. Set explicitly so the
+       small-viewport `.big-figure { border-radius: 29px }` rule below
+       can't apply. */
+    border-radius: 0;
+}
+
+.section--idea .big-figure--bleed img,
+.section--idea .big-figure--bleed video {
+    display: block;
+    width: 100%;
+    height: auto;           /* the frame's own 1620 : 774 */
+    margin-top: -8.642%;    /* 140 / 1620 of the width: the frame's rows above the layout box */
+}
+
+/* The section's three claims as one statement, centred under the film
+   (the designer's mock, Oct 3, 2026, first on phones and the same day
+   on desktop too; a trio of titled paragraphs before): "Device-only."
+   and "Cloud-only." struck through in grey, "Nearby." in the accent,
+   on one line (phones stack them, see the 720px block), over one
+   paragraph, always shown. Positioned, so it paints
+   above the stage's backdrop, itself positioned and earlier in the
+   markup. */
+.idea-claim {
+    position: relative;
+    margin-top: 64px;
+    padding: 0 0 40px;
+    text-align: center;
+}
+
+.idea-claim-lines {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h3-lg);
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+}
+
+.idea-claim-lines s,
+.idea-claim-yes {
+    display: inline-block;
+    margin: 0 0.3em;
+}
+
+.idea-claim-lines s {
+    color: rgba(var(--ink-rgb), 0.35);
+    text-decoration-line: line-through;
+    text-decoration-thickness: 2px;
+}
+
+.idea-claim-yes { color: var(--accent-bright); }
+
+.idea-claim-note {
+    max-width: 56ch;
+    margin: 16px auto 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+/* "See how it works" under the paragraph (Oct 30, 2026): a ghost pill
+   with a play glyph and the film's length, opening the tech explainer
+   over the page (.film-sheet, below). */
+.idea-claim-cta {
+    margin-top: 28px;
+    padding-left: 20px;
+}
+.idea-claim-cta-time {
+    font-weight: 400;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+.idea-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Figma: 48px panel padding, 36px between eyebrow / title / image */
+    padding-top: 48px;
+    padding-bottom: 12px;
+}
+
+/* Phones follow the Figma iPhone frame (node 218:4137): the panel has
+   24px padding and a flat 24px rhythm between eyebrow, title block,
+   and image; the lede hugs the title at 8px. Under the image sits the
+   statement and its paragraph (below). */
+@media (max-width: 720px) {
+    .section--idea { padding-top: 0; }
+    .idea-stage { padding: 0; }
+    /* Phones set the eyebrow, headline, and lede ragged-left (Apple's
+       product-page pattern); the render below stays centred. */
+    .section--idea .idea-inner {
+        padding: 24px 20px 0;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .section--idea .big-eyebrow { margin-bottom: 24px; }
+    .section--idea .big-section-title {
+        font-size: var(--fs-h2-sub);
+        line-height: var(--lh-title);
+        text-align: left;
+        margin-left: 0;
+    }
+    /* The lede keeps its desktop lead size on phones (no step down),
+       as Apple's do. */
+    .section--idea .big-section-lede {
+        font-size: var(--fs-lead);
+        margin-top: 16px;
+        margin-left: 0;
+        text-align: left;
+    }
+    /* 40px under the lede on phones (28px until Oct 3, 2026, moved down
+       with the desktop margin): the exploded frames run about 17px over
+       the figure's top edge at 375px, so they stay well inside it. */
+    .section--idea .big-figure { margin-top: 40px; }
+    /* The render keeps its landscape shape, inset to the text's
+       20px gutters. */
+    .section--idea .big-figure--bleed {
+        width: calc(100% - 40px);
+    }
+    /* The statement on phones: the three lines stacked, tighter to the
+       film, and the paragraph a step smaller. */
+    .idea-claim {
+        margin-top: 40px;
+        padding-bottom: 24px;
+    }
+    .idea-claim-lines s,
+    .idea-claim-yes {
+        display: block;
+        margin: 0;
+    }
+    .idea-claim-note {
+        margin-top: 14px;
+        font-size: var(--fs-body-s);
+    }
+    .idea-claim-cta { margin-top: 22px; }
+}
+
+/* ============================
+   4. Device — horizontal scrollytelling (all viewports)
+   The device render is pinned to the bottom of the viewport while
+   the intro title and the four feature texts slide past horizontally
+   in response to vertical scrolling. The trick is two siblings that
+   both stick to `top: 0` inside the same tall runway:
+     - `.device-flow` acts as the scroll runway. Its sticky child
+       `.device-features` is the horizontal viewport; the inner
+       `.device-track` is wider than the screen and is translated
+       left by JS as the user scrolls down.
+     - `.device-figure` is sticky too, with the same `top: 0` and the
+       same containing block (they share a grid cell), so it pins for
+       exactly the same scroll distance — keeping the image painted
+       at the bottom of the viewport the whole time.
+   The artwork runs closed device → four x-rays, one per slide.
+   ============================ */
+.section--device {
+    padding: 0;
+    background: var(--bg);
+}
+
+/* Single-cell grid: the scrolling-text flow and the image figure occupy
+   the same cell so they pin together and overlap visually. */
+.device-scroll {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+}
+
+.device-scroll > .device-flow,
+.device-scroll > .device-figure {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+/* The flow itself is the tall scroll runway. With five slides (intro +
+   four feature layers), 500vh leaves 400vh of sticky travel — one
+   viewport per transition between adjacent slides. Grow this by 100vh
+   for every slide added, or the text transitions compress. The render
+   sequence follows it: five renders over five slides, one per slide.
+   The extra 600px is two 300px "holds", one at each end: JS keeps
+   `progress = 0` for the first 300px past the pin line so the entrance
+   doesn't yank sideways immediately, and saturates at 1 with the last
+   300px still to travel so the finished scene sits for a beat before
+   the section releases. Must stay in sync with `DEVICE_INTRO_HOLD_PX`
+   + `DEVICE_OUTRO_HOLD_PX` in `js/product.js`. */
+.device-flow {
+    position: relative;
+    height: calc(500vh + 600px);
+    z-index: 3;
+}
+
+/* The features element is the sticky viewport — full screen, with
+   `overflow: hidden` clipping the wider horizontal track inside. */
+.device-features {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 2;
+    /* The container is purely visual; touch/scroll passes through
+       to the document. Individual links inside re-enable pointer
+       events if/when we add them. */
+    pointer-events: none;
+}
+
+/* The track holds the intro + four layers side-by-side. JS drives its
+   `transform: translateX(...)` from 0 to -(N-1)*100vw as the user
+   scrolls through the runway. */
+.device-track {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    height: 50vh;
+    width: max-content;
+    will-change: transform;
+}
+
+/* Each layer is exactly one viewport wide; together they form a
+   horizontal strip occupying the top half of the screen. */
+.device-layer {
+    /* Exposed as a variable because `.device-layer-badge` cancels
+       exactly one row gap to stay height-neutral. */
+    --layer-gap: 16px;
+    flex: 0 0 100vw;
+    min-width: 100vw;
+    height: 100%;
+    padding: 56px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--layer-gap);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.device-layer-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h2-sub);
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+    margin: 0;
+    max-width: 14ch;
+}
+
+.device-layer-body {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 44ch;
+}
+
+/* NVIDIA partnership credit (component in common.css) — centered in
+   the hero and on the GPU device slide. */
+.device-layer .nv-note { justify-content: center; }
+.phero .nv-note { justify-content: center; }   /* 28px under the price pill until it came out, Oct 26, 2026 */
+
+/* Under the hero: the partner credit and the CES Innovation Awards
+   badge on one row, each mark then its two-line label, a hairline
+   between; stacked on phones. */
+.phero-credits { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 24px 40px; margin-top: 48px; }
+.phero-credits .nv-note { flex-direction: row-reverse; }   /* the mark before its label, as the badge's */
+.phero-credits .nv-note-label { line-height: 1.4; text-align: left; }
+.phero-credits .nv-note-logo { height: 46px; }
+.ces-award { display: flex; align-items: center; gap: 14px; color: var(--ink-mute); text-decoration: none; }
+.phero-credits .ces-award { padding-left: 40px; border-left: 1px solid var(--line); }
+.ces-award-badge { display: block; width: auto; height: 46px; }
+.ces-award-text { text-align: left; font-family: var(--font-sans); font-size: var(--fs-micro); font-weight: 600; line-height: 1.4; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+.ces-award:hover .ces-award-text { color: var(--ink); }
+
+/* Marks that sit above a slide title — the NVIDIA credit on the GPU
+   slide, the Wi-Fi 7 mark on the radio slide.
+
+   They must cost their slide no height. Slides are centered in the
+   track band, so a taller slide floats its title above the line the
+   other titles share. Declaring an explicit height and cancelling
+   exactly that height plus one row gap leaves the flex box measuring
+   the same as a plain title + body slide, while the mark itself renders
+   in the empty space above. Both numbers come from variables so a badge
+   of a different height, or the narrower gap used on phones, stays
+   self-correcting. */
+.device-layer-badge {
+    --badge-h: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--badge-h);
+    margin-top: calc(-1 * (var(--badge-h) + var(--layer-gap)));
+    margin-bottom: 0;
+}
+
+/* The Wi-Fi mark is a solid black pill rather than a light lockup, so
+   it carries far more weight per pixel and is set well below the
+   NVIDIA lockup's height. Height-neutrality is preserved automatically:
+   the margin above is derived from this value. */
+.device-layer-badge--wifi {
+    --badge-h: 32px;
+}
+
+.device-badge-logo {
+    display: block;
+    height: 100%;
+    width: auto;
+}
+
+/* The intro slide carries the section's headline ("A new kind of local
+   AI device.") as the first item in the horizontal track, using the
+   same 100vw slot so the scroll math stays uniform. */
+.device-layer--hero .big-eyebrow {
+    margin-bottom: 4px;
+}
+
+.device-layer--hero .big-section-title {
+    line-height: var(--lh-display);
+    max-width: 14ch;
+}
+
+/* The intro slide is centred in the 50vh track band, so extra bottom
+   padding lifts it by half the amount added — opening air between the
+   headline and the top of the device render below. */
+.device-layer--hero {
+    padding-bottom: 12vh;
+}
+
+/* Figure pins on the same `top: 0` clock as the features; the image is
+   centered in the full-viewport sticky container while the text slides
+   pass over its upper half. */
+.device-figure {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    align-self: start;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+    /* White stage: the device-stage gradient moved to the Big Idea
+       panel above (see `.idea-stage-backdrop`). */
+    background: var(--bg-card);
+}
+
+/* Single-cell grid rather than a flex row: all five renders (the closed
+   device + one x-ray per feature slide) stack in the same cell so they
+   can cross-fade in place without any of them leaving the layout. */
+.device-figure-sticky {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    place-items: center;
+    /* Asymmetric vertical padding shifts the centered artwork below the
+       midline so the slide titles in the top band clear its top edge.
+       At the x-ray size this pushes the image past the bottom of the
+       viewport, which is fine and deliberate: the bottom ~20% of those
+       canvases is transparent margin, so the overflow clipped by the
+       rule below costs no visible pixels and buys a lower, larger
+       device. Raising this much further would start cutting the
+       hardware itself.
+
+       The 320px floor is for wide, short windows (laptops with the
+       browser at half height): there 30vh is not enough and the
+       height-bound render climbs into the slide text. The floor holds
+       the visible hardware ~24px under the tallest slide's copy down to
+       ~600px tall windows, and only nudges the render ~25px lower on a
+       900px-tall one. */
+    padding: max(30vh, 320px) 16px 0;
+    box-sizing: border-box;
+    /* The renders travel sideways on their way in and out; clip them at
+       the section edges instead of widening the document. */
+    overflow: hidden;
+}
+
+/* Collapse the <picture> wrappers (one swaps artwork per viewport) so
+   the imgs themselves are the grid items and the centering + percentage
+   caps below resolve against the sticky container, not the wrapper. */
+.device-figure-sticky picture {
+    display: contents;
+}
+
+.device-figure img {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto;
+    max-width: min(1040px, 84%);
+    height: auto;
+    /* Sized against trimmed artwork: with the transparent margins gone
+       this cap is the device's real height, not a canvas that is half
+       empty air, so it reads much smaller than the same number did
+       before the trim. Height is the binding constraint at ordinary
+       desktop viewports; the max-width above is only a guard for very
+       wide, short windows. */
+    max-height: 36vh;
+    object-fit: contain;
+    object-position: center;
+    /* JS fades the renders in place. Opacity is the only property that
+       animates for most of them — see the pair below, which also slide. */
+    will-change: opacity;
+}
+
+/* Every render after the first (the closed device) starts hidden and
+   is faded in by JS, one per slide. Declaring it here (not inline)
+   keeps the no-JS fallback honest: the closed device alone shows,
+   rather than five renders stacked on top of each other. */
+.device-figure picture:not(:first-child) img {
+    opacity: 0;
+}
+
+/* Desktop only: the renders take a larger cap than the base sizing.
+   Both caps are scaled by the same 1.5 so the bump holds at every
+   viewport — leaving `max-width` at the shared 1040px would quietly
+   clamp the gain back toward 1.1x on very wide windows, where width
+   becomes the binding constraint instead of height.
+
+   The four x-rays and the closing external shot were all rendered from
+   one camera and share a content bbox to within a pixel or two, so a
+   single size rule keeps them in register: the device stays put as they
+   fade over each other instead of jumping between shots. Keep any
+   replacement art on the same untrimmed 3840x2160 canvas — trimming one
+   of them individually is what would break the alignment.
+
+   Scoped to a min-width query rather than written as a bare override:
+   an attribute selector outranks the plain `.device-figure img` sizing
+   in the ≤720px block, so an unscoped rule here would leak onto phones
+   and silently undo the mobile sizing below. */
+@media (min-width: 721px) {
+    .device-figure img[data-render^="xray"],
+    .device-figure img[data-render="external"] {
+        max-width: min(2332px, 84%);
+        max-height: 80vh;
+    }
+}
+
+/* Phones: tighter type, and the feature slides flip to left-aligned
+   text columns while the intro slide stays centered like a hero. */
+@media (max-width: 720px) {
+    .device-layer {
+        --layer-gap: 14px;
+        padding: 56px 24px 16px;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    /* The intro title is centred inside the 50vh track band, so the
+       bottom padding is what lifts it: the shift is half the padding
+       added, same as the artwork below. 10vh raises it by roughly 4vh
+       without moving it off centre or depending on how many lines the
+       headline wraps to. */
+    .device-layer--hero {
+        padding: 24px 24px 10vh;
+        align-items: center;
+        text-align: center;
+    }
+
+    .device-layer-body {
+        max-width: 32ch;
+    }
+
+    /* Vertical placement of the artwork on phones. The render is centred
+       between this padding and the bottom of the viewport, so the shift
+       is HALF the change made here — 40vh to 20vh raises the artwork by
+       10vh, not 20vh. */
+    .device-figure-sticky { padding-top: 20vh; }
+
+    /* Phones size the two kinds of artwork separately, because they have
+       very different room to grow. Caps are in vw rather than %, since
+       the point is how much of the SCREEN the device covers — the
+       percentages would resolve against the padded content box instead.
+       60vh is the ceiling under the 40vh top padding; on short phones it
+       binds before the width does. */
+
+    /* The x-rays and the closing shot keep ~20% transparent margin on
+       each side, so they can be sized well past the screen width and
+       only empty canvas gets clipped. At 158vw the device inside lands
+       at ~96% of the screen — near double its previous size, which is
+       the practical ceiling: much more and the hardware starts to go
+       over the edges. */
+    .device-figure img[data-render^="xray"],
+    .device-figure img[data-render="external"] {
+        max-width: 158vw;
+        max-height: 60vh;
+    }
+
+    .device-figure img { max-width: 78%; }
+}
+
+/* ============================
+   Specs — compact spec strip with price + CTA
+   ============================ */
+.section--specs {
+    padding: 120px 0;
+    background: var(--bg-soft);
+    text-align: center;
+}
+
+/* Deliberately smaller than the full section headline — this is a
+   compact strip, not a showpiece. */
+.specs-title {
+    font-size: var(--fs-h2-sub);
+}
+
+/* The section carries two headers: the comparison's, then the spec
+   grid's own "Tech specifications" further down. */
+.specs-header--grid {
+    margin-top: 120px;
+}
+
+/* Comparison first, then the spec grid; both as wide as the grid and
+   left-aligned inside the centred section, each under a small caps
+   label. */
+.specs-compare {
+    max-width: 1100px;
+    margin: 64px auto 0;
+    text-align: left;
+}
+
+.page-footnotes {
+    padding: 40px 0 28px;
+    border-top: 1px solid var(--line);
+}
+
+/* Accent-colored CTA for this section (the shared primary is ink). */
+.specs-cta .cta--primary {
+    background: var(--accent);
+}
+
+.specs-cta .cta--primary:hover {
+    background: var(--accent-hover);
+}
+
+/* ============================
+   5. Why It Matters (after Stripe's "What's happening" strip)
+   A two-tone header with prev / next at its right, then the four
+   pictures in one row: the picked one is wide and the others narrow
+   with their distance from it (data-d, 0 to 3). Under the row, the
+   picked card's caption, a bold lead running into grey text, and its
+   link at the right. js/product.js (initWhyStrip) sets data-d and
+   swaps the caption; an Apple-style snap rail of cards with notched
+   pictures before, until Oct 4, 2026.
+   ============================ */
+.section--why {
+    /* Tighter below: the Workloads header follows directly, on the same
+       white ground, so the seam is one gap: 40px here and 80px over the
+       eyebrow. */
+    padding: 140px 0 40px;
+    background: var(--bg);
+    overflow: hidden;
+    /* The same clipping, without making the section a scroll container:
+       the comparison at its foot pins under the bars (position: sticky),
+       which a scroll container would stop. Browsers without `clip` keep
+       `hidden`, and initWhyUnfold does not pin there. */
+    overflow: clip;
+}
+
+/* How it differs from remote play, at the foot of the section: a plain
+   title, one sentence, three pills, then five cards against an AI PC or
+   cloud gaming, in the site's own colours and type.
+   Each card is a pair of panels: WiCi One's way on the accent, and the
+   other way on the dark band colour under it, hinged on the accent
+   panel's lower edge. These rules alone draw the open state. With
+   the script (initWhyUnfold in js/product.js) the block carries
+   .is-unfold: the dark panels start folded up behind their cards and
+   each opens as its --e runs from 0 to 1. On desktop, where the whole stage fits under
+   the bars, the block also carries .is-pinned: it becomes a tall track,
+   the stage sticks, and one scroll opens the five from left to right.
+   Elsewhere they open as they rise into view. */
+.why-compare {
+    margin-top: 56px;
+    text-align: center;
+}
+
+.why-compare-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* One step under a section title: the type of "Real workloads, served
+   nearby." (.apps-title), Oct 4, 2026. */
+.why-compare-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.why-compare-title em {
+    /* Wraps as a unit, like .apps-title's: on a phone the title breaks
+       before "stay", not inside the phrase. */
+    display: inline-block;
+    font-style: normal;
+    color: var(--accent-bright);
+}
+
+.why-compare-lede {
+    max-width: 56ch;
+    margin: 14px auto 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    text-wrap: balance;
+}
+
+.why-compare-pills {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px 0 40px;
+    padding: 0;
+}
+
+.why-compare-pills li {
+    padding: 7px 16px;
+    border-radius: 999px; corner-shape: round;
+    background: var(--bg-soft);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+/* The cards and their two labels. The labels are said once. On desktop each
+   is a tab on a tinted band behind its row of panels (her mock, the same
+   day): the accent tint behind the WiCi row with "WiCi One" on a tab at
+   its top edge, a grey behind the other row with "AI PC or cloud gaming"
+   on a tab at its bottom edge. The bands reach past the cards on both
+   sides (--band-x, into the page margin, so the cards keep the full
+   width) and --band-y above and below them. Under 1000px both labels
+   are plain column heads over the rows. The wrapper generates no box on
+   desktop, so its two spans and the list are three rows of one grid.
+   Each card keeps its own label in the markup, for screen readers only. */
+.why-compare-grid {
+    --band-x: clamp(16px, calc((100vw - 1200px) / 2 + 4px), 56px);
+    --band-y: 28px;
+    --band-wici: var(--accent-soft);
+    --band-other: color-mix(in srgb, var(--bg-dark) 16%, var(--bg));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    /* A tab is 40px tall and centred on its band's edge. */
+    row-gap: calc(var(--band-y) - 20px);
+    width: 100%;
+    text-align: left;
+}
+
+.why-compare-heads {
+    display: contents;
+    font-family: var(--font-sans);
+    font-size: var(--fs-kicker);
+    font-weight: 600;
+    line-height: 40px;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* A tab: its box straddles the band's edge and only the outer half is
+   painted, so the tab and the band never overlap (they fade as one). */
+.why-compare-heads span {
+    /* Over the band, which belongs to the list that follows. */
+    position: relative;
+    z-index: 1;
+    grid-row: 1;
+    justify-self: center;
+    height: 40px;
+    padding: 0 22px;
+    border-radius: 22px 22px 0 0;
+    background: linear-gradient(var(--band-wici), var(--band-wici)) top / 100% 50% no-repeat;
+    color: var(--accent-bright);
+}
+
+.why-compare-heads span:last-child {
+    grid-row: 3;
+    border-radius: 0 0 22px 22px;
+    background: linear-gradient(var(--band-other), var(--band-other)) bottom / 100% 50% no-repeat;
+    color: var(--bg-dark);
+}
+
+.why-compare-cards {
+    position: relative;
+    isolation: isolate;
+    grid-row: 2;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+/* The two bands, behind the cards: one for each row of panels. */
+.why-compare-cards::before,
+.why-compare-cards::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: calc(-1 * var(--band-x));
+    right: calc(-1 * var(--band-x));
+}
+
+.why-compare-cards::before {
+    top: calc(-1 * var(--band-y));
+    bottom: 50%;
+    border-radius: 38px 38px 0 0;
+    background: var(--band-wici);
+}
+
+.why-compare-cards::after {
+    top: 50%;
+    bottom: calc(-1 * var(--band-y));
+    border-radius: 0 0 38px 38px;
+    background: var(--band-other);
+}
+
+/* The two panels share the card's height, so every panel in a row is as
+   tall as the tallest. */
+.why-compare-card {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    perspective: 1100px;
+}
+
+/* The text sits at the top of its panel. */
+.why-compare-panel {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* 168px, a little less in a short window so the stage still fits
+       (200px while each card carried its own label). */
+    min-height: clamp(136px, 18.5vh, 168px);
+    /* Closer to the sides than to the top, which gives the larger text
+       the width to stay within three lines. */
+    padding: 22px 12px;
+    font-family: var(--font-sans);
+}
+
+/* WiCi One's panel: always there, the card's first half. */
+.why-compare-panel--wici {
+    border-radius: 32px 32px 0 0;
+    background: var(--accent);
+    color: var(--bg);
+}
+
+/* The other way: the half that unfolds, hinged on the first one's
+   lower edge. Its type is a step quieter than WiCi One's. */
+.why-compare-panel--other {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 32px 32px;
+    background: var(--bg-tint);   /* a neutral grey, not the dark band: with --bg-dark the same as the accent the two halves were one colour */
+    color: var(--ink-soft);
+    transform-origin: 50% 0;
+}
+
+/* Said once, in the heads: in the cards only for screen readers. */
+.why-compare-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* A mark, then the text: a check on the WiCi panel and a dash on the
+   dark one, so the two texts of a card start on the same left edge. */
+.why-compare-text {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    column-gap: 10px;
+    align-items: start;
+    margin: 0;
+    /* One step up at every width: 20px here,
+       18px on narrower desktops, 16px in the rows under 1000px. */
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+
+.why-compare-text svg { margin-top: 3px; }
+
+.why-compare-panel--wici .why-compare-text { font-weight: 600; }
+
+.why-compare-hint { display: none; }
+
+/* -- With the script: folded, then opened by the scroll. --e is each
+   card's own progress, eased, 0 folded and 1 open. -- */
+.why-compare.is-unfold .why-compare-panel--other {
+    transform: rotateX(calc(-92deg * (1 - var(--e, 0))));
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform;
+    transition: transform 90ms linear;
+}
+
+/* The panel is in shade until it lies flat. */
+.why-compare.is-unfold .why-compare-panel--other::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(var(--ink-rgb));
+    opacity: calc(0.55 * (1 - var(--e, 0)));
+    pointer-events: none;
+}
+
+/* The other way's label and band come in with the first card. */
+.why-compare.is-unfold .why-compare-heads span:last-child,
+.why-compare.is-unfold .why-compare-cards::after {
+    opacity: var(--e-head, 0);
+}
+
+/* -- Pinned (desktop, where the stage fits): a tall track, the stage
+   stuck under the nav and the product bar (--unfold-top, measured by
+   the script) while the scroll opens the cards. -- */
+.why-compare.is-pinned {
+    /* The designer's 320vh, the scroll under the stuck stage held to
+       1900px so a tall window does not make it a long haul. */
+    height: calc(100vh + min(220vh, 1900px));
+}
+
+.why-compare.is-pinned .why-compare-stage {
+    position: sticky;
+    top: var(--unfold-top, 120px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: calc(100vh - var(--unfold-top, 120px));
+}
+
+.why-compare.is-pinned .why-compare-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--ink-mute);
+    transition: opacity 0.2s var(--ease);
+}
+
+/* Narrower desktops: the same five across, a little tighter. */
+@media (max-width: 1199px) {
+    .why-compare-cards { gap: 12px; }
+    .why-compare-panel { padding: 20px 12px; }
+    .why-compare-text { font-size: var(--fs-lead); }
+    .why-compare-text svg { margin-top: 2px; }
+}
+
+/* Under 1000px each card lies on its side: a short wide row, WiCi One's way on the left half
+   and the other way on the right, hinged on the left half's right edge,
+   so it unfolds outwards to the right. The two labels are plain column
+   heads over the rows (no bands, no tabs), and the five rows fit one
+   phone screen. */
+@media (max-width: 999px) {
+    .why-compare-grid {
+        display: block;
+        max-width: 560px;
+    }
+    .why-compare-heads {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        /* Level at the top: the second head runs to two lines on a phone. */
+        align-items: start;
+        margin: 0 0 10px;
+        font-size: var(--fs-micro);
+        line-height: 1.4;
+        letter-spacing: 0.08em;
+        white-space: normal;
+    }
+    .why-compare-heads span,
+    .why-compare-heads span:last-child {
+        position: static;
+        grid-row: auto;
+        justify-self: stretch;
+        height: auto;
+        padding: 0 16px;
+        border-radius: 0;
+        background: none;
+    }
+    .why-compare-heads span:last-child { color: var(--ink-mute); }
+    /* The second head comes in with the first row. */
+    .why-compare.is-unfold .why-compare-heads span:last-child {
+        transition: opacity 0.5s var(--ease);
+    }
+
+    .why-compare-cards {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+    }
+    .why-compare-cards::before,
+    .why-compare-cards::after { display: none; }
+    .why-compare-card {
+        grid-template-rows: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        perspective: 900px;
+    }
+    /* In a row the text is centred on the row's height. */
+    .why-compare-panel {
+        justify-content: center;
+        min-height: 64px;
+        padding: 12px 16px;
+    }
+    .why-compare-panel--wici { border-radius: 26px 0 0 26px; }
+    .why-compare-panel--other {
+        border-radius: 0 26px 26px 0;
+        transform-origin: 0 50%;
+    }
+    /* Rows open in their own time, not with the scroll (a fold tied
+       to a finger's scroll stutters on a phone): the script only sets
+       --e from 0 to 1 once a row is on screen, and these transitions
+       carry it there. */
+    .why-compare.is-unfold .why-compare-panel--other {
+        transform: rotateY(calc(92deg * (1 - var(--e, 0))));
+        transition: transform 0.8s var(--ease);
+    }
+    .why-compare.is-unfold .why-compare-panel--other::after {
+        transition: opacity 0.8s var(--ease);
+    }
+    /* Rows: plain text in both halves, without the check or the dash
+. */
+    .why-compare-text {
+        display: block;
+        font-size: var(--fs-body);
+    }
+    .why-compare-text svg { display: none; }
+}
+
+@media (max-width: 720px) {
+    .why-compare {
+        margin-top: 40px;
+    }
+    /* Phones: the sentence at body size and the pills a step smaller,
+       so the three take two rows, not three. */
+    .why-compare-lede {
+        margin-top: 12px;
+        font-size: var(--fs-body);
+    }
+    .why-compare-pills {
+        gap: 6px;
+        margin: 16px 0 24px;
+    }
+    .why-compare-pills li {
+        padding: 5px 12px;
+        font-size: var(--fs-caption);
+    }
+    .why-compare-heads span,
+    .why-compare-heads span:last-child { padding: 0 12px; }
+    .why-compare-panel { padding: 10px 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .why-compare.is-unfold .why-compare-panel--other,
+    .why-compare.is-unfold .why-compare-panel--other::after,
+    .why-compare.is-unfold .why-compare-heads span:last-child { transition: none; }
+}
+
+.why-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+/* Two tones, one size: the second line steps back to grey. */
+.why-header .big-section-title em {
+    color: var(--ink-mute);
+}
+
+/* The arrows sit on the title's last line rather than under the row. */
+.why-header .rail-nav {
+    flex: none;
+    margin: 0 0 6px;
+}
+
+/* The row of pictures. Every width is a share of the row (container
+   query units), so the strip keeps its proportions from a phone to the
+   full container: 15.5%, 7.6%, and 3.8% for the cards one, two, and
+   three places from the picked one, which takes what is left. */
+.why-panels {
+    --why-gap: clamp(8px, 1.3vw, 16px);
+    --why-d1: 15.5cqw;
+    --why-d2: 7.6cqw;
+    --why-d3: 3.8cqw;
+    container-type: inline-size;
+    display: flex;
+    gap: var(--why-gap);
+    height: clamp(260px, 28vw, 380px);
+}
+
+.why-panel {
+    position: relative;
+    flex: 0 0 var(--why-d3);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+    overflow: hidden;
+    cursor: pointer;
+    transition: flex-grow 0.6s var(--ease), flex-basis 0.6s var(--ease);
+}
+
+.why-panel[data-d="0"] { flex: 1 1 0px; cursor: default; }
+.why-panel[data-d="1"] { flex-basis: var(--why-d1); }
+.why-panel[data-d="2"] { flex-basis: var(--why-d2); }
+
+/* Each picture is drawn once, at the widest a picked card gets (first
+   or last in the row), and centred in its card, so a card opening or
+   closing only uncovers or covers it: nothing rescales on the way. */
+.why-panel img {
+    --why-open: calc(100cqw - 3 * var(--why-gap) - var(--why-d1) - var(--why-d2) - var(--why-d3));
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--why-open);
+    max-width: none;
+    height: 100%;
+    margin-left: calc(var(--why-open) / -2);
+    object-fit: cover;
+    object-position: var(--pos, 50% 50%);
+    display: block;
+}
+
+/* A closed card lifts a little under the pointer: it can be picked. */
+@media (hover: hover) and (pointer: fine) {
+    .why-panel img { transition: filter 0.3s var(--ease); }
+    .why-panel:not(.is-active):hover img { filter: brightness(1.1); }
+}
+
+.why-panel:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* The caption: a bold lead running into grey text, the card's link at
+   the right. Without the script the four simply stack; with it
+   (`is-live`) they share one grid cell, so the block is as tall as the
+   longest and nothing below moves when the card changes. */
+.why-captions {
+    margin-top: 32px;
+}
+
+.why-caption {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px 48px;
+}
+
+.why-caption + .why-caption { margin-top: 24px; }
+
+.why-caption-text {
+    max-width: 62ch;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    color: var(--ink-mute);
+    text-wrap: pretty;
+}
+
+.why-caption-text strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.why-caption-link {
+    flex: none;
+    padding: 11px 20px;
+}
+
+.why-strip.is-live .why-captions { display: grid; }
+
+.why-strip.is-live .why-caption {
+    grid-area: 1 / 1;
+    margin-top: 0;
+    transition: opacity 0.35s var(--ease), visibility 0s linear 0.35s;
+}
+
+.why-strip.is-live .why-caption:not(.is-active) {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.why-strip.is-live .why-caption.is-active {
+    transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .why-panel,
+    .why-strip.is-live .why-caption { transition: none; }
+}
+
+/* The rails scroll sideways by touch, which the
+   page-wide `touch-action: pan-y` (common.css) would otherwise block;
+   and their pictures must not start a native drag or a long-press
+   callout. */
+[data-rail] {
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+}
+
+/* Mouse drag (initRails): a grab cursor on pointer devices, and no
+   snapping while the rail is being dragged so it follows the hand. */
+@media (hover: hover) and (pointer: fine) {
+    [data-rail] { cursor: grab; }
+    [data-rail].is-dragging { cursor: grabbing; }
+}
+
+[data-rail].is-dragging {
+    scroll-snap-type: none;
+    user-select: none;
+}
+
+[data-rail] img,
+.why-panel img,
+.rooms-media img,
+.rooms-media video {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* Prev / next for every card rail — Apple's quiet grey discs,
+   right-aligned under the rail, dimmed at either end (initRails in
+   js/product.js). */
+.rail-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 40px;
+}
+
+.rail-nav-btn {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%; corner-shape: round;
+    background: var(--bg-soft);
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+
+.rail-nav-btn:hover { background: var(--bg-tint); }
+
+.rail-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+/* The tinted summary band needs a whiter disc to read. */
+.section--highlights .rail-nav-btn { background: var(--bg-card); }
+.section--highlights .rail-nav-btn:hover { background: var(--bg-soft); }
+
+.rail-nav-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* ============================
+   3b. Benchmarks — stat band
+   ============================ */
+/* Compatible-apps section (the wall on its own, between the Why
+   section and the use-cases rooms) */
+.section--apps {
+    padding: 80px 0 0;    /* 120px until Oct 3, 2026; the rooms media follows under the same header */
+    background: var(--bg);
+}
+
+.section--apps .rooms-heading {
+    margin-bottom: 64px;
+}
+
+.section--models {
+    padding: 0;    /* the tinted band carries all the padding, header included */
+    background: var(--bg);
+}
+
+/* Benchmark band: the mist tint (Figma 377:286) sits under the protocol
+   copy + table and the take-aways only; the title and the apps wall
+   above stay on the white ground. */
+.models-bench {
+    padding: 96px 0 110px;
+    background: var(--hero-mist);
+}
+
+.models-title {
+    font-size: var(--fs-h2-sub);
+}
+
+.models-title em {
+    color: var(--accent-bright);
+}
+
+/* One line on desktop (Figma 228:4907); the authored break only takes
+   effect on phones, where the title stacks. */
+.models-title br {
+    display: none;
+}
+
+.models-head {
+    margin-bottom: 36px;
+    max-width: none;
+}
+
+/* Under the title: the one sentence of how, then three figures in a
+   row, one per kind of workload, hairlines between, and what they were
+   measured on. The table below has the rest. */
+.models-lede {
+    margin: 20px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.models-proof {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+.models-proof li {
+    padding: 2px 40px;
+}
+
+.models-proof li:first-child {
+    padding-left: 0;
+}
+
+.models-proof li + li {
+    border-left: 1px solid rgba(var(--ink-rgb), 0.14);
+}
+
+.models-proof-figure {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--fs-h2-sub);
+    font-weight: 500;
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.models-proof-figure small {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--ink-soft);
+}
+
+.models-proof-what {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.models-proof-foot {
+    margin: 16px 0 64px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+/* The page is the Buy page outright since Oct 2, 2026: <html class="is-now">
+   sits in the markup (product-now.css scopes to it), and the signup mode's
+   blocks are gone (archive/wici-one-signup-mode). The signup-mode styles
+   below (.qc-*, .reserve-*, .signup-card*, .section--signup's signup
+   dress, .specs-cta, .faq-a .nl-form) are unused on the page for now. */
+
+/* Protocol block: the apps wall's copy-left / content-right layout with
+   the benchmark table (the accordion on phones) on the right. Reuses
+   .apps-copy / .apps-title / .apps-note so the two blocks stay
+   typographically identical; the figures keep their own 800px cap and
+   hug the right column. */
+.models-protocol {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) auto;
+    align-items: center;
+    column-gap: 48px;
+}
+
+.models-protocol .models-table-wrap {
+    margin: 0;
+}
+
+/* Desktop: the table and its footnote sit on a white card inside the
+   mist band, and the tab strip above takes the same inset so the tabs
+   and the table's first column share a left edge. Hidden with the
+   table on phones, where the accordion takes over. */
+.section--models .models-card {
+    padding: 20px 24px 18px;
+    border-radius: var(--radius);
+    background: var(--bg-card);
+}
+
+/* The band (div.models-bench) and the table's benchmark-name cells
+   (td.models-bench) share a class name, so the cells pick up the
+   band's mint ground; on the white card that would show as a stripe. */
+.section--models .models-card .models-bench {
+    background: none;
+}
+
+/* Desktop: fixed column widths, so the two edition columns hold still
+   when the tabs swap row groups (auto layout re-measured each
+   workload's rows and moved them between tabs). Phones show the
+   accordion instead, so this stays out of the phone layout. */
+/* Desktop two-column layout: the protocol copy is pinned to the top of
+   the row instead of centred against the table, whose height changes
+   with each tab's row count and would otherwise move the copy. */
+@media (min-width: 1200px) {
+    .models-protocol {
+        align-items: start;
+    }
+}
+
+@media (min-width: 721px) {
+    .section--models .models-table {
+        table-layout: fixed;
+    }
+    .section--models .models-table th:nth-child(2),
+    .section--models .models-table th:nth-child(3) {
+        width: 26%;
+    }
+}
+
+.section--models .models-switch {
+    padding: 0 24px;
+}
+
+/* The band carries the figures twice and the breakpoint picks one: the
+   workload-switcher table above 720px, the accordion (shop/wici-one's sheet
+   format) at phone widths. Scoped to the band so the buy sheet's
+   accordion keeps showing at every width. */
+@media (min-width: 721px) {
+    .section--models .bench-acc {
+        display: none;
+    }
+}
+@media (max-width: 720px) {
+    .section--models .models-switch,
+    .section--models .models-card,
+    .section--models .models-table,
+    .section--models .models-notes {
+        display: none;
+    }
+    /* The open group's head stays pinned under the nav while its rows
+       scroll (the now page adds its product bar through --pin-top), on
+       the band's own ground so the rows slide under it; js/specs.js
+       scrolls a tapped head up to this line. */
+    .section--models .bench-group-head {
+        position: sticky;
+        top: var(--pin-top, 56px);
+        z-index: 2;
+        background: var(--hero-mist);
+    }
+    /* The open group's rows sit on a white panel under the mist head, so
+       the pinned title and the rows sliding under it read as two things.
+       No top padding: the slide animates height + bottom padding only. */
+    .section--models .bench-group-body {
+        padding: 0 16px 20px;
+        border-radius: 22px;
+        background: var(--bg);
+    }
+    /* No divider under the open group: its white panel already closes
+       it. Transparent rather than removed, so the 1px stays and nothing
+       shifts as groups open and close. */
+    .section--models .bench-group[open] {
+        border-bottom-color: transparent;
+    }
+}
+
+@media (max-width: 1199px) {
+    .models-protocol {
+        grid-template-columns: 1fr;
+        row-gap: 28px;
+    }
+    .models-protocol .apps-copy {
+        display: contents;
+    }
+    .models-protocol .models-table-wrap {
+        order: 1;
+        margin: 0 auto;
+    }
+    /* Unlike the apps wall, the protocol note stays right under its
+       title when stacked; the table follows both. */
+    .models-protocol .apps-note {
+        order: 0;
+        max-width: 32ch;   /* two balanced lines, not a full-width strip */
+    }
+}
+
+/* The two take-aways sit in the left column under the protocol copy on
+   desktop as a hairline list with a small icon each; stacked under
+   1200px they move below the table as a two-column row. */
+.models-points {
+    list-style: none;
+    max-width: 44ch;
+    margin: 32px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+/* Desktop: the protocol note sits under the title, so its take-away
+   twin is hidden. */
+.models-points li.models-point--protocol {
+    display: none;
+}
+
+.models-points li {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: start;
+    padding: 10px 0;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+/* Two-tone line icons (a tinted fill plus strokes) on a soft violet
+   tile that fades toward white. */
+.models-point-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 19px;
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.2) 0%, rgba(var(--accent-rgb), 0.06) 100%);
+    box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.16);
+    color: var(--accent-bright);
+}
+
+.models-point-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.models-point-body {
+    display: block;
+}
+
+.models-points strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: var(--fs-body);
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* One line of technical detail between the take-away's name and its
+   link, in the item's own muted body-small. */
+.models-point-text {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.models-points a {
+    display: block;
+    width: fit-content;
+    color: var(--accent-bright);
+    font-weight: 600;
+}
+
+.models-points a:hover {
+    color: var(--accent-hover);
+}
+
+/* Stacked (under 1200px) the table is centred in its column, so the
+   take-aways centre too and share its edges. Sits after the base rule
+   above so it actually wins. */
+@media (max-width: 1199px) {
+    /* Stacked: title, table, then three take-aways (the protocol note
+       joins the list as its first item; the standalone note hides). */
+    .models-protocol .apps-note {
+        display: none;
+    }
+    .models-points {
+        order: 3;
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto 0;
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 28px;
+        gap: 0 28px;
+    }
+    .models-points li.models-point--protocol {
+        display: grid;
+    }
+}
+
+@media (max-width: 960px) {
+    .models-points {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+    .models-head {
+        margin-bottom: 32px;
+    }
+    .models-proof-foot {
+        margin-bottom: 48px;
+    }
+}
+
+/* Phones: the two benchmark blocks read as left-aligned text over
+   full-width controls — long centred paragraphs are hard to scan, so
+   the kicker, titles, notes, and footnotes all sit on the left margin;
+   the apps rail and the workload pill run full width; the workload
+   strip becomes a horizontally scrolling pill like the apps switcher. */
+@media (max-width: 720px) {
+    .models-head {
+        text-align: left;
+        margin-bottom: 20px;
+    }
+    /* The three figures become three rows: the figure, then what it is. */
+    .models-proof {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .models-proof li,
+    .models-proof li:first-child {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: baseline;
+        column-gap: 14px;
+        padding: 12px 0;
+    }
+    .models-proof li + li {
+        border-left: 0;
+        border-top: 1px solid rgba(var(--ink-rgb), 0.14);
+    }
+    .models-proof-what {
+        margin-top: 0;
+        text-align: right;
+    }
+    .models-proof-foot {
+        margin: 10px 0 40px;
+    }
+    .models-title br {
+        display: inline;
+    }
+
+    /* Apps wall copy */
+    .models-apps .apps-title,
+    .models-protocol .apps-title,
+    .section--rooms .apps-title {
+        text-align: left;
+        max-width: 22ch;
+    }
+    .models-apps .apps-note,
+    .models-protocol .apps-note {
+        text-align: left;
+        justify-self: stretch;
+        max-width: none;
+        font-size: var(--fs-body);
+    }
+    .models-apps .apps-note a,
+    .models-protocol .apps-note a {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .apps-wall-caption {
+        text-align: left;
+    }
+    .models-protocol .apps-note {
+        margin-top: 12px;
+    }
+
+    /* The stacked grid column must not grow to the pill's unwrapped
+       width: let the table wrap shrink and the pill scroll inside it. */
+    .models-protocol {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .models-protocol .models-table-wrap {
+        min-width: 0;
+        max-width: 100%;
+    }
+}
+
+/* ============================
+   6. Use Cases
+   ============================ */
+/* Apple's tabbed media format: headline, one media stage (the standard
+   1200px container, the width of the page's other content), a
+   segmented tab pill, and a caption for the selected tab. The stage's three
+   frames stack in one box and cross-fade as js/product.js switches
+   tabs; every control (Play full video, pause, full screen) lives on
+   the media. Phones run the media edge to edge and scroll the tab
+   pill sideways behind a chevron. */
+.section--rooms {
+    padding: 96px 0 120px;    /* continues the wall above, under the Workloads header */
+    background: var(--bg);
+}
+
+/* The stage's sub-heading: the apps wall's `.apps-title`, so the two
+   blocks under the Workloads header open the same way, and it follows
+   the wall's alignment at each width (left, centred under 1200px, left
+   again on phones). The section in the selector keeps the margin
+   through the wall's `.apps-title { margin: 0 }` at 1199px. */
+.section--rooms .rooms-title {
+    margin: 0 0 32px;
+}
+
+.rooms-eyebrow {
+    display: block;
+    margin-bottom: 16px;
+}
+
+.rooms-heading {
+    margin-bottom: 48px;
+}
+
+.rooms-media {
+    position: relative;
+    width: 100%;
+    /* Exactly the films' 16:9, so `cover` crops nothing and a video's
+       poster (which Safari draws uncropped) sits pixel-for-pixel where
+       the first frame lands. */
+    aspect-ratio: 16 / 9;
+    border-radius: 45px;
+    overflow: hidden;
+    background: var(--ink);
+}
+
+.rooms-frame {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    /* A frame that is not showing must not take the pointer either: the
+       frames stack in DOM order, so a later one, faded out, would sit
+       over the active one and swallow its clicks and the pointer moves
+       that bring the film player's bar back. */
+    pointer-events: none;
+    transition: opacity 0.45s var(--ease);
+}
+
+.rooms-frame.is-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.rooms-frame img,
+.rooms-frame video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---- Tabs under the media ----
+   Desktop: a centred row of separate buttons under the media, each on
+   its own hairline outline and the picked one filled violet, with the
+   caption centred below. No shared grey track. Phones stack the same buttons beside the
+   caption instead, see the 720px block. */
+.rooms-panel {
+    margin-top: 32px;
+}
+
+.rooms-tabs-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.rooms-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.rooms-tab {
+    padding: 10px 21px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-button);
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+/* The two-word labels carry a line break, and every button a chevron,
+   that only the phone layout uses. */
+.rooms-tab-br,
+.rooms-tab-chev { display: none; }
+
+.rooms-tab:hover {
+    border-color: var(--accent);
+    color: var(--accent-bright);
+}
+
+.rooms-tab.is-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+}
+
+.rooms-tab.is-active:hover { color: var(--bg); }
+
+.rooms-tab:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ---- Caption: "Label. Description." under the buttons ---- */
+.rooms-captions {
+    margin-top: 28px;
+    text-align: center;
+}
+
+.rooms-caption {
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+    max-width: 68ch;
+    margin: 0 auto;
+}
+
+.rooms-caption[hidden] { display: none; }
+
+.rooms-caption strong {
+    font-weight: 500;
+    color: var(--ink);
+}
+/* Each caption closes with its own line, "Deep dive:" and one link into the matching research article, Apple's "Learn more >"
+   register: the label and the link stay together instead of the label
+   dangling at the end of the prose. */
+.rooms-caption-more {
+    display: block;
+    margin-top: 10px;
+    font-size: var(--fs-body);   /* one step under the caption's lede size */
+}
+.rooms-caption a {
+    color: var(--accent-bright);
+    white-space: nowrap;
+}
+.rooms-caption a:hover {
+    text-decoration: underline;
+}
+
+/* ---- Controls, overlaid on the media ---- */
+/* A case without a video (no `data-video` on its caption) shows no
+   controls while it is selected — js/product.js sets the class. */
+.rooms-media.is-no-controls .rooms-controls {
+    display: none;
+}
+
+/* The full film plays under the site's own player (common.css, "Inline
+   film"; js/product.js builds it on the frame as the film comes in, Oct
+   29, 2026), so the teaser's squares step aside. */
+.rooms-media.is-full .rooms-controls {
+    display: none;
+}
+
+.rooms-controls {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 12px;
+    /* The bar spans the media's whole bottom edge and would otherwise
+       swallow clicks meant for the play-full pill underneath it: only
+       the buttons themselves take pointer events. */
+    pointer-events: none;
+    z-index: 3;
+}
+
+.rooms-controls-group {
+    display: flex;
+    gap: 12px;
+}
+
+/* "Play full video": a pill in the media's bottom-left corner while the
+   teaser runs, centered (and larger) once it has ended, centered again
+   as a replay when the full film ends (js/product.js). */
+.rooms-play-full {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px 6px 12px;
+    border-radius: 999px;
+    /* Dark scrim + white text so it reads over any frame of the film;
+       a thin light hairline instead of the heavy lavender rim. */
+    border: 1px solid rgba(var(--bg-rgb), 0.7);
+    background: rgba(var(--ink-rgb), 0.55);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(var(--ink-rgb), 0.2);
+    color: var(--bg);
+    font-family: var(--font-sans);
+    font-size: var(--fs-button);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.rooms-play-full.is-centered {
+    left: 50%;
+    top: 68%;   /* below centre, clear of the end card's logo */
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    gap: 8px;
+    padding: 12px 26px 12px 20px;
+    background: rgba(var(--ink-rgb), 0.6);
+}
+
+.rooms-play-full[hidden] { display: none; }
+.rooms-play-full:hover { background: rgba(var(--ink-rgb), 0.8); border-color: var(--bg); }
+.rooms-play-full.is-centered:active { transform: translate(-50%, -50%) scale(0.97); }
+.rooms-play-full:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.rooms-ctl {
+    width: 44px;
+    height: 44px;
+    padding: 9px;
+    /* Same scrim as the play-full pill: dark glass, white glyph, thin
+       light hairline. */
+    border: 1px solid rgba(var(--bg-rgb), 0.7);
+    border-radius: 16px;
+    background: rgba(var(--ink-rgb), 0.55);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    box-shadow: 0 4px 8px rgba(var(--ink-rgb), 0.25);
+    color: var(--bg);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+
+.rooms-ctl svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.rooms-ctl:hover { background: rgba(var(--ink-rgb), 0.8); border-color: var(--bg); }
+.rooms-ctl:disabled { opacity: 0.4; cursor: default; }
+.rooms-ctl:disabled:hover { background: rgba(var(--ink-rgb), 0.55); border-color: rgba(var(--bg-rgb), 0.7); }
+
+.rooms-ctl:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* Pause ⇄ play glyph swap (js/product.js toggles `is-paused` on the
+   button while its frame's <video> is paused). */
+.rooms-ctl-play-glyph { display: none; }
+.rooms-ctl.is-paused .rooms-ctl-pause-glyph { display: none; }
+.rooms-ctl.is-paused .rooms-ctl-play-glyph { display: block; }
+
+.section--cases {
+    padding: 140px 0;
+    background: var(--bg-tint);
+}
+
+.cases-header {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+/* Arrow link under a case's copy (robot → physical-intelligence, voice →
+   developer docs, prototyping → developers), styled like the homepage's
+   .latest-head-link in the accent. */
+.case-tile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: -8px;
+    color: var(--accent-bright);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: color 0.2s var(--ease);
+}
+
+.case-tile-link svg { transition: transform 0.25s var(--ease); }
+.case-tile-link:hover { color: var(--accent-hover); }
+.case-tile-link:hover svg { transform: translateX(3px); }
+
+/* ---- Use Cases: a floor plan ----
+   A home in plan, one room per use case, beside a list of the same five.
+   Desktop: one white card, a hint line over the plan on its soft panel
+   on the left, the list on the right, its top level with the
+   panel's. From 960px down
+   the two stack: the hint, the plan on its panel, then the list on a
+   white card.
+
+   The plan is drawn in a 358 by 420 box. Everything in it, the room
+   buttons, the pins, the labels, is measured in --pu, one plan unit (the
+   plan's width over 358, through a container query unit), so the plan
+   scales as one piece, and under 440px wide it switches to the larger
+   labels, pins, and line weights of the phone drawing. Colours are the
+   site's tokens: white floors on the soft panel, ink walls, the accent
+   for the Wi-Fi and the picked room. */
+.floor {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "hint ."
+        "plan list";
+    column-gap: 48px;
+    align-items: start;
+    padding: 40px;
+    border-radius: 45px;
+    background: var(--bg-card);
+}
+
+.floor-hint {
+    grid-area: hint;
+    margin: 0 0 16px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.floor-hint-short { display: none; }
+
+.floor-stage {
+    grid-area: plan;
+    padding: 16px;
+    border-radius: 32px;
+    background: var(--bg-soft);
+}
+
+.floor-plan {
+    --pu: 1.2px;   /* for browsers without container query units */
+    position: relative;
+    /* 470px at full width: with its panel the plan is then about as
+       tall as the list beside it with a row open. */
+    width: clamp(340px, 36vw, 470px);
+    aspect-ratio: 358 / 420;
+    container-type: inline-size;
+}
+
+@supports (width: 1cqw) {
+    .floor-plan { --pu: calc(100cqw / 358); }
+}
+
+/* -- The drawing -- */
+.floor-svg {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.floor-ground rect:first-child {
+    fill: var(--bg-card);
+    transition: fill 0.25s var(--ease);
+}
+
+.floor-ground.is-active rect:first-child {
+    fill: color-mix(in srgb, var(--accent) 20%, var(--bg-card));
+}
+
+.floor-texture { transition: opacity 0.25s var(--ease); }
+.floor-ground.is-active .floor-texture { opacity: 0.35; }
+
+.floor-grain {
+    stroke: rgba(var(--ink-rgb), 0.09);
+    stroke-width: 0.6;
+}
+
+.floor-waves circle {
+    stroke: var(--accent);
+    stroke-width: 0.8;
+    stroke-dasharray: 2 5;
+    opacity: 0.05;
+    animation: floor-wave 3s ease-in-out infinite;
+}
+
+.floor-waves circle:nth-child(2) { animation-delay: 0.5s; }
+.floor-waves circle:nth-child(3) { animation-delay: 1s; }
+
+/* Furniture: the designer's own drawings (Oct 4, 2026), white shapes in
+   the plan's grey line. A piece with a
+   shadow is in the markup twice: the copy in .floor-shade is filled with
+   the line colour and set a little lower, and the piece drawn over it
+   leaves that copy showing along its lower edges, which is the drawing's
+   hard shadow. The pieces that repeat sit in the plan's <defs> and take
+   these colours through their <use>. */
+.floor-furniture {
+    opacity: 0.62;
+    fill: var(--bg-card);
+    stroke: var(--ink-mute);
+    stroke-width: 0.7;
+}
+
+.floor-shade {
+    fill: var(--ink-mute);
+    transform: translateY(0.7px);
+}
+
+.floor-ping {
+    fill: var(--accent);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: floor-ping 2s ease-out infinite;
+}
+
+/* WiCi One, on the hall shelf: the accent, as the designer draws it. */
+.floor-box {
+    fill: var(--accent);
+    stroke: var(--bg-cool);
+    stroke-width: 0.7;
+}
+
+.floor-wall { stroke: var(--ink); }
+.floor-wall--outer { stroke-width: 6; }
+.floor-wall--inner {
+    stroke-width: 3.5;
+    stroke-linecap: square;
+}
+
+/* A window is a gap in the wall, filled with the panel behind the plan,
+   crossed by two thin lines. */
+.floor-window-gap { fill: var(--bg-soft); }
+
+.floor-line {
+    stroke: var(--ink);
+    stroke-width: 0.8;
+}
+
+@keyframes floor-wave {
+    50% { opacity: 0.3; }
+}
+
+@keyframes floor-ping {
+    from { transform: scale(1); opacity: 0.8; }
+    to { transform: scale(6.5); opacity: 0; }
+}
+
+/* -- The rooms: one button over each, with its name, its use case, and a
+   numbered pin -- */
+.floor-room {
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: calc(2 * var(--pu));
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.floor-room[data-case="assistant"] {
+    left: calc(12 * var(--pu));
+    top: calc(12 * var(--pu));
+    width: calc(200 * var(--pu));
+    height: calc(168 * var(--pu));
+    padding: 0 calc(34 * var(--pu)) calc(12 * var(--pu)) calc(16 * var(--pu));
+    justify-content: flex-end;
+}
+
+.floor-room[data-case="studio"] {
+    left: calc(212 * var(--pu));
+    top: calc(12 * var(--pu));
+    width: calc(134 * var(--pu));
+    height: calc(168 * var(--pu));
+    padding: 0 calc(26 * var(--pu)) calc(12 * var(--pu)) calc(14 * var(--pu));
+    justify-content: flex-end;
+}
+
+.floor-room[data-case="voice"] {
+    left: calc(12 * var(--pu));
+    top: calc(180 * var(--pu));
+    width: calc(128 * var(--pu));
+    height: calc(228 * var(--pu));
+    /* The left padding keeps the label clear of the kitchen counter. */
+    padding: calc(14 * var(--pu)) calc(4 * var(--pu)) 0 calc(44 * var(--pu));
+    justify-content: flex-start;
+}
+
+.floor-room[data-case="space"] {
+    left: calc(140 * var(--pu));
+    top: calc(180 * var(--pu));
+    width: calc(206 * var(--pu));
+    height: calc(80 * var(--pu));
+    /* The right padding keeps the label clear of the pin: the label
+       breaks onto a second line instead of running under it. */
+    padding: 0 calc(50 * var(--pu)) calc(10 * var(--pu)) calc(14 * var(--pu));
+    justify-content: flex-end;
+}
+
+.floor-room[data-case="dev"] {
+    left: calc(140 * var(--pu));
+    top: calc(260 * var(--pu));
+    width: calc(206 * var(--pu));
+    height: calc(148 * var(--pu));
+    padding: calc(12 * var(--pu)) calc(44 * var(--pu)) 0 calc(26 * var(--pu));
+    justify-content: flex-start;
+}
+
+.floor-room-name {
+    font-size: calc(14 * var(--pu));
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.floor-room-case {
+    font-size: calc(11 * var(--pu));
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--ink-soft);
+    transition: color 0.2s var(--ease);
+}
+
+.floor-room.is-active .floor-room-case { color: var(--accent-hover); }
+
+.floor-room:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -3px;
+}
+
+.floor-pin {
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(28 * var(--pu));
+    height: calc(28 * var(--pu));
+    margin: calc(-14 * var(--pu)) 0 0 calc(-14 * var(--pu));
+    border: 2px solid var(--ink);
+    border-radius: 50%; corner-shape: round;
+    background: var(--bg-card);
+    color: var(--ink);
+    font-size: calc(11.5 * var(--pu));
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 3px 8px rgba(var(--ink-rgb), 0.18);
+    transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1), background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+/* Each pin sits where the drawing puts it, measured from its own room. */
+.floor-room[data-case="assistant"] .floor-pin { left: calc(100 * var(--pu)); top: calc(78 * var(--pu)); }
+.floor-room[data-case="studio"] .floor-pin { left: calc(67 * var(--pu)); top: calc(80 * var(--pu)); }
+.floor-room[data-case="voice"] .floor-pin { left: calc(72 * var(--pu)); top: calc(110 * var(--pu)); }
+.floor-room[data-case="space"] .floor-pin { left: calc(182 * var(--pu)); top: calc(44 * var(--pu)); }
+.floor-room[data-case="dev"] .floor-pin { left: calc(92 * var(--pu)); top: calc(82 * var(--pu)); }
+
+.floor-room:hover .floor-pin { transform: scale(1.12); }
+.floor-room:active .floor-pin { transform: scale(0.9); }
+
+.floor-room.is-active .floor-pin {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.floor-room.is-active .floor-pin::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border: 2px solid var(--accent);
+    border-radius: 50%; corner-shape: round;
+    animation: floor-ring 1.6s ease-out infinite;
+}
+
+@keyframes floor-ring {
+    from { transform: scale(1); opacity: 0.6; }
+    to { transform: scale(2); opacity: 0; }
+}
+
+/* The phone drawing: larger labels and pins, heavier lines. */
+@container (max-width: 440px) {
+    .floor-room-name { font-size: calc(17 * var(--pu)); }
+    .floor-room-case { font-size: calc(13.5 * var(--pu)); }
+    .floor-pin {
+        width: calc(38 * var(--pu));
+        height: calc(38 * var(--pu));
+        margin: calc(-19 * var(--pu)) 0 0 calc(-19 * var(--pu));
+        font-size: calc(15 * var(--pu));
+    }
+    /* The office label takes two lines at this size; its pin sits a
+       little lower to stay clear of it. The studio label starts a
+       little further left, so its longer first line ends short of the
+       shelf. */
+    .floor-room[data-case="dev"] .floor-pin { top: calc(94 * var(--pu)); }
+    .floor-room[data-case="studio"] { padding-left: calc(10 * var(--pu)); }
+    .floor-wall--outer { stroke-width: 7; }
+    .floor-wall--inner { stroke-width: 4; }
+    .floor-furniture,
+    .floor-box { stroke-width: 0.8; }
+    .floor-shade { transform: translateY(0.8px); }
+    .floor-line,
+    .floor-waves circle { stroke-width: 1; }
+}
+
+/* -- The list: the same five, one open at a time -- */
+.floor-list {
+    grid-area: list;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.08);
+}
+
+.floor-item {
+    border-bottom: 1px solid rgba(var(--ink-rgb), 0.08);
+    border-radius: 22px;
+    transition: background 0.2s var(--ease);
+}
+
+.floor-item.is-open { background: rgba(var(--accent-rgb), 0.08); }
+
+.floor-item-head { margin: 0; }
+
+.floor-row {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 60px;
+    margin: 0;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 22px;
+    background: none;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.floor-item:not(.is-open) .floor-row:hover { background: rgba(var(--accent-rgb), 0.05); }
+
+.floor-row:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.floor-num {
+    flex: none;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%; corner-shape: round;
+    background: var(--bg-card);
+    color: var(--ink);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    line-height: 1;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.floor-item.is-open .floor-num {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.floor-row-title {
+    flex: 1 1 auto;
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: var(--lh-title);
+    letter-spacing: -0.01em;
+}
+
+.floor-row-chev {
+    flex: none;
+    color: var(--ink-mute);
+    transition: transform 0.25s var(--ease);
+}
+
+.floor-item.is-open .floor-row-chev { transform: rotate(180deg); }
+
+.floor-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0 18px 18px 58px;
+}
+
+.floor-panel[hidden] { display: none; }
+
+.floor-panel-body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.floor-panel .case-tile-link { margin-top: 0; }
+
+.floor-panel-media {
+    width: 100%;
+    max-width: 420px;
+    height: 170px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--bg-soft);
+}
+
+.floor-panel-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.floor-panel-media--strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    background: none;
+}
+
+.floor-panel-media--contain img { object-fit: contain; }
+
+/* Stacked: the hint, the plan, then the list on its own card. */
+@media (max-width: 960px) {
+    .floor {
+        display: flex;
+        flex-direction: column;
+        /* Stretch: the plan is a size container, so it has no width of
+           its own to hold the panel open. */
+        align-items: stretch;
+        gap: 12px;
+        padding: 0;
+        border-radius: 0;
+        background: none;
+    }
+    .floor-hint {
+        margin: 0;
+        font-size: var(--fs-caption);
+        text-align: center;
+    }
+    .floor-hint-long { display: none; }
+    .floor-hint-short { display: inline; }
+    .floor-stage { padding: 10px 0; }
+    .floor-plan {
+        width: 100%;
+        max-width: 555px;
+        margin: 0 auto;
+    }
+    .floor-list {
+        padding: 6px;
+        border-top: 0;
+        border-radius: 32px;
+        background: var(--bg-card);
+    }
+    .floor-item {
+        border-bottom: 0;
+        border-radius: 26px;
+    }
+    .floor-row {
+        gap: 12px;
+        min-height: 48px;
+        padding: 6px 12px;
+        border-radius: 26px;
+    }
+    .floor-num {
+        width: 26px;
+        height: 26px;
+    }
+    .floor-row-title { font-size: var(--fs-body); }
+    .floor-panel {
+        gap: 8px;
+        padding: 0 14px 14px 50px;
+    }
+    .floor-panel-body { font-size: var(--fs-body-s); }
+}
+
+/* Phones leave the pictures out, as in the designer's phone drawing. */
+@media (max-width: 720px) {
+    .floor-panel-media { display: none; }
+}
+
+/* -- Phones: one swipeable card in place of the list, so the picked room's text
+   sits right under the plan. buildFloorCards in js/product.js builds
+   the card from the list's rows and sets .floor--cards; until then, and
+   above 720px, the list shows and the card does not. The card is one
+   white panel: a scroll-snap track of five slides (the room and its
+   place in the five, the title, the text, the link) over a row of
+   previous, dots, and next. Every slide is as tall as the tallest, so
+   the card keeps its height from room to room. -- */
+.floor-cards,
+.floor-hint-cards { display: none; }
+
+@media (max-width: 720px) {
+    .floor--cards .floor-list,
+    .floor--cards .floor-hint-short { display: none; }
+    .floor--cards .floor-hint-cards { display: inline; }
+
+    .floor-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 18px 0 12px;
+        border-radius: 32px;
+        background: var(--bg-card);
+    }
+
+    .floor-cards-track {
+        display: flex;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .floor-cards-track::-webkit-scrollbar { display: none; }
+
+    .floor-card {
+        flex: 0 0 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 0 18px;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+    }
+
+    .floor-card-kicker {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-micro);
+        font-weight: 600;
+        line-height: 1.4;
+        letter-spacing: var(--ls-caps);
+        text-transform: uppercase;
+        color: var(--accent-bright);
+    }
+
+    .floor-card-title {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-lead);
+        font-weight: 600;
+        line-height: var(--lh-title);
+        letter-spacing: -0.01em;
+        color: var(--ink);
+    }
+
+    .floor-card-body {
+        margin: 2px 0 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-s);
+        line-height: var(--lh-body);
+        color: var(--ink-soft);
+    }
+
+    .floor-card .case-tile-link { margin-top: 2px; }
+
+    .floor-cards-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px;
+    }
+
+    /* Previous is an outlined disc, next the accent one. */
+    .floor-cards-btn {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        margin: 0;
+        padding: 0;
+        border: 1.5px solid var(--line);
+        border-radius: 50%; corner-shape: round;
+        background: var(--bg-card);
+        color: var(--ink);
+        cursor: pointer;
+        transition: transform 0.15s var(--ease);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .floor-cards-btn--next {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: var(--bg);
+    }
+
+    .floor-cards-btn:active { transform: scale(0.94); }
+
+    .floor-cards-btn:focus-visible,
+    .floor-cards-dot:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+    }
+
+    .floor-cards-dots {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* A dot is 8px; the picked one stretches to a pill. The ::after
+       gives each a taller touch target than it shows. */
+    .floor-cards-dot {
+        position: relative;
+        width: 8px;
+        height: 8px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 4px; corner-shape: round;
+        background: var(--line-strong);
+        cursor: pointer;
+        transition: width 0.2s var(--ease), background 0.2s var(--ease);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .floor-cards-dot::after {
+        content: "";
+        position: absolute;
+        inset: -18px -3px;
+    }
+
+    .floor-cards-dot.is-active {
+        width: 22px;
+        background: var(--accent);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .floor-waves circle,
+    .floor-ping,
+    .floor-room.is-active .floor-pin::after { animation: none; }
+    .floor-waves circle { opacity: 0.18; }
+    .floor-ping { opacity: 0; }
+    .floor-pin { transition: none; }
+    .floor-cards-btn,
+    .floor-cards-dot { transition: none; }
+}
+
+/* ============================
+   7. Developer Experience
+   A dark, terminal-flavored section that breaks the page rhythm
+   to signal a shift in audience (from end-user to developer).
+   Visual personality is purely typographic — no imagery: a faint
+   grid backdrop, monospace code-comment markers, numbered feature
+   tiles, and a CLI-style closing stanza.
+   ============================ */
+.section--dx {
+    padding: 100px 0 84px;
+    background: var(--bg-dark);
+    color: var(--bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.section--dx::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(to right, rgba(var(--bg-rgb), 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(var(--bg-rgb), 0.15) 1px, transparent 1px);
+    background-size: 80px 80px;
+    background-position: -1px -1px;
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.3) 72%, rgba(0, 0, 0, 0) 100%);
+            mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.3) 72%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Decorative device closeup pinned to the section's top-left corner.
+   The render bleeds off the top and left edges of its source frame, so
+   corner-anchoring reads as the device peeking into the section; the
+   diagonal mask melts it into the dark backdrop so the type keeps the
+   spotlight. Paints above the ::before grid (DOM order), below the
+   z-indexed `.dx-inner` content. */
+/* Sits in the flow between `.dx-prose` and the first `.dx-block`,
+   reserving a band of vertical space sized to the image (the 0.642
+   factor is the artwork's height/width ratio). The image hangs from
+   the band's bottom edge, so it lives in this gap rather than over
+   the prose above. Negative z-index keeps it behind the section's
+   content within the `.dx-inner` stacking context. */
+.dx-backdrop {
+    position: relative;
+    /* Well under the artwork's height — the image is taller than the
+       band and overhangs upward behind the prose (faded by the top
+       mask). Phones use their own taller ratio below. */
+    height: calc(min(760px, 56vw) * 0.2);
+    margin: 56px 0 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* At the screen's right edge (minus a 10%-of-width inset), at full
+   strength. Two intersected edge fades — top and left — melt those
+   sides of the render into the dark section; the bottom-right, where
+   the grille and the embossed WiCi mark sit, stays untouched. */
+.dx-backdrop img {
+    position: absolute;
+    bottom: 48px;
+    /* `50% - 50vw` reaches the viewport's right edge; the added term
+       pulls the image back left by 10% of its own width. */
+    right: calc(50% - 50vw + min(980px, 70vw) * 0.1);
+    display: block;
+    width: min(980px, 70vw);
+    height: auto;
+    -webkit-mask-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 30%),
+        linear-gradient(to right,
+        rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 32%);
+    -webkit-mask-composite: source-in;
+            mask-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 30%),
+        linear-gradient(to right,
+        rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 32%);
+            mask-composite: intersect;
+}
+
+/* Desktop only: a third mask layer — a diagonal fade running from the
+   image's top-left corner to its center (`to bottom right` pins 0% to
+   that corner and puts 50% exactly at the center) — intersected with
+   the top and left edge fades, carving the upper-left melt deeper. */
+@media (min-width: 721px) {
+    .dx-backdrop img {
+        -webkit-mask-image: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 30%),
+            linear-gradient(to right,
+            rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 32%),
+            linear-gradient(to bottom right,
+            rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 50%);
+        -webkit-mask-composite: source-in, source-in;
+                mask-image: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 30%),
+            linear-gradient(to right,
+            rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 32%),
+            linear-gradient(to bottom right,
+            rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 50%);
+                mask-composite: intersect;
+    }
+}
+
+/* On phones the closeup moves up to sit directly under the section
+   title: `.dx-inner` becomes a flex column and the negative orders
+   pull the hero, then the figure, ahead of the prose and the blocks
+   (which keep their DOM order at 0). The band reserves the artwork's
+   full height there instead of the desktop's shallow overlap. */
+@media (max-width: 720px) {
+    .dx-inner {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dx-hero { order: -2; }
+
+    .dx-backdrop {
+        order: -1;
+        /* Artwork aspect is 516/916 ≈ 0.563 of its width, plus a
+           little air on both sides of the band. */
+        height: calc(84vw * 0.6);
+        margin: 32px 0 8px;
+    }
+
+    .dx-backdrop img {
+        width: 84vw;
+        bottom: 0;
+        right: calc(50% - 50vw + 8.4vw);
+    }
+}
+
+.dx-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.dx-hero {
+    max-width: 920px;
+}
+
+.dx-eyebrow {
+    color: var(--accent-bright);
+}
+
+.dx-title {
+    color: var(--bg);
+}
+
+.dx-title em {
+    color: var(--accent-soft);
+}
+
+.dx-prose {
+    margin-top: 44px;
+    max-width: 72ch;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.78);
+}
+
+.dx-prose p { margin: 0; }
+
+.dx-mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.9em;
+    color: var(--bg);
+    background: rgba(var(--bg-rgb), 0.07);
+    border: 1px solid rgba(var(--bg-rgb), 0.08);
+    padding: 1px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.dx-block {
+    margin-top: 24px;
+}
+
+.dx-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 44px 48px;
+}
+
+.dx-item {
+    position: relative;
+    padding-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid rgba(var(--bg-rgb), 0.08);
+}
+
+.dx-item-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-h3);
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--bg);
+    margin: 0;
+}
+
+.dx-item-body {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.78);
+    margin: 0;
+    max-width: 36ch;
+}
+
+/* CTA out to the developer platform — the deep dive (quickstarts,
+   SDK docs, code samples) lives there. Accent-first like the other
+   conversion buttons. */
+/* The tech explainer, between the three ways in and the button: narrower
+   than the section, with a hairline so the dark frame holds its edge on
+   the dark ground. */
+.dx-film {
+    max-width: 960px;
+    margin: 72px auto 0;
+    box-shadow: 0 0 0 1px rgba(var(--bg-rgb), 0.14), 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.dx-cta {
+    margin-top: 72px;
+    display: flex;
+    justify-content: center;
+}
+
+.section--dx .cta--primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+}
+
+.section--dx .cta--primary:hover {
+    background: var(--accent-bright);
+}
+
+/* ============================
+   9. Newsletter
+   "Join the journey" capture overlaid on the scale render, which runs
+   as a full-bleed band between the highlights mosaic and the FAQ.
+   Split layout: title and story copy on the left; the small dark
+   question callout capping the email form in a frosted panel on the
+   right.
+   ============================ */
+.section--signup {
+    padding: 0;
+    background: var(--bg);
+}
+
+.signup-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-tint);
+    /* Height is content-driven: the copy and form set it, and the
+       render `cover`-crops to fill whatever results. */
+}
+
+/* Light wash keeps the headline and paragraphs legible over the
+   render; strongest on the left where the copy sits, thinning to the
+   right so the device still reads through around the frosted panel. */
+.signup-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg,
+        rgba(var(--bg-rgb), 0.9) 0%,
+        rgba(var(--bg-rgb), 0.66) 55%,
+        rgba(var(--bg-rgb), 0.3) 100%);
+    pointer-events: none;
+}
+
+.signup-card-content {
+    position: relative;
+    /* Above the background image and the scrim. */
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 48px 72px;
+    align-items: center;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 96px 40px;
+}
+
+.signup-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.signup-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h2-sub);
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+    margin: 0;
+    text-align: left;
+}
+
+.signup-title em {
+    font-style: normal;
+    font-weight: 500;
+}
+
+.signup-copy {
+    max-width: 54ch;
+    margin: 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    text-align: left;
+}
+
+.signup-copy p { margin: 0; }
+
+/* The offer is the hook — plain heavy bold, reference-style,
+   rather than an accent color that would fight the photo. */
+.signup-copy strong { font-weight: 600; }
+
+.nl-form {
+    width: 100%;
+    max-width: 480px;
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nl-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Frosted pill input so the field reads clearly over the photo and
+   matches the pill CTA beside it. */
+.nl-row input {
+    flex: 1;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.65);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--ink-rgb), 0.12);
+    border-radius: 999px;
+    padding: 13px 20px;
+    font-size: var(--fs-body-s);
+    color: var(--ink);
+    transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+
+.nl-row input::placeholder {
+    color: rgba(var(--ink-rgb), 0.55);
+}
+
+.nl-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.85);
+}
+
+/* Newsletter CTAs run accent-first — the theme blue reads as the
+   action — instead of the shared ink pill from common.css (which
+   would also vanish against the dark quick-CTA card). Hover steps a
+   touch brighter; --accent-bright is a hand-tuned light step of --accent. */
+.nl-form .cta--primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+}
+
+/* :not(.is-sent) keeps the success-green fill in charge once sent —
+   this hover rule out-ranks common.css's button.is-sent:disabled, and
+   on touch devices the tap that submits leaves :hover stuck on the
+   button, which left it blue on phones. */
+.nl-form .cta--primary:hover:not(.is-sent) {
+    background: var(--accent-bright);
+}
+
+.nl-form--full .nl-actions .cta {
+    width: 100%;
+    justify-content: center;
+    /* Sized to keep the label on a single line inside the panel. */
+    font-size: var(--fs-button);
+    white-space: nowrap;
+    box-shadow: 0 12px 28px -8px rgba(var(--accent-rgb), 0.55);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease),
+        background 0.25s var(--ease);
+}
+
+.nl-form--full .nl-actions .cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 34px -10px rgba(var(--accent-rgb), 0.65);
+}
+
+/* Once sent, the glow comes off — the green fill alone confirms. */
+.nl-form--full .nl-actions .cta.is-sent {
+    box-shadow: none;
+}
+
+.nl-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.nl-fineprint {
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+    text-align: center;
+    margin: 0;
+}
+.nl-success {
+    margin-top: 4px;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink);
+    text-align: center;
+}
+
+.nl-success strong { font-weight: 600; color: var(--accent-bright); }
+
+/* Collapsed "question or feedback" disclosure inside the newsletter
+   forms — native <details>, no JS. The summary reads as a quiet text
+   button until opened; the textarea matches the .nl-input treatment. */
+.nl-more { text-align: right; }
+
+.nl-more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    width: fit-content;
+    margin-left: auto;
+    list-style: none;
+    cursor: pointer;
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+    -webkit-user-select: none;
+    user-select: none;
+    transition: color 0.25s var(--ease);
+}
+
+.nl-more summary::-webkit-details-marker { display: none; }
+
+.nl-more summary svg { flex-shrink: 0; }
+
+.nl-more summary:hover,
+.nl-more[open] summary { color: var(--ink); }
+
+.nl-textarea {
+    width: 100%;
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(var(--ink-rgb), 0.12);
+    border-radius: 26px;
+    padding: 13px 18px;
+    font-size: var(--fs-body-s);
+    font-family: var(--font-sans);
+    color: var(--ink);
+    resize: vertical;
+    min-height: 84px;
+    transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+
+.nl-textarea::placeholder { color: rgba(var(--ink-rgb), 0.55); }
+
+.nl-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.88);
+}
+
+/* Post-signup note follow-up: injected by js/product.js into whichever
+   signup form just succeeded without a message; the note merges into the
+   same record (same submission_id). Being inserted at reveal time, the
+   entry animation below plays on its own — the panel unrolls open. */
+.nl-followup {
+    display: grid;
+    gap: 12px;
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.12);
+    overflow: hidden;
+    animation: nl-followup-unroll 0.45s var(--ease);
+}
+
+@keyframes nl-followup-unroll {
+    from { opacity: 0; max-height: 0; padding-top: 0; }
+    to { opacity: 1; max-height: 320px; padding-top: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nl-followup { animation: none; }
+}
+
+.nl-followup .nl-textarea { margin-top: 0; }
+
+/* The placeholder carries the panel's actual copy, so it runs brighter
+   than the default 0.45-alpha placeholders. */
+.nl-followup .nl-textarea::placeholder { color: rgba(var(--ink-rgb), 0.55); }
+.qc-card--merged .nl-followup .nl-textarea::placeholder { color: rgba(var(--bg-rgb), 0.78); }
+
+/* The dark quick-CTA card's .nl-textarea styles apply on their own;
+   only the divider needs a light step there. */
+.qc-card--merged .nl-followup { border-top-color: rgba(var(--bg-rgb), 0.22); }
+
+/* ============================
+   Floating CTA
+   Frosted glass pill fixed above the bottom edge, `is-visible` from
+   product.js. Worn by the signup pop-up's pill (.signup-pop-launch, below)
+   since the signup mode's own floating CTA went on Oct 2, 2026.
+   ============================ */
+.float-cta {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    /* Below the nav (z 50) so the mobile menu can drop over it. */
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 20px 15px 26px;
+    border-radius: 999px;
+    background: rgba(var(--bg-rgb), 0.55);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 12px 40px -12px rgba(var(--ink-rgb), 0.35);
+    font-family: var(--font-sans);
+    font-size: var(--fs-button);
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    pointer-events: none;
+    transition: opacity 0.45s var(--ease), transform 0.45s var(--ease),
+        background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.float-cta.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+}
+
+.float-cta:hover {
+    background: rgba(var(--bg-rgb), 0.78);
+    box-shadow: 0 16px 48px -14px rgba(var(--ink-rgb), 0.4);
+}
+
+/* Status-style dot: soft accent halo around a solid accent core. */
+.float-cta-dot {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%; corner-shape: round;
+    background: rgba(var(--accent-rgb), 0.22);
+    flex: none;
+}
+
+.float-cta-dot::after {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border-radius: 50%; corner-shape: round;
+    background: var(--accent);
+}
+
+/* Slightly more compact pill on phones. */
+@media (max-width: 720px) {
+    .float-cta {
+        gap: 11px;
+        padding: 11px 16px 11px 20px;
+    }
+
+    .float-cta-dot {
+        width: 22px;
+        height: 22px;
+    }
+
+    .float-cta-dot::after { inset: 6px; }
+}
+
+/* ============================
+   Signup pop-up
+   The <dialog id="signupPop"> at the end of <body>, opened once per page
+   view by initSignupPop in product.js: a small white card over a dimmed,
+   softly blurred page, the hero render on its lavender stage above one
+   offer, one email field, and a quiet way out. Phones seat the same card
+   at the bottom of the screen. `has-pop` on <html> marks the card open
+   (it held the page still until Oct 26, 2026, see below); `is-closing`
+   plays the way out before the dialog closes;
+   `is-done` swaps the form for the confirmation in the same box.
+   ============================ */
+/* The page is not locked behind the card: `overflow: hidden`
+   on <html> took a classic scrollbar away and the page widened by its
+   15px as the card opened and closed; `scrollbar-gutter: stable` does not
+   hold the gutter on the root in Chrome once overflow is hidden (checked
+   with a forced 15px scrollbar), so the page simply stays scrollable
+   under the dimmed backdrop. `has-pop` is still set by product.js. */
+html.has-pop {
+}
+
+.signup-pop {
+    width: min(460px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 38px;
+    background: var(--bg-card);
+    color: var(--ink);
+    box-shadow: 0 40px 100px rgba(var(--ink-rgb), 0.28);
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+}
+
+.signup-pop[open] {
+    animation: signup-pop-in 0.3s var(--ease);
+}
+
+/* The tokens carry fallbacks here: older browsers don't pass custom
+   properties down to ::backdrop. */
+.signup-pop::backdrop {
+    background: rgba(var(--ink-rgb, 29, 29, 31), 0.38);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.signup-pop[open]::backdrop {
+    animation: signup-pop-dim 0.3s ease-out;
+}
+
+.signup-pop.is-closing {
+    animation: signup-pop-out 0.18s ease-in forwards;
+}
+
+.signup-pop.is-closing::backdrop {
+    animation: signup-pop-undim 0.18s ease-in forwards;
+}
+
+@keyframes signup-pop-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+}
+
+@keyframes signup-pop-out {
+    to {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+@keyframes signup-pop-dim {
+    from { opacity: 0; }
+}
+
+@keyframes signup-pop-undim {
+    to { opacity: 0; }
+}
+
+.signup-pop-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%; corner-shape: round;
+    background: rgba(var(--ink-rgb), 0.06);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.signup-pop-close:hover {
+    background: rgba(var(--ink-rgb), 0.12);
+    color: var(--ink);
+}
+
+.signup-pop-close:focus-visible,
+.signup-pop-skip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* The hero's stage in small: the same render over the same mist-to-
+   lavender wash, cropped from the bottom so the ledge runs straight
+   into the card's white. */
+.signup-pop-stage {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    overflow: hidden;
+    background: linear-gradient(to bottom, var(--bg-card) 0%, var(--hero-mist) 50%, var(--hero-lavender) 100%) top / 100% 95% no-repeat var(--bg-card);
+}
+
+.signup-pop-stage img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.signup-pop-stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(var(--bg-rgb), 0) 82%, var(--bg-card) 100%);
+}
+
+/* Both views share one grid cell, so the card keeps its height when the
+   confirmation replaces the form. */
+.signup-pop-views {
+    display: grid;
+}
+
+.signup-pop-view {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 36px 22px;
+    text-align: center;
+    transition: opacity 0.2s var(--ease), visibility 0s linear 0.2s;
+}
+
+.signup-pop-done {
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.signup-pop.is-done .signup-pop-ask {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.signup-pop.is-done .signup-pop-done {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s var(--ease) 0.15s, visibility 0s;
+}
+
+.signup-pop-kicker {
+    margin-bottom: 10px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--accent-bright);
+}
+
+.signup-pop-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+/* Focused by the script (the card's label for screen readers), never
+   by Tab, so it takes no ring. */
+.signup-pop-title:focus {
+    outline: none;
+}
+
+.signup-pop-title em {
+    font-style: normal;
+    color: var(--accent-bright);
+}
+
+/* The price before the saving, as on the quick card: same type, dimmed. */
+.signup-pop-title del {
+    color: rgba(var(--ink-rgb), 0.55);
+    text-decoration-thickness: 1px;
+}
+
+.signup-pop-text {
+    margin: 10px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.signup-pop .nl-form {
+    max-width: none;
+    margin-top: 22px;
+}
+
+/* On the white card the shared frosted field would be white on white. */
+.signup-pop .nl-row input {
+    background: var(--bg-soft);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition: border-color 0.25s var(--ease), background 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.signup-pop .nl-row input:focus {
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.14);
+}
+
+.signup-pop .signup-notice {
+    margin-top: 4px;
+}
+
+.signup-pop-skip {
+    margin-top: 6px;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+    cursor: pointer;
+    transition: color 0.2s var(--ease);
+}
+
+.signup-pop-skip:hover {
+    color: var(--ink);
+}
+
+/* The way back: closed without a signup, the pop-up leaves a pill at
+   the bottom centre, in the markup and dress of the old floating CTA
+   (.float-cta, whose anchor went with the signup mode on Oct 2, 2026),
+   which opens it again. `is-visible` comes and goes with the dialog
+   (product.js); out of sight it is out of the tab order as well, and it
+   steps aside while the closing card is on screen (`signup-in-view`). */
+.signup-pop-launch {
+    visibility: hidden;
+    transition: opacity 0.45s var(--ease), transform 0.45s var(--ease),
+        background 0.3s var(--ease), box-shadow 0.3s var(--ease),
+        visibility 0s linear 0.45s;
+}
+
+.signup-pop-launch.is-visible {
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.signup-pop-launch:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+html.signup-in-view .signup-pop-launch {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    pointer-events: none;
+    visibility: hidden;
+    transition-delay: 0s, 0s, 0s, 0s, 0.45s;
+}
+
+/* Confirmation: a tick that draws itself once the view has faded in. */
+.signup-pop-check {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 18px;
+    border-radius: 50%; corner-shape: round;
+    background: var(--accent-soft);
+    color: var(--accent-bright);
+}
+
+.signup-pop-check path {
+    stroke-dasharray: 1 1.2;
+    stroke-dashoffset: 1.1;
+}
+
+.signup-pop.is-done .signup-pop-check path {
+    animation: signup-pop-check 0.45s var(--ease) 0.3s forwards;
+}
+
+@keyframes signup-pop-check {
+    to { stroke-dashoffset: 0; }
+}
+
+/* Phones: the card sits at the bottom of the screen, within thumb's
+   reach, with a gutter on every side. `max-width: none` lifts the UA
+   stylesheet's cap on <dialog>. */
+@media (max-width: 720px) {
+    .signup-pop {
+        width: calc(100% - 24px);
+        max-width: none;
+        max-height: calc(100dvh - 24px);
+        margin: auto auto calc(12px + env(safe-area-inset-bottom, 0px));
+        border-radius: 35px;
+    }
+
+    .signup-pop-view {
+        padding: 2px 20px 16px;
+    }
+
+    /* The stacked form reorders its children (see .nl-row below); a
+       failed submit's message belongs under the button, not above the
+       field. */
+    .signup-pop .signup-submit-error {
+        order: 5;
+        margin-top: 2px;
+    }
+
+    @keyframes signup-pop-in {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .signup-pop[open],
+    .signup-pop[open]::backdrop,
+    .signup-pop.is-closing,
+    .signup-pop.is-closing::backdrop {
+        animation: none;
+    }
+
+    .signup-pop-view,
+    .signup-pop.is-done .signup-pop-done,
+    .signup-pop-launch {
+        transition: none;
+    }
+
+    .signup-pop-check path {
+        stroke-dashoffset: 0;
+    }
+
+    .signup-pop.is-done .signup-pop-check path {
+        animation: none;
+    }
+}
+
+/* ============================
+   11. FAQ
+   ============================ */
+.section--faq {
+    padding: 140px 0 160px;
+    background: var(--bg);
+}
+
+.faq-header {
+    text-align: center;
+    margin-bottom: 56px;
+}
+
+/* A search box over the questions (the designer's mockup, Oct 4, 2026;
+   an accordion of hairline rows before). One white card: a search field
+   ringed in the accent, a small label, the questions as rows, the first
+   one lit, and, once a row is picked, its answer on a soft panel with a
+   way back. js/product.js (initFaq) ranks, filters, and marks the rows
+   as you type; until it runs (.is-ready) the field stays hidden and
+   every answer shows under its question. */
+.faq-box {
+    position: relative;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 45px;
+    background: var(--bg-card);
+    box-shadow: 0 0 0 1px rgba(var(--ink-rgb), 0.1), 0 20px 60px -30px rgba(var(--bg-dark-rgb), 0.25);
+}
+
+.faq-search {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 24px;
+    border: 5px solid rgba(var(--accent-rgb), 0.18);
+    border-radius: 29px;
+    background: var(--bg-card) padding-box;
+    box-shadow: inset 0 0 0 1px rgba(var(--ink-rgb), 0.1);
+    color: var(--ink);
+    cursor: text;
+    transition: border-color 0.2s var(--ease);
+}
+
+.faq-search[hidden] { display: none; }
+
+.faq-search:focus-within { border-color: rgba(var(--accent-rgb), 0.4); }
+
+.faq-search-icon { flex: none; }
+
+.faq-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    line-height: 1.3;
+    /* A typed-out question longer than the field ends in an ellipsis. */
+    text-overflow: ellipsis;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.faq-input::placeholder {
+    color: rgba(var(--ink-rgb), 0.4);
+    opacity: 1;
+}
+
+.faq-input::-webkit-search-decoration,
+.faq-input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+.faq-clear {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%; corner-shape: round;
+    background: var(--bg-soft);
+    color: var(--ink-mute);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.faq-clear[hidden] { display: none; }
+.faq-clear:hover { background: var(--bg-tint); color: var(--ink); }
+
+.faq-clear:focus-visible,
+.faq-q:focus-visible,
+.faq-back:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* The "/" key hint: pressing it puts the cursor in the field. */
+.faq-kbd {
+    flex: none;
+    padding: 3px 7px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink-mute);
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    line-height: 1.3;
+}
+
+.faq-meta {
+    margin: 0;
+    padding: 18px 31px 6px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    line-height: 1.4;
+    color: var(--ink-mute);
+}
+
+.faq-meta[hidden] { display: none; }
+
+.faq-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 4px;
+}
+
+.faq-list[hidden],
+.faq-item[hidden] { display: none; }
+
+/* A row: a search glyph, the question, an arrow. */
+.faq-q {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 15px 27px 15px 31px;
+    border-radius: 29px;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    font-weight: 400;
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s var(--ease);
+}
+
+.faq-q-icon,
+.faq-q-arrow {
+    flex: none;
+    color: var(--ink-mute);
+}
+
+.faq-q-text { flex: 1 1 auto; }
+
+.faq-item.is-active .faq-q { background: var(--accent-soft); }
+.faq-item.is-active .faq-q-text { font-weight: 600; }
+
+/* The words that matched, in the question and in the answer. */
+.faq-box mark {
+    background: none;
+    color: var(--accent-bright);
+    font-weight: 600;
+}
+
+/* Until the script runs, each answer sits under its question. */
+.faq-a { padding: 0 27px 18px 63px; }
+
+.faq-a p {
+    max-width: 72ch;
+    margin: 0 0 12px;
+    color: var(--ink-soft);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+}
+
+.faq-box.is-ready .faq-item:not(.is-open) .faq-a { display: none; }
+
+/* The picked question: its row becomes the heading of a soft panel that
+   holds the answer. The heading is still the button; pressing it, or
+   the Back row under the panel, returns to the list. */
+.faq-box.is-ready .faq-item.is-open {
+    margin-top: 12px;
+    padding: 26px 29px 18px;
+    border-radius: 29px;
+    background: var(--bg-soft);
+    animation: faq-in 0.25s var(--ease);
+}
+
+.faq-box.is-ready .faq-item.is-open .faq-q {
+    padding: 0;
+    border-radius: 10px;
+    background: none;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+}
+
+.faq-box.is-ready .faq-item.is-open .faq-q-text { font-weight: inherit; }
+
+.faq-box.is-ready .faq-item.is-open .faq-q-icon,
+.faq-box.is-ready .faq-item.is-open .faq-q-arrow { display: none; }
+
+.faq-box.is-ready .faq-item.is-open .faq-a { padding: 14px 0 0; }
+
+@keyframes faq-in {
+    from { opacity: 0; transform: translateY(6px); }
+}
+
+.faq-back {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 15px 27px 15px 31px;
+    border-radius: 29px;
+    color: var(--ink-mute);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.2s var(--ease);
+}
+
+.faq-back[hidden] { display: none; }
+.faq-back:hover { color: var(--ink); }
+
+/* No match: a line, and the way to the contact form. */
+.faq-empty {
+    padding: 28px 18px 26px;
+    text-align: center;
+    color: var(--ink-mute);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+}
+
+.faq-empty[hidden] { display: none; }
+
+.faq-empty strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.faq-empty p { margin: 0; }
+
+/* Send the typed question to the team: a quiet row under the answers,
+   the accent pill when nothing matched. Once sent, a soft panel with
+   the thanks and the email field (js/product.js initFaq). */
+.faq-ask { padding: 0 0 6px; }
+
+.faq-ask[hidden],
+.faq-ask-send[hidden],
+.faq-ask-done[hidden],
+.faq-ask-form[hidden] { display: none; }
+
+.faq-ask-send {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 27px 15px 31px;
+    border-radius: 29px;
+    color: var(--accent-bright);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s var(--ease), color 0.15s var(--ease);
+}
+
+.faq-ask-send:hover { background: var(--accent-soft); }
+.faq-ask-send:disabled { cursor: default; }
+
+.faq-ask-send:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.faq-ask.is-empty { padding: 0 18px 26px; }
+
+.faq-ask.is-empty .faq-ask-send {
+    width: auto;
+    margin: -10px auto 0;
+    padding: 12px 22px;
+    border-radius: 999px;
+    corner-shape: superellipse(1.56);
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.faq-ask.is-empty .faq-ask-send:hover { background: var(--accent-bright); }
+
+.faq-ask-done {
+    padding: 22px 29px 24px;
+    border-radius: 29px;
+    background: var(--bg-soft);
+    animation: faq-in 0.25s var(--ease);
+}
+
+.faq-ask.is-empty .faq-ask-done { margin: -10px -8px 0; }
+
+.faq-ask-thanks {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.faq-ask-lead {
+    display: block;
+    margin: 4px 0 14px;
+    color: var(--ink-soft);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: 1.5;
+}
+
+/* The field and the button share a row while the field keeps 200px;
+   narrower, the button drops under it. */
+.faq-ask-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    max-width: 480px;
+}
+
+.faq-ask-row input {
+    flex: 1 1 200px;
+    min-width: 0;
+    padding: 12px 18px;
+    border: 1px solid rgba(var(--ink-rgb), 0.14);
+    border-radius: 999px;
+    corner-shape: superellipse(1.56);
+    background: var(--bg-card);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    transition: border-color 0.2s var(--ease);
+}
+
+.faq-ask-row input::placeholder { color: rgba(var(--ink-rgb), 0.5); }
+
+.faq-ask-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.faq-ask-row .cta--primary {
+    flex: none;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+}
+
+.faq-ask-row .cta--primary:hover:not(.is-sent) { background: var(--accent-bright); }
+
+.faq-ask-form .signup-notice,
+.faq-ask-form .signup-submit-error {
+    margin-top: 10px;
+    text-align: left;
+}
+
+@media (max-width: 720px) {
+    .faq-ask-send { padding: 14px 14px 14px 18px; }
+    .faq-ask-done { padding: 20px 20px 22px; }
+    .faq-ask-row input { font-size: 16px; }   /* under 16px iOS zooms the page on focus */
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .faq-ask-done { animation: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .faq-box.is-ready .faq-item.is-open { animation: none; }
+}
+
+/* Inline signup inside the shipping FAQ answer — bound by the same
+   class-based handler as the page's other newsletter forms. (Parked
+   with the signup mode; unused on the page for now.) */
+.faq-a .nl-form {
+    margin: -8px 0 28px;
+    max-width: 440px;
+}
+
+/* ============================
+   Compatible apps wall — inside the benchmark section, between the
+   header and the table. After the "Website Ideas" Figma (228:4903,
+   hover states 377:210, phone 330:283): copy column on the left, the
+   icon wall on the right; category labels above the wall and the
+   group tints behind the tiles light up on hover / focus / click
+   (initAppsWall in js/common.js). The same block lives in
+   css/home.css for index.html — keep the two in sync.
+   ============================ */
+.models-apps {
+    /* Icon square, the gap between tiles inside a group, and the
+       group's padding (which doubles as the gutter between groups). */
+    --tile: 104px;
+    --tile-gap: 14px;
+    --group-pad: 14px;
+    /* One quiet tint per category, lit behind the group on hover /
+       focus / click (desktop) or shown constantly (phones). All built
+       on palette tokens: ink at 8% for games, the Figma "Color 3" cool
+       ground for video, that cool ground lightened into the hero mist
+       for 3D, and the light violet chip tint for AI. */
+    --tint-games: rgba(var(--ink-rgb), 0.08);
+    --tint-video: var(--bg-cool);
+    --tint-3d: color-mix(in srgb, var(--bg-cool) 40%, var(--hero-mist));
+    --tint-ai: var(--accent-soft);
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) auto;
+    align-items: center;
+    column-gap: 48px;
+    max-width: none;
+}
+
+/* Left column: title over the footnote, vertically centred on the
+   wall (Figma: the copy frame sits mid-height of the icon rows). */
+.apps-title {
+    margin: 0 0 16px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h3-lg);
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.apps-title em {
+    /* Wraps as a unit: when the title breaks, it breaks before "you". */
+    display: inline-block;
+    font-style: normal;
+    color: var(--accent-bright);
+}
+
+/* Footnote: the categories are a sample — Driver and API modes cover
+   far more GPU applications. */
+.apps-note {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.apps-note p {
+    margin: 0 0 10px;
+}
+
+.apps-note p:last-child {
+    margin-bottom: 0;
+}
+
+.apps-note a {
+    color: var(--accent-bright);
+    white-space: nowrap;
+    /* The link closes the note on its own line, with a little air above. */
+    display: block;
+    width: fit-content;
+    margin-top: 10px;
+}
+
+.apps-note a:hover {
+    text-decoration: underline;
+}
+
+/* Right column: category labels over three centered rows of groups. */
+.apps-wall {
+    display: grid;
+    gap: 18px;
+    justify-items: center;
+}
+
+/* "Not the full list" closes the wall under the tiles (and under the
+   phone rail) as an in-section footnote: caption voice, flush with the
+   grid's left edge, tucked up against the last row of names. */
+.apps-wall-caption {
+    justify-self: start;
+    margin: -10px 0 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+    text-align: left;
+}
+
+.apps-cats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 32px;
+}
+
+.apps-cat {
+    appearance: none;
+    margin: 0;
+    padding: 2px 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: var(--lh-title);
+    color: var(--ink-mute);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+    transition: color 0.2s var(--ease), text-decoration-color 0.2s var(--ease);
+}
+
+.apps-cat.is-active {
+    color: var(--accent-bright);
+    text-decoration-color: currentColor;
+}
+
+.apps-cat:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+}
+
+/* The icon and the short name belong to the phone switcher; desktop
+   keeps the plain text links. */
+.apps-cat-icon,
+.apps-cat-short {
+    display: none;
+}
+
+/* Rows abut (no gap) so the split 3D & creation tint — four tiles on
+   row 1, two on row 2 — reads as one L-shaped block. */
+.apps-grid {
+    display: grid;
+}
+
+.apps-row {
+    display: flex;
+    justify-content: center;
+}
+
+/* A group fills its row's height so a lit tint reaches the row below
+   even when a neighbour's two-line names make the row taller — the two
+   halves of the 3D L then touch instead of leaving a seam. */
+.apps-group {
+    display: flex;
+    flex-direction: column;
+}
+.apps-tiles {
+    flex: 1 0 auto;
+}
+
+/* Row 2 is authored 3D-then-video (so the phone layout can dissolve
+   the rows and still keep each category together) but renders
+   video-then-3D, as in the Figma. */
+.apps-group--3d-b {
+    order: 2;
+}
+
+.apps-group[data-cat="games"] { --group-tint: var(--tint-games); }
+.apps-group[data-cat="video"] { --group-tint: var(--tint-video); }
+.apps-group[data-cat="3d"] { --group-tint: var(--tint-3d); }
+.apps-group[data-cat="ai"] { --group-tint: var(--tint-ai); }
+
+/* Group headings only speak on desktop (the buttons above carry the
+   category visually); on phones they head each card. */
+.apps-group-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+.apps-tiles {
+    display: flex;
+    gap: var(--tile-gap);
+    margin: 0;
+    padding: var(--group-pad);
+    list-style: none;
+    border-radius: 26px;
+    background: transparent;
+    transition: background-color 0.25s var(--ease);
+}
+
+/* The lower half of the L squares its top corners against the group
+   above; transparent when idle, so this only shows while lit. */
+.apps-group--3d-b .apps-tiles {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+/* :hover is the no-JS fallback (tints just the group under the
+   pointer); js/common.js adds .is-active to every group of the
+   hovered, focused, or pinned category plus its label. */
+.apps-group:hover .apps-tiles,
+.apps-group.is-active .apps-tiles {
+    background: var(--group-tint);
+}
+
+/* Rhino and Maya appear twice — see the markup comment. The compound
+   selector out-ranks .app-tile's display below. */
+.app-tile.app-tile--phone {
+    display: none;
+}
+
+.app-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: var(--tile);
+    min-width: 0;
+}
+
+.app-tile-icon {
+    display: block;
+    width: var(--tile);
+    height: var(--tile);
+    overflow: hidden;
+    border-radius: 26px;
+    background: var(--bg-card);
+    box-shadow: inset 0 0 0 1px rgba(var(--ink-rgb), 0.07);
+}
+
+.app-tile-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+/* Two lines reserved so single-line names sit level with the
+   wrapping ones (Black Myth: Wukong). */
+.app-tile-name {
+    display: block;
+    min-height: 2.6em;
+    max-width: 100%;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    text-align: center;
+    color: var(--ink-soft);
+}
+
+/* Under the two-column width the copy stacks over the wall: title,
+   note, then wall. */
+@media (max-width: 1199px) {
+    .models-apps {
+        grid-template-columns: 1fr;
+        row-gap: 28px;
+    }
+
+    .apps-copy {
+        display: contents;
+    }
+
+    .apps-title {
+        order: 0;
+        margin: 0;
+        text-align: center;
+    }
+
+    /* The note reads straight under the title, then the wall. */
+    .apps-note {
+        order: 1;
+        max-width: 56ch;
+        justify-self: center;
+        text-align: center;
+        font-size: var(--fs-lead);
+    }
+
+    .apps-wall {
+        order: 2;
+        justify-self: center;
+        max-width: 100%;
+    }
+    .apps-note a {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 800px) {
+    .models-apps {
+        --tile: 92px;
+        --tile-gap: 12px;
+        --group-pad: 12px;
+    }
+}
+
+/* Phones (Figma 330:283): no category buttons — each category is a
+   centered heading over one constantly tinted card of 72px icons,
+   three to a row, each with its name underneath in caption size. Rows
+   dissolve and the cards stack in the Figma's order (AI, video, 3D,
+   games); 3D collapses to its first group, which carries all six tiles
+   here. */
+@media (max-width: 720px) {
+    .models-apps {
+        --tile: 72px;
+        --tile-gap: 16px;
+        --group-pad: 16px;
+    }
+
+    /* Switcher: the four categories in one row on a soft grey bar, an
+       icon over a short name each, all visible at once, no scrolling;
+       the active one sits on a white card in the accent (a tap scrolls
+       the rail to that card; scrolling the rail moves the highlight,
+       initAppsWall). */
+    .apps-wall {
+        justify-items: stretch;
+        width: 100%;
+        gap: 28px;
+    }
+
+    .apps-cats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+        width: 100%;
+        margin: 0;
+        padding: 6px;
+        border-radius: 35px;
+        background: var(--bg-tint);
+    }
+
+    .apps-cat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 0 12px;
+        border-radius: 26px;
+        background: none;
+        font-family: var(--font-sans);
+        /* Caption size: four equal segments, and the longest name
+           ("AI models") keeps ~8px beside it on a 375px phone. */
+        font-size: var(--fs-caption);
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        text-align: center;
+        color: var(--ink-soft);
+        text-decoration: none;
+        transition: background 0.2s var(--ease), color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+
+    /* The designer's Icons8 glyphs (a 30-unit grid with its own padding),
+       so a touch larger than the Material icons' box. */
+    .apps-cat-icon {
+        display: block;
+        width: 30px;
+        height: 30px;
+    }
+
+    .apps-cat-long { display: none; }
+    .apps-cat-short { display: inline; }
+
+    .apps-cat.is-active {
+        background: var(--bg-card);
+        color: var(--accent-bright);
+        box-shadow: 0 8px 20px -10px rgba(var(--ink-rgb), 0.28), 0 1px 2px rgba(var(--ink-rgb), 0.06);
+    }
+
+    .apps-cat[data-cat="ai"] { order: 1; }
+    .apps-cat[data-cat="video"] { order: 2; }
+    .apps-cat[data-cat="3d"] { order: 3; }
+    .apps-cat[data-cat="games"] { order: 4; }
+
+    /* The rail: cards in a row, snapping to centre, bleeding to the
+       viewport edges (the container's 20px phone gutters). Its own pan-x
+       override of the global touch-action: pan-y. */
+    .apps-grid {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 16px;
+        /* The container's phone gutter is 20px (common.css) */
+        margin: 0 -20px;
+        padding: 6px 20px 8px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding: 0 20px;
+        touch-action: pan-x pan-y;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
+
+    .apps-grid::-webkit-scrollbar { display: none; }
+
+    .apps-row {
+        display: contents;
+    }
+
+    .apps-group {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+    }
+
+    .apps-group[data-cat="ai"] { order: 1; }
+    .apps-group[data-cat="video"] { order: 2; }
+    .apps-group--3d-a { order: 3; }
+    .apps-group[data-cat="games"] { order: 4; }
+    .apps-group--3d-b { display: none; }
+
+    .app-tile.app-tile--phone {
+        display: flex;
+    }
+
+    .apps-group-title {
+        position: static;
+        width: auto;
+        height: auto;
+        margin: 0 0 12px;
+        overflow: visible;
+        clip: auto;
+        clip-path: none;
+        white-space: normal;
+        font-family: var(--font-display);
+        font-size: var(--fs-h3);
+        font-weight: 600;
+        line-height: var(--lh-title);
+        text-align: center;
+        color: var(--ink);
+    }
+
+    /* Tiles fill column-first (a vertical Z): two rows, and each new
+       column starts only when the one before it is full, so a card is
+       as wide as its tile count needs — 3 columns for six apps, one
+       for two. */
+    .apps-tiles {
+        display: grid;
+        grid-auto-flow: column;
+        grid-template-rows: repeat(2, auto);
+        justify-content: start;
+        width: auto;
+        background: var(--group-tint);
+    }
+
+    .app-tile-name {
+        font-size: var(--fs-caption);
+        line-height: 1.25;
+        min-height: 2.5em;
+    }
+}
+
+/* Clear air on both sides: below the section header, and before the
+   benchmark switcher and table that follow the wall. */
+.section--apps .models-apps {
+    margin: 0;
+}
+
+/* ============================
+   Product page — Responsive
+   ============================ */
+@media (max-width: 1080px) {
+    .dx-grid { grid-template-columns: repeat(2, 1fr); gap: 36px 40px; }
+}
+
+/* Under the container width the stage runs edge to edge, and a
+   picture that already touches the edges needs no side fade. */
+@media (max-width: 960px) {
+    .section--idea,
+    .section--device,
+    .section--why,
+    .section--cases,
+    .section--dx,
+    .section--highlights,
+    .section--faq { padding: 96px 0; }
+
+    /* The Why section keeps its tighter foot here too (40px, as on
+       desktop): the Workloads header follows on the same ground. */
+    .section--why { padding-bottom: 40px; }
+
+    /* Let the dark Big Idea stage flow directly into the tinted Device
+       section on mobile — no breathing gap between them. */
+    .section--idea { padding-top: 24px; padding-bottom: 0; }
+    .section--device { padding-top: 0; padding-bottom: 0; }
+
+    .signup-card-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 64px 28px 60px;
+    }
+
+    .qc-card { padding: 32px 28px 36px; }
+
+    .dx-block { margin-top: 32px; }
+    .dx-film { margin-top: 56px; }
+    .dx-cta { margin-top: 56px; }
+
+    .big-figure { margin-top: 56px; border-radius: 29px; }
+}
+
+@media (max-width: 720px) {
+    /* Phone hero: the photo a tall panel (its right half, where the
+       device is), the copy at its foot, the headline scaling with the
+       viewport so "Untethered GPU Power" holds one line at any phone
+       width (8.8vw is 33px on a 375px phone, 330px of its 335px line, an
+       exemption noted in DESIGN.md), the pill stacked with the short Buy
+       under the price lines, the credit beneath. */
+    /* Tucked under the nav on phones too (56px there), since later on
+       Oct 26, 2026:
+       the nav keeps its white surface over the photo and the announcement
+       bar goes to the dark glass, as on desktop (product-now.css,
+       `is-over-hero`; the nav on the glass too for the hours before). For
+       the hours before that, the hero sat under the bars. */
+    .phero {
+        margin-top: -56px;
+        padding: 0 0 40px;
+        background: linear-gradient(to bottom, var(--bg-card) calc(100% - 40px), var(--bg) 100%);
+    }
+    /* On phones the hero is the designer's portrait photo of the scene,
+       `hero-device-desk-portrait-*.webp`, across the screen from the
+       top of the hero at its own ratio
+       (1.83): the photo cropped under the desk's front edge, and its wall
+       carried 260px higher by a stretch of its own top rows (520 on the
+       fourth photo, which had less wall), so the copy has wall to sit on:
+       the monitor's top is 111% of the picture's width down it, below the
+       lede at every phone width. The copy lies over it
+       in ink, and a wash (`picture::after`), 60% white at the top edge and never
+       opaque (a stronger one, 70%, stood for an hour on the photo before
+       this one, whose wall carried leaf shadows; "go back to the lighter
+       wash"),
+       thins slowly to nothing at 75%, so the copy
+       reads on it (Figma node 1227:3670). */
+    .phero-photo {
+        height: auto;
+        background: var(--bg);
+    }
+    /* The picture's top is cropped: the box is the picture's height less a cut that grows
+       with the width, 60vw less 160px (57px at 361, 65 at 375, 74 at 390,
+       98 at 430), the photo pinned to its foot, so that much of the added
+       wall goes and the monitor's top keeps 28 to 46px under the lede
+       (which starts 40px under the bars here, 48 before); a fixed cut, 103
+       and then 140 rows of the file, stood for an hour each: the lede
+       pinned it at 361px while wider phones had room to spare. Under 360px
+       the box is the whole picture again (below). */
+    .phero-photo picture {
+        display: block;
+        position: relative;
+        height: calc(100vw * 1718 / 941 - clamp(40px, 60vw - 160px, 120px));
+        overflow: hidden;
+    }
+    .phero-photo-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 100%;
+    }
+    .phero-photo::after { display: none; }
+    .phero-photo picture::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.5) 22%, rgba(255, 255, 255, 0.3) 42%, rgba(255, 255, 255, 0.1) 58%, rgba(255, 255, 255, 0) 75%);
+    }
+    .phero-copy {
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: auto;
+        justify-content: flex-start;
+        /* The bars (56px nav, 52px announcement bar) cover the hero's
+           first 52px; the copy starts 40px under them (48 until the wall
+           was cut, Oct 26, 2026, to keep the lede clear of the monitor). */
+        padding: 92px 20px 0;
+        color: var(--ink);
+    }
+    .phero-copy .phero-eyebrow,
+    .phero-copy .phero-title,
+    .phero-copy .phero-lede { color: var(--ink); }
+    /* The narrowest phones (the old iPhone SE's 320px): the lede a step
+       smaller, so it keeps to four lines, and the wash a little stronger
+       and longer, since those lines land on the leaf shadows. */
+    @media (max-width: 360px) {
+        .phero-copy .phero-lede { font-size: var(--fs-body-s); margin-top: 16px; }
+        /* The whole picture: the lede runs to four lines here and would
+           land on the monitor with the crop. */
+        .phero-photo picture { height: auto; aspect-ratio: 941 / 1718; }
+        .phero-photo picture::after {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.66) 30%, rgba(255, 255, 255, 0.4) 48%, rgba(255, 255, 255, 0.12) 62%, rgba(255, 255, 255, 0) 76%);
+        }
+    }
+    .phero-eyebrow { font-size: var(--fs-h3); margin-bottom: 14px; }
+    .phero-title {
+        /* Two lines, "Untethered" over "GPU Power", larger than the one-line
+           title before it. */
+        font-size: clamp(44px, 13vw, 64px);
+        line-height: 0.98;
+        max-width: 6.4em;
+    }
+    .phero-lede {
+        font-size: var(--fs-body);
+        max-width: none;
+        margin-top: 22px;
+    }
+    .phero-credits { margin-top: 40px; display: grid; grid-template-columns: auto auto; justify-content: center; gap: 24px 14px; }
+    .phero-credits .ces-award { padding-left: 0; border-left: 0; }
+    /* Stacked, the two pairs share one pair of columns: the marks are
+       centred on each other in the first (the badge under the middle of
+       the wider NVIDIA mark), the labels start on one edge in the second. */
+    .phero-credits .nv-note,
+    .phero-credits .ces-award { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; }
+    .phero-credits .nv-note-logo,
+    .phero-credits .ces-award-badge { grid-area: 1 / 1; justify-self: center; }
+    .phero-credits .nv-note-label,
+    .phero-credits .ces-award-text { grid-area: 1 / 2; justify-self: start; }
+
+    .section--idea,
+    .section--device,
+    .section--why,
+    .section--cases,
+    .section--dx,
+    .section--highlights,
+    .section--faq { padding: 80px 0; }
+
+    /* Re-zero the idea/device seam at the narrower breakpoint, since the
+       rule above re-applies vertical padding to both sections. */
+    .section--idea { padding-top: 0; padding-bottom: 0; }
+    .section--device { padding-top: 0; padding-bottom: 0; }
+
+    /* Stack the newsletter row: full-width input, full-width button.
+       The row dissolves into the form's own column flow (display:
+       contents) so the optional-message hint can slot in between the
+       stacked email field and the button; the sibling selectors keep
+       the reorder scoped to row forms — the full-width form already
+       has this order in its markup. */
+    .nl-row { display: contents; }
+    .nl-row input { order: 1; }
+    .nl-row ~ .nl-more { order: 2; }
+    .nl-row .cta { order: 3; justify-content: center; }
+    .nl-row ~ .nl-success { order: 4; }
+    /* The injected post-signup note panel joins the same reorder flow —
+       without an order it would default to 0 and jump above the email
+       field on phones. It reads after the (green) button. */
+    .nl-row ~ .nl-followup { order: 5; }
+    .nl-row ~ .signup-notice { order: 6; }
+    .signup-card-content { padding: 52px 24px 48px; }
+    .nl-actions .cta { width: 100%; justify-content: center; }
+
+    .qc-card--merged { grid-template-columns: 1fr; }
+
+    /* `.idea-inner` is a `.container`, so the mobile container rule
+       (`padding: 0 20px`) lower in this file would otherwise wipe out
+       the vertical breathing room above the figure. Keep the 100px
+       vertical padding while inheriting the 20px horizontal gutter. */
+    .section--idea .idea-inner {
+        padding: 24px 20px 0;
+    }
+
+    /* Phones: 1.3 cards per row, a little taller than wide so the
+       copy has room over the picture. */
+    .highlights-header { margin-bottom: 32px; }
+    /* Use Cases: the same 32px under the header as the sections around
+       it, so the hint and the plan follow the title closely (80px on
+       desktop). */
+    .cases-header { margin-bottom: 32px; }
+    .hl-grid {
+        --hl-gutter: 20px;   /* the phone container gutter */
+        gap: 12px;
+    }
+    .hl-card,
+    .hl-card--wide {
+        flex-basis: 70vw;
+        aspect-ratio: 4 / 5;
+    }
+
+    /* The Why section runs into the Workloads header on the same white
+       ground, so the seam is one gap, not two sections' worth: 40px
+       under the comparison table and 64px over the eyebrow. */
+    .section--why { padding-bottom: 40px; }
+    .section--apps { padding-top: 64px; }
+
+    /* Phones: a taller strip for its width, smaller arrows beside the
+       title, and the caption's link under its text. */
+    .why-header { gap: 12px; margin-bottom: 28px; }
+    .why-header .rail-nav { gap: 8px; margin-bottom: 4px; }
+    .why-header .rail-nav-btn { width: 40px; height: 40px; }
+    .why-panels { height: 62vw; }
+    .why-panel { border-radius: 16px; }
+    .why-captions { margin-top: 24px; }
+    .why-caption { flex-direction: column; justify-content: flex-start; }
+    .why-caption-text { font-size: var(--fs-body); }
+    .rail-nav { margin-top: 28px; }
+
+    .dx-grid { grid-template-columns: 1fr; gap: 32px; }
+    .dx-prose { margin-top: 40px; }
+    .dx-block { margin-top: 24px; }
+    .dx-film { margin-top: 40px; }
+    .dx-cta { margin-top: 48px; }
+
+    /* The FAQ card on phones: tighter all round, no "/" key hint. */
+    .faq-header { margin-bottom: 32px; }
+    .faq-search {
+        gap: 12px;
+        padding: 14px 16px;
+    }
+    .faq-input { font-size: var(--fs-lead); }
+    .faq-kbd { display: none; }
+    .faq-meta { padding: 16px 18px 4px; }
+    .faq-q {
+        gap: 12px;
+        padding: 14px 14px 14px 18px;
+        font-size: var(--fs-body);
+    }
+    .faq-a { padding: 0 14px 16px 48px; }
+    .faq-box.is-ready .faq-item.is-open { padding: 20px 20px 12px; }
+    .faq-back { padding: 14px 14px 14px 18px; }
+}
+
+/* ============================
+   Mobile type scale — largest headlines
+   ============================ */
+@media (max-width: 480px) {
+}
+
+/* ============================
+   Use Cases — Responsive
+   ============================ */
+@media (max-width: 720px) {
+    .section--rooms { padding: 56px 0 80px; }
+    .section--rooms .rooms-title { margin-bottom: 24px; }
+    .rooms-heading { margin-bottom: 28px; }
+    /* Apple's phone treatment: the media runs edge to edge with square
+       corners, the pill scrolls sideways under it. */
+    .rooms-media {
+        width: auto;
+        margin-left: -20px;   /* the phone container gutter */
+        margin-right: -20px;
+        border-radius: 0;
+    }
+    /* Tabs beside the caption (the designer's mock, Oct 3, 2026): one
+       panel under the media, the four cases stacked in a narrow left
+       column, then a hairline and the caption. The buttons have no
+       outlines here; each closes with a chevron at its right edge, grey
+       and white on the picked one, and all take the column's width, so
+       the chevrons line up and the violet fill is the same size
+       whichever case is picked; the two-word labels break onto two lines at their own
+       line break. */
+    .rooms-panel {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        margin-top: 24px;
+    }
+    .rooms-tabs-wrap {
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding-right: 20px;
+    }
+    .rooms-tabs {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .rooms-tab {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 0;
+        border-radius: 16px;
+        font-size: var(--fs-body-s);
+        line-height: var(--lh-title);
+        text-align: left;
+    }
+    .rooms-tab-br { display: inline; }
+    /* The site's right chevron (the benchmark accordion's glyph) at the
+       nav menu chevron's 10px scale, a little larger than the mock's;
+       the box is cropped to the glyph so the gap is true. */
+    .rooms-tab-chev {
+        display: block;
+        flex: none;
+        width: 5px;
+        height: 7.5px;
+        color: rgba(var(--ink-rgb), 0.45);
+        transition: color 0.2s var(--ease);
+    }
+    .rooms-tab:hover .rooms-tab-chev,
+    .rooms-tab.is-active .rooms-tab-chev { color: inherit; }
+    .rooms-captions {
+        margin-top: 0;
+        padding-left: 20px;
+        border-left: 1px solid var(--line-strong);
+        text-align: left;
+    }
+    .rooms-caption { max-width: none; margin: 0; font-size: var(--fs-body); }
+    /* The link may wrap on phones; the arrow stays glued to its last
+       word by the markup's non-breaking space. */
+    .rooms-caption a { white-space: normal; }
+    .rooms-caption-more { font-size: var(--fs-body-s); }
+    .rooms-controls { left: 12px; right: 12px; bottom: 12px; }
+    .rooms-play-full { left: 12px; bottom: 12px; padding: 5px 14px 5px 10px; font-size: var(--fs-body-s); }
+    .rooms-play-full.is-centered { padding: 9px 18px 9px 14px; }
+    .rooms-ctl { width: 36px; height: 36px; padding: 8px; }
+}
+
+/* ============================
+   Reserve band (after the spec grid)
+   — solid violet, white text, the shared newsletter form on the right
+   ============================ */
+.section--reserve {
+    padding: 96px 0;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    color: var(--bg);
+}
+
+.reserve-title {
+    color: var(--bg);
+}
+
+.reserve-title em {
+    color: var(--accent-soft);
+}
+
+.reserve-form .nl-row input {
+    background: var(--bg-card);
+    color: var(--ink);
+    border-color: transparent;
+}
+
+.reserve-form .nl-row input::placeholder {
+    color: rgba(var(--ink-rgb), 0.55);
+}
+
+.reserve-form .cta--primary {
+    background: var(--ink);
+    color: var(--bg);
+}
+
+.reserve-form .cta--primary:hover {
+    background: var(--bg-dark);
+}
+
+.reserve-form .nl-more summary {
+    color: rgba(var(--bg-rgb), 0.85);
+}
+
+.reserve-form .nl-textarea {
+    background: var(--bg-card);
+    color: var(--ink);
+}
+
+.reserve-form .nl-success {
+    color: var(--bg);
+}
+
+.reserve-form .nl-success strong {
+    color: var(--bg);
+}
+
+@media (max-width: 960px) {
+    .section--reserve {
+        padding: 72px 0;
+    }
+}
+
+/* ============================
+   Film sheet
+   The tech explainer over the page (Oct 30, 2026): <dialog
+   id="explainerSheet"> at the end of <body>, opened by the Big Idea's
+   "See how it works" button (initFilmSheet in product.js). A bare
+   16: 9 picture on a dark, blurred backdrop, 1120px at most and the
+   screen's width less 32px on phones, the inline film's own controls
+   over its foot (common.css, .film--own) and a close square hung over
+   its top right corner. Lenis is held while any <dialog> is open
+   (common.js), and the dialog carries data-lenis-prevent.
+   ============================ */
+.film-sheet {
+    width: min(1120px, calc(100% - 32px));
+    max-width: calc((100dvh - 128px) * 16 / 9);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--bg);
+    overflow: visible;
+}
+
+.film-sheet[open] {
+    animation: film-sheet-in 0.3s var(--ease);
+}
+
+.film-sheet::backdrop {
+    background: rgba(var(--ink-rgb, 29, 29, 31), 0.82);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.film-sheet[open]::backdrop {
+    animation: signup-pop-dim 0.3s ease-out;
+}
+
+.film-sheet-film {
+    width: 100%;
+    box-shadow: 0 40px 100px rgba(var(--ink-rgb), 0.5);
+}
+
+.film-sheet-close {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 12px);
+    width: 44px;
+    height: 44px;
+    padding: 11px;
+    border: 1px solid rgba(var(--bg-rgb), 0.7);
+    border-radius: 16px;
+    background: rgba(var(--ink-rgb), 0.55);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    color: var(--bg);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.film-sheet-close svg { display: block; width: 100%; height: 100%; }
+.film-sheet-close:hover { background: rgba(var(--ink-rgb), 0.8); border-color: var(--bg); }
+.film-sheet-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@keyframes film-sheet-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.985);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .film-sheet[open],
+    .film-sheet[open]::backdrop { animation: none; }
+}

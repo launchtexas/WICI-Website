@@ -1,0 +1,785 @@
+/* =========================================
+   WiCi — Physical Intelligence page styles
+   Loaded by physical-intelligence.html on top of
+   common.css and home.css (the .hero-* page hero,
+   section base, and the dark .untethered-* band
+   come from there). Evidence figures on the page
+   are from SemiAnalysis, "A Brain Too Big to
+   Carry" (Sept 2026), cited in #sources.
+   ========================================= */
+
+/* ============================
+   Hero — the question + the three places
+   ============================ */
+.hero--pi {
+    padding: 88px 0 24px;
+}
+
+.hero--pi .hero-title {
+    font-size: var(--fs-hero-sub);
+    max-width: 16ch;
+}
+
+.hero--pi .hero-lede {
+    max-width: 60ch;
+    padding-top: 22px;
+}
+
+.pi-places {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 56px 0 0;
+    padding: 0;
+    counter-reset: place;
+}
+
+.pi-place {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 28px 26px 30px;
+    border: 1px solid var(--line);
+    border-radius: 29px;
+    background: var(--bg-card);
+    color: var(--ink);
+}
+
+.pi-place.is-wici {
+    background: var(--bg-dark);
+    border-color: var(--bg-dark);
+    color: var(--bg);
+}
+
+.pi-place-glyph {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 14px;
+    color: var(--ink-mute);
+}
+
+.pi-place.is-wici .pi-place-glyph {
+    color: var(--accent-on-dark);
+}
+
+/* The WiCi card wears the white lockup (mark + wordmark) instead of a
+   line glyph, at the glyph's height; the SVG export is viewBox-only, so
+   give it an explicit box. */
+.pi-place-glyph--logo {
+    align-self: flex-start;
+    width: auto;
+    height: 40px;
+    margin: 8px 0 22px;
+    object-fit: contain;
+}
+
+/* The place is the comparison, so it carries the card's title size;
+   the verdict reads as its supporting line. */
+.pi-place-name {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2-sub);
+    font-weight: 500;
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+}
+
+.pi-place.is-wici .pi-place-name {
+    color: var(--accent-on-dark);
+}
+
+.pi-place-verdict {
+    margin-top: 8px;
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    line-height: var(--lh-title);
+    color: var(--ink);
+}
+
+.pi-place.is-wici .pi-place-verdict {
+    color: var(--bg);
+}
+
+.pi-place-desc {
+    margin-top: 6px;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.pi-place.is-wici .pi-place-desc {
+    color: rgba(var(--bg-rgb), 0.92);
+}
+
+/* Stagger the shared reveal-on-scroll (classes added by js/common.js) */
+.pi-place.reveal:nth-child(2) { transition-delay: 0.08s; }
+.pi-place.reveal:nth-child(3) { transition-delay: 0.16s; }
+
+/* ============================
+   Section chrome shared by the numbered sections
+   ============================ */
+.pi-section {
+    padding: 96px 0;
+}
+
+.pi-section-head {
+    margin-bottom: 48px;
+}
+
+.pi-section-head .section-subtitle {
+    margin-top: 22px;
+    max-width: 52ch;
+}
+
+.section--tint {
+    background: var(--bg-soft);
+}
+
+/* Dark band base — mirrors .section--untethered */
+.section--dark {
+    background: var(--bg-dark);
+    color: var(--bg);
+}
+
+.section--dark .section-title { color: var(--bg); }
+.section--dark .section-title em { color: var(--accent-soft); }
+.section--dark .section-kicker { color: rgba(var(--bg-rgb), 0.85); }
+.section--dark .section-subtitle { color: rgba(var(--bg-rgb), 0.72); }
+
+/* The answer section is the page's dark band: navy at the top running
+   into the violet accent, with a violet glow behind the header. Text
+   goes light; the comparison table stays a white card on top of it. */
+.pi-section--answer {
+    color: var(--bg);
+    background:
+        radial-gradient(ellipse 70% 60% at 85% 0%, rgba(var(--accent-rgb), 0.55), transparent 70%),
+        linear-gradient(170deg, var(--bg-dark) 0%, var(--accent-hover) 55%, var(--accent) 100%);
+}
+
+.pi-section--answer .section-title { color: var(--bg); }
+.pi-section--answer .section-title em { color: var(--accent-soft); }
+.pi-section--answer .section-kicker { color: rgba(var(--bg-rgb), 0.85); }
+.pi-section--answer .section-subtitle { color: rgba(var(--bg-rgb), 0.72); }
+
+.pi-section--answer .pi-prose a {
+    color: var(--bg);
+}
+
+.pi-section--answer .pi-prose a:hover {
+    color: var(--accent-soft);
+}
+
+.pi-prose {
+    max-width: 64ch;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin: 0 0 44px;
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: var(--ink-soft);
+}
+
+.pi-prose--dark {
+    color: rgba(var(--bg-rgb), 0.92);
+}
+
+.pi-prose strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* On the dark band, bold alone is too close to the copy: the key
+   phrases get a translucent lavender marker behind white text. */
+.pi-prose--dark strong {
+    color: var(--bg);
+    background: rgba(var(--accent-on-dark-rgb), 0.28);
+    box-shadow: 0 0 0 3px rgba(var(--accent-on-dark-rgb), 0.28);
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.pi-prose--dark strong a {
+    color: inherit;
+}
+
+.pi-prose a {
+    color: var(--accent-bright);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.pi-prose a:hover {
+    color: var(--accent-hover);
+}
+
+figcaption {
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.section--dark figcaption {
+    color: rgba(var(--bg-rgb), 0.55);
+}
+
+/* ============================
+   01 · On the robot vs. in the cloud ledger
+   ============================ */
+.pi-ledger {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.pi-ledger-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 28px 26px;
+    border: 1px solid var(--line);
+    border-radius: 29px;
+    background: var(--bg-card);
+}
+
+.pi-ledger-col.reveal:nth-child(2) { transition-delay: 0.08s; }
+
+.pi-ledger-name {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+    margin-bottom: 10px;
+}
+
+/* What the column stands for, on its own line under the name. */
+.pi-ledger-name small {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--ink-mute);
+}
+
+/* Each line is a figure + a short label, so the column scans */
+.pi-ledger-line {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.pi-ledger-line strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: 1.1;
+    color: var(--ink);
+}
+
+/* One- or two-word context under the figure */
+.pi-ledger-line strong small {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.pi-ledger-line + .pi-ledger-line {
+    margin-top: -10px;
+}
+
+/* ============================
+   02 · Economics: one GPU shared by every workload
+   ============================ */
+.pi-share {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: start;
+}
+
+.pi-share-fig {
+    margin: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 56px minmax(180px, 0.9fr);
+    align-items: center;
+    gap: 0;
+}
+
+.pi-share-work {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pi-share-work li {
+    position: relative;
+    padding: 14px 18px;
+    border: 1px solid var(--line);
+    border-radius: 19px;
+    background: var(--bg-card);
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.pi-share-work li.is-robot {
+    border-color: var(--accent);
+    color: var(--accent-bright);
+}
+
+/* Each tile gets a stub from its right edge to the bus, which sits at
+   the centre of the 56px connector column. */
+.pi-share-work li::after {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    width: 28px;
+    border-top: 1px solid var(--line-strong);
+}
+
+/* The bus: a vertical rule from the first tile's centre to the last
+   tile's centre, with a lead from its midpoint into the GPU tile. */
+.pi-share-link {
+    position: relative;
+    align-self: stretch;
+}
+
+.pi-share-link::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 25px;
+    bottom: 25px;
+    border-left: 1px solid var(--line-strong);
+}
+
+.pi-share-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    right: 0;
+    top: 50%;
+    border-top: 1px solid var(--line-strong);
+}
+
+.pi-share-gpu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 34px 22px;
+    border-radius: 29px;
+    background: var(--bg-dark);
+    color: var(--bg);
+    text-align: center;
+}
+
+.pi-share-gpu img {
+    height: 26px;
+    width: auto;
+    filter: invert(1);
+}
+
+.pi-share-gpu span {
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+}
+
+.pi-share-fig figcaption {
+    grid-column: 1 / -1;
+    margin-top: 20px;
+    max-width: 60ch;
+}
+
+.pi-share-points {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-top: 6px;
+}
+
+.pi-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pi-stat-num {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h2-sub);
+    line-height: 1;
+    letter-spacing: var(--ls-display);
+    color: var(--accent-bright);
+}
+
+.pi-stat-label {
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    max-width: 40ch;
+}
+
+/* ============================
+   The answer: comparison table, link checklist, landing cards, CTA
+   ============================ */
+
+.pi-section--answer .pi-compare-wrap {
+    margin-bottom: 64px;
+}
+
+.pi-needs-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: start;
+}
+
+/* Team highlight: a glass card on the dark band, lockup on top */
+.pi-team {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 30px 28px 32px;
+    border-radius: 29px;
+    border: 1px solid rgba(var(--bg-rgb), 0.22);
+    background: rgba(var(--bg-rgb), 0.1);
+}
+
+.pi-team-logo {
+    align-self: flex-start;
+    height: 34px;
+    width: auto;
+    margin-bottom: 10px;
+}
+
+.pi-team-kicker {
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--accent-soft);
+}
+
+.pi-team-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: var(--lh-title);
+    color: var(--bg);
+}
+
+.pi-team-facts {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pi-team-facts li {
+    padding-left: 14px;
+    border-left: 2px solid rgba(var(--bg-rgb), 0.35);
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.92);
+}
+
+.pi-team-facts strong {
+    font-weight: 600;
+    color: var(--bg);
+}
+
+.pi-team-link {
+    margin-top: 10px;
+    color: var(--bg);
+    font-weight: 600;
+}
+
+.pi-team-link:hover {
+    color: var(--accent-soft);
+}
+
+.pi-needs-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: var(--lh-title);
+    color: var(--bg);
+}
+
+.pi-needs-lede {
+    margin-top: 14px;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.92);
+}
+
+.pi-needs {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pi-needs li {
+    position: relative;
+    padding-left: 22px;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.92);
+}
+
+.pi-needs li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%; corner-shape: round;
+    background: var(--accent-soft);
+}
+
+.pi-needs li strong {
+    font-weight: 600;
+    color: var(--bg);
+}
+
+.pi-land {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.pi-land-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px 26px 30px;
+    border: 1px solid rgba(var(--bg-rgb), 0.18);
+    border-radius: 29px;
+    background: rgba(var(--bg-rgb), 0.08);
+}
+
+.pi-land-card.reveal:nth-child(2) { transition-delay: 0.08s; }
+.pi-land-card.reveal:nth-child(3) { transition-delay: 0.16s; }
+
+.pi-land-kicker {
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--accent-soft);
+}
+
+.pi-land-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: var(--lh-title);
+    color: var(--bg);
+}
+
+.pi-land-card p {
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.92);
+    flex: 1;
+}
+
+.pi-land-card .latest-head-link {
+    color: var(--bg);
+}
+
+.pi-land-card .latest-head-link:hover {
+    color: var(--accent-soft);
+}
+
+/* ============================
+   CTA row closing the answer band + sources
+   ============================ */
+.pi-cta-inner {
+    margin-top: 72px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(var(--bg-rgb), 0.18);
+    text-align: center;
+}
+
+.pi-cta-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2-sub);
+    font-weight: 500;
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--bg);
+}
+
+.pi-cta-lede {
+    margin: 18px auto 0;
+    max-width: 46ch;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: rgba(var(--bg-rgb), 0.92);
+}
+
+.pi-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.pi-cta-btn {
+    background: var(--bg);
+    color: var(--ink);
+}
+
+.pi-cta-btn:hover {
+    background: var(--accent-soft);
+    color: var(--ink);
+}
+
+.pi-cta-btn--ghost {
+    background: transparent;
+    color: var(--bg);
+    border-color: rgba(var(--bg-rgb), 0.4);
+}
+
+.pi-cta-btn--ghost:hover {
+    background: rgba(var(--bg-rgb), 0.08);
+    border-color: var(--bg);
+    color: var(--bg);
+}
+
+/* Footnote markers into #sources (the page keeps attribution out of
+   the running text) */
+.pi-fn {
+    font-size: 0.62em;
+    line-height: 0;
+}
+
+.pi-fn a {
+    color: var(--accent-bright);
+    padding: 0 1px;
+}
+
+.pi-fn a:hover { text-decoration: underline; }
+
+.pi-section--answer .pi-fn a { color: var(--accent-soft); }
+
+.pi-fn--static { margin-right: 4px; color: var(--accent-bright); }
+
+.pi-sources {
+    padding: 56px 0 72px;
+}
+
+.pi-sources-title {
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+}
+
+.pi-sources p {
+    max-width: 72ch;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.pi-sources p + p {
+    margin-top: 12px;
+}
+
+.pi-sources a {
+    color: var(--accent-bright);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.pi-sources a:hover {
+    color: var(--accent-hover);
+}
+
+/* ============================
+   Responsive
+   ============================ */
+@media (max-width: 960px) {
+    .hero--pi {
+        padding: 64px 0 16px;
+    }
+    .pi-section {
+        padding: 72px 0;
+    }
+    .pi-places,
+    .pi-land {
+        grid-template-columns: 1fr;
+    }
+    .pi-ledger {
+        grid-template-columns: 1fr;
+    }
+    .pi-share {
+        grid-template-columns: 1fr;
+    }
+    .pi-needs-wrap {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 720px) {
+    /* Stacked: the tiles and the GPU tile in one column, joined by a
+       vertical rule down the middle of the gaps between them. */
+    .pi-share-fig {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .pi-share-work {
+        gap: 20px;
+    }
+    .pi-share-link {
+        display: none;
+    }
+    .pi-share-work li::after {
+        left: 50%;
+        top: calc(100% + 1px);
+        width: 0;
+        height: 20px;
+        border-top: 0;
+        border-left: 1px solid var(--line-strong);
+    }
+    .pi-share-fig figcaption {
+        margin-top: 4px;
+    }
+}

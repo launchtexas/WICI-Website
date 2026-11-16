@@ -1,0 +1,207 @@
+
+
+        <!-- Article header -->
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/general-and-the-particular.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-08-26">August 26, 2026</time></p>
+                <h1 class="article-title">The General and the <em>Particular.</em></h1>
+                <p class="article-subtitle">Why the next era of AI runs on local GPU.</p>
+            </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">TL;DR</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#tldr">TL;DR</a></li>
+                        <li><a href="#part-i-local-inference-the-interaction-layer">Part I — Local Inference: The Interaction Layer</a></li>
+                        <li><a href="#local-index-query">Part II — Local Index &amp; Query: The Memory Layer</a></li>
+                        <li><a href="#local-post-training">Part III — Local Post-training: The Adaptation Layer</a></li>
+                        <li><a href="#the-shape-of-the-argument">The shape of the argument</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/general-and-the-particular.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li title="Founder and CEO">Zili Meng</li>
+                        <li title="Member of Technical Staff">Yibin Shen</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#tldr">TL;DR</a></li>
+                            <li><a href="#part-i-local-inference-the-interaction-layer">Part I — Local Inference: The Interaction Layer</a></li>
+                            <li><a href="#local-index-query">Part II — Local Index &amp; Query: The Memory Layer</a></li>
+                            <li><a href="#local-post-training">Part III — Local Post-training: The Adaptation Layer</a></li>
+                            <li><a href="#the-shape-of-the-argument">The shape of the argument</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+                <section class="article-tldr" aria-labelledby="tldr">
+                    <h2 class="article-tldr-title" id="tldr">TL;DR</h2>
+                    <ul>
+                        <li>AI has a <strong>general</strong> half, the foundation model, trained on broad data and reused widely, and a <strong>particular</strong> half, your real-time interaction, your private memory, your individual adaptation, which is yours alone.</li>
+                        <li><strong>Interaction.</strong> Natural conversation lives inside a tight turn-taking window. Cloud round trips, with hundreds of milliseconds latency, are the wrong shape for that kind of loop.</li>
+                        <li><strong>Memory.</strong> The index can live on SSD or system RAM. A powerful GPU makes the memory layer feel live: reranking <strong>100 candidate chunks</strong> at roughly one page each means about <strong>50K tokens</strong> of batched transformer work before generation.</li>
+                        <li><strong>Adaptation.</strong> The personal part can be small, but training still needs real GPU headroom. To use QLoRA even for very large models, you will need a single serious GPU.</li>
+                        <li>The constraint is no longer only model weights. A local assistant has three GPU-accelerated loops: inference, retrieval-time reasoning, and adaptation.</li>
+                    </ul>
+                </section>
+
+                <p>A foundation model knows almost everything about the world and nothing at all about you. It has read the internet but not your inbox. It can reason about medicine in general but has never seen your chart. It speaks every language yet cannot recall what you told it yesterday. This is not a gap the next training run will close. It is structural: a consequence of where the compute lives.</p>
+
+                <p>Modern AI was built almost entirely in the cloud, and for the <em>general</em> half of intelligence that was correct. A foundation model is trained once on broad data and then reused everywhere. The weights are the shared artifact. Centralizing that shared artifact is not the problem. The problem begins when every user's live context, private index, and feedback loop must travel with it.</p>
+
+                <p>But intelligence has a second half, and it obeys the opposite logic. Your real-time interaction, your personal memory, and your individual adaptation are not shared infrastructure. They are <em>yours alone</em>. Centralizing them amortizes nothing, and imposes costs that scale with every user and every moment: round-trip latency, privacy exposure, and a personalization loop always one upload behind. The general half belongs in the cloud because it is general. The particular half belongs close to you because it is particular.</p>
+
+                <div class="article-table-wrap">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">The general half</th>
+                                <th scope="col">The particular half</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">What it is</th>
+                                <td>Foundation model weights</td>
+                                <td>Your interaction, memory, adaptation</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Trained on</th>
+                                <td>The world's data</td>
+                                <td>Your life</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Shared across</th>
+                                <td>Many users</td>
+                                <td>No one but you</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Centralizing it</th>
+                                <td>Amortizes cost</td>
+                                <td>Amortizes nothing; adds latency, exposure, lag</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Belongs</th>
+                                <td>In the cloud</td>
+                                <td>On or beside your device</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>The old objection, that capable models are too big to run locally, is becoming less useful than the actual systems budget. The GPU connection is not that every byte of personal memory must live in VRAM. The index can live on disk; the benefit of a powerful GPU appears when private state becomes dense math: decoding tokens for interaction, embedding and reranking retrieved context, prefill over that context, and backpropagation for adaptation. That is why the local question is not "can a model run?" but "can interaction, memory, and adaptation all benefit from one nearby GPU?"</p>
+
+                <hr class="article-rule">
+
+                <h2 id="part-i-local-inference-the-interaction-layer">Part I &mdash; Local Inference: The Interaction Layer</h2>
+                <p class="article-note">Can you argue with AI at the speed of a real fight? The capability available now.</p>
+
+                <p>You have felt the latency wall even without a name for it. You ask the speaker on your counter a question, and there is a beat, half a second, a second, where nothing happens and you wonder if it heard you. You repeat yourself, and now it answers the first question while you are mid-way through the second, the two of you talking over each other like a bad phone line. The model may be extraordinary. The <em>conversation</em> is broken, and it is broken by distance.</p>
+
+                <p>Human dialogue runs on a fast clock. Speakers reply within a median of about <strong>200 milliseconds</strong>, often launching before the other has finished. That is the budget natural interaction must fit inside, and it is not negotiable. It is wired into how humans hear each other.</p>
+
+                <p>A cloud round trip spends the same budget before the model has done useful work. Endpointing, network jitter, queueing, prefill, first-token latency, audio chunking, and TTS playback all stack on top of one another. Averages hide the real failure mode: for spoken interaction, p95 latency matters more than the mean, because one delayed turn is enough to make the exchange feel broken.</p>
+
+                <p>Even the best cloud voice AI proves how tight the budget is: the model can be fast and the product can still feel slow if the network and service path add tail latency. Local inference is the most reliable way to control that tail when connectivity is weak, jittery, or unavailable.</p>
+
+                <p>With the wall gone, a class of experiences becomes possible for the first time:</p>
+                <ul>
+                    <li><strong>Fully-duplex audio</strong>: a system that listens and speaks at once, handles interruptions, catches backchannels like "wait," and adjusts timing mid-sentence. The interruption path needs to close inside roughly one human turn window, not after a server has finished a whole response.</li>
+                    <li><strong>Latency-sensitive robotics</strong>: the most unforgiving case. Figure's <a href="https://www.figure.ai/news/helix">Helix</a> runs entirely onboard on embedded GPUs because some control loops have deadlines shorter than a cloud round trip.</li>
+                    <li><strong>Real-time multimodal interaction</strong>: fusing live camera, mic, and gesture into one stream that tracks the world as it changes. Perception and response have to keep up with the sensor, not with a remote API queue.</li>
+                    <li><strong>Always-available personal AI</strong>: Apple Intelligence and Google's Gemini Nano now run on the device's NPU, so the assistant works on a plane, in a hospital, or inside a secure facility. Available by architecture, not by connectivity.</li>
+                </ul>
+
+                <p>The reflex is to justify this by the API bill it saves. That undersells it. The stronger reason is deadline control: some interactive loops need predictable p95 latency more than they need a larger remote model.</p>
+
+                <blockquote class="article-callout">Local inference is not just a cheaper way to talk to AI. It is how the system owns its latency budget.</blockquote>
+
+                <hr class="article-rule">
+
+                <h2 id="local-index-query">Part II &mdash; Local Index &amp; Query: The Memory Layer</h2>
+                <p class="article-note">What makes a private, device-scale memory fast enough to query? The capability emerging now.</p>
+
+                <p>Speed gets AI into the conversation; it does not give the AI anything to remember. That is the second layer, and it is where the general/particular split bites hardest, because memory is made of the data you are least willing to send away.</p>
+
+                <p>Picture the most ordinary task: finding the quote your contractor sent. Is it in a text, an email thread, or a photo you snapped of a paper estimate? It is scattered across three apps that do not talk to each other. A useful assistant has to index extracted text, OCR output, file metadata, embeddings, hashes, timestamps, and sometimes image or audio descriptors. Those records can sit on disk. The GPU becomes necessary when the assistant turns them into an answer: embed the query, rerank candidates, prefill retrieved context, and decode the response without sending the private corpus away.</p>
+
+                <p>Local index and query resolves this by moving the index, not the data. The corpus stays on the device; indexing, retrieval, and reasoning happen where the data already lives. Microsoft's Recall shows the implementation shape: <a href="https://support.microsoft.com/en-us/windows/privacy-and-control-over-your-recall-experience-d404f672-7647-41e5-886c-a3c59680af15">local NPU processing, encryption on the machine, opt-in controls, and Windows Hello gating</a>. For any whole-life memory system, those are not product preferences. They are architecture constraints: local OCR, local embedding, encrypted index at rest, explicit retention, and bounded top-k retrieval before any model sees the result.</p>
+
+                <p>RAG adds its own compute path. Search itself may be a storage or CPU problem, but high-quality RAG usually calls neural components around the search: an embedding model, a reranker, and the generator. If retrieval returns <strong>100 candidate chunks</strong>, and each chunk is roughly a page of text, reranking is about <strong>50K tokens</strong> of transformer work before the answer is written. A <strong>16 GB-class local GPU</strong> is the practical threshold: enough headroom to keep a small embedding model, a reranker, and a quantized local generator on the fast path instead of turning memory into a slow background batch job.</p>
+
+                <p>The difference from cloud RAG is architectural. In the cloud model, data is uploaded, retrieval depends on that infrastructure, and privacy is a policy: a promise. Locally, the data never moves and privacy is a property of the system. A local assistant can answer with hashes, snippets, and retrieved chunks while keeping the underlying corpus on the machine. If it does call a cloud model, it can send the minimum top-k context rather than the user's full archive.</p>
+
+                <blockquote class="article-callout">Centralized AI offers to remember you in its data center. Local memory lets it remember you on your device. Only one of those is a memory you can trust.</blockquote>
+
+                <hr class="article-rule">
+
+                <h2 id="local-post-training">Part III &mdash; Local Post-training: The Adaptation Layer</h2>
+                <p class="article-note">How to make your AI personal? The capability still in research.</p>
+
+                <p>Interaction lets AI act on you in real time; memory lets it recall your context. Neither changes the model. The third layer does: the most speculative, demanding, and possibly most consequential of the three.</p>
+
+                <p>Count how often you have told an AI the same thing about yourself: that you want the short version, that you write code a certain way, that "John" is your brother, not your colleague. Every assistant is brilliant and, about you, permanently forgetful, and the reason is the last section's, sharper: the signal that would teach it, your corrections, choices, habits, is the most revealing data you produce, and the prevailing fix is to ship all of it to a server.</p>
+
+                <p>Local post-training closes that loop where the loop lives. Instead of exporting raw data for centralized tuning, adaptation happens on the device: lightweight tuning of <strong>adapters</strong> or low-rank modules atop a shared foundation model. The general weights stay general; what is learned is a small, private delta, the part that is only about you, and it never has to leave. This is less science fiction than it sounds, because the pieces already exist:</p>
+
+                <ul>
+                    <li><strong>It ships today, in narrower forms.</strong> Google's Gboard has used federated learning: your phone trains on how you actually type and sends only an encrypted model update, never your keystrokes. Apple Intelligence uses small task adapters on top of an on-device model to specialize behavior without replacing the whole foundation.</li>
+                    <li><strong>The adapter can be small.</strong> LoRA-style updates train a small delta instead of rewriting the whole model. The storage can be modest, but serving many personal deltas and swapping them safely is still a systems problem.</li>
+                    <li><strong>The training budget is the hard part.</strong> Adapter storage may be small, but training also needs activation memory, gradients, optimizer state, and batching headroom. QLoRA matters because it showed a <strong>65B model could be fine-tuned on a single 48 GB GPU</strong> by backpropagating through a frozen low-bit base into LoRA adapters.</li>
+                </ul>
+
+                <p>What this unlocks: <strong>personalization without uploading raw data</strong>; <strong>preference learning</strong> absorbed from use instead of re-entered each session; <strong>private domain adaptation</strong> to a clinic's or firm's own material without pooling it into anyone's training set; and <strong>continual learning</strong> for embodied systems, such as a home robot tuning itself to the dynamics of this kitchen through direct experience.</p>
+
+                <p>We are honest about where this sits. Training large generative models on-device is genuinely hard: memory bandwidth, energy, learning stability from sparse personal signal, and how local deltas compose with central foundations are open problems. This is the frontier, not a shipped feature. But the direction is clear, and the logic is the same as the other two layers: a feedback loop should close where its data is generated.</p>
+
+                <p>This layer completes the thesis. With it, the future system stops being a monolith in a data center and becomes a <em>heterogeneous hierarchy</em>: the cloud trains and serves the general foundation; local compute owns the particular, interaction, memory, and adaptation; and federated techniques let the center improve from the edge without the edge surrendering its raw data.</p>
+
+                <blockquote class="article-callout">Inference acts on you. Memory remembers you. Adaptation becomes you. The first is here, the second is arriving, the third is the frontier we are building toward.</blockquote>
+
+                <hr class="article-rule">
+
+                <h2 id="the-shape-of-the-argument">The shape of the argument</h2>
+
+                <p>The three layers are not parallel features sharing a substrate. They are a stack that holds itself up:</p>
+                <ul>
+                    <li><strong>Interaction</strong> without <strong>memory</strong> is responsive but impersonal: fast and forgetful.</li>
+                    <li><strong>Memory</strong> without <strong>interaction</strong> is a database: context with nothing real-time to use it.</li>
+                    <li><strong>Adaptation</strong> without the other two is theoretical: nothing to adapt to without the memory that records you and the interaction that engages you.</li>
+                </ul>
+
+                <p>Stacked, they describe one thing: the particular half of AI finally given an architecture suited to it. The general half stays in the cloud, where shared weights and shared training runs make sense. The particular half comes home because its GPU work is per-user: local decoding, retrieval-time reasoning over private context, and adapter updates that should not require exporting raw behavior.</p>
+
+                <p>None of this is an argument against the cloud. The foundation model is a triumph of centralized computing and will keep being trained and served exactly where it is. The argument is that the cloud was only ever the right home for half of intelligence, and the industry has spent a decade building that half nearly to the exclusion of the other. The robots moving inference onboard, the PCs forced to keep your memory local, the keyboards learning from you without watching you, the supercomputer that now fits on a desk: these are not separate stories. They are the same shift, arriving from every direction at once.</p>
+
+                <p>That is the half WiCi is building. A foundation model knows everything about the world and nothing about you. Local compute is how it learns the second half.</p>
+
+                <p class="article-signoff">WiCi is building the infrastructure for personal AI, the interaction, memory, and adaptation layers that run on local GPU. Learn more at <a href="/">wici.ai</a>.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                        <li><a href="/article/keep-the-bytes-by-the-gpu"><figure><img src="/images/research/thumbnails/keep-the-bytes-by-the-gpu.webp" alt="" loading="lazy" decoding="async"></figure><strong>Bridge the bandwidth gap with a huge SSD cache</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/answering-is-not-buzzing"><figure><img src="/images/research/thumbnails/general-and-the-particular.webp" alt="" loading="lazy" decoding="async"></figure><strong>Answering Is Not Buzzing</strong><time datetime="2026-09">September 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+
+    

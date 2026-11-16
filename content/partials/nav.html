@@ -1,0 +1,75 @@
+<header class="nav" id="nav">
+        <div class="container nav-inner">
+            <nav class="nav-links nav-links--left" aria-label="Primary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="/wici-one" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navOneMenu">WiCi One<span class="nav-activity-badge">Wireless GPU</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navOneMenu">
+                        <a class="nav-drop-item" href="/wici-one"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The first wireless GPU for frontier AI.</span></a>
+                        <a class="nav-drop-item" href="/technology"><span class="nav-drop-item-title">How it works</span><span class="nav-drop-item-desc">The technology behind WiCi One.</span></a>
+                        <a class="nav-drop-item" href="/wici-one#developers"><span class="nav-drop-item-title">For developers</span><span class="nav-drop-item-desc">Driver, SDK, and API.</span></a>
+                    </div>
+                </div>
+                <div class="nav-drop" data-nav-drop>
+                    <a href="/wici-infer" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navInferMenu">WiCi Infer<span class="nav-activity-badge">Local Inference</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navInferMenu">
+                        <a class="nav-drop-item" href="/wici-infer"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The fastest local inference, on your Mac or PC.</span></a>
+                        <a class="nav-drop-item" href="/wici-infer#benchmarks"><span class="nav-drop-item-title">Benchmarks</span><span class="nav-drop-item-desc">Measured on Apple and NVIDIA systems.</span></a>
+                        <a class="nav-drop-item" href="/wici-infer#engine"><span class="nav-drop-item-title nav-link--activity">InferSSD engine<span class="nav-status-badge">Open source</span></span><span class="nav-drop-item-desc">Open-source inference, source code and docs.</span></a>
+                    </div>
+                </div>
+            </nav>
+            <a href="/" class="nav-brand" aria-label="WiCi home">
+                <img class="nav-brand-lockup" src="/images/common/logo-lockup.svg" alt="WiCi">
+            </a>
+            <nav class="nav-links nav-links--right" aria-label="Secondary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="/solutions/" class="nav-link nav-drop-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navSolutionsMenu">Solutions<svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navSolutionsMenu">
+                        <a class="nav-drop-item" href="/solutions/local-ai"><span class="nav-drop-item-title">Local AI</span><span class="nav-drop-item-desc">Trillion-parameter models on hardware you own.</span></a>
+                        <a class="nav-drop-item" href="/solutions/creative-production"><span class="nav-drop-item-title">Creative artists</span><span class="nav-drop-item-desc">One GPU for the whole studio.</span></a>
+                        <a class="nav-drop-item" href="/solutions/physical-intelligence"><span class="nav-drop-item-title">Robotics</span><span class="nav-drop-item-desc">On-site GPU inference for robots.</span></a>
+                        <a class="nav-drop-item" href="/solutions/virtual-reality"><span class="nav-drop-item-title">Virtual reality</span><span class="nav-drop-item-desc">Heavy spatial compute, off the headset.</span></a>
+                        <a class="nav-drop-item" href="/solutions/smart-home"><span class="nav-drop-item-title">Smart home</span><span class="nav-drop-item-desc">Private AI context for every device.</span></a>
+                    </div>
+                </div>
+                <a href="/research" class="nav-link">Research</a>
+            </nav>
+            <div class="nav-cta">
+                <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-mobile" id="navMobile" data-lenis-prevent>
+            <nav class="nav-mobile-links" aria-label="Menu">
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileOne">WiCi One<span class="nav-activity-badge">First wireless GPU</span></button>
+                <div class="nav-mobile-sub" id="navMobileOne" hidden>
+                    <a href="/wici-one" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="/technology" class="nav-mobile-link nav-mobile-link--sub">How it works</a>
+                    <a href="/wici-one#developers" class="nav-mobile-link nav-mobile-link--sub">For developers</a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileInfer">WiCi Infer<span class="nav-activity-badge">Fastest local inference</span></button>
+                <div class="nav-mobile-sub" id="navMobileInfer" hidden>
+                    <a href="/wici-infer" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="/wici-infer#benchmarks" class="nav-mobile-link nav-mobile-link--sub">Benchmarks</a>
+                    <a href="/wici-infer#engine" class="nav-mobile-link nav-mobile-link--sub">InferSSD engine<span class="nav-status-badge">Open source</span></a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn" aria-expanded="false" aria-controls="navMobileSolutions">Solutions</button>
+                <div class="nav-mobile-sub" id="navMobileSolutions" hidden>
+                    <a href="/solutions/" class="nav-mobile-link nav-mobile-link--sub">All solutions</a>
+                    <a href="/solutions/local-ai" class="nav-mobile-link nav-mobile-link--sub">Local AI</a>
+                    <a href="/solutions/creative-production" class="nav-mobile-link nav-mobile-link--sub">Creative artists</a>
+                    <a href="/solutions/physical-intelligence" class="nav-mobile-link nav-mobile-link--sub">Robotics</a>
+                    <a href="/solutions/virtual-reality" class="nav-mobile-link nav-mobile-link--sub">Virtual reality</a>
+                    <a href="/solutions/smart-home" class="nav-mobile-link nav-mobile-link--sub">Smart home</a>
+                </div>
+                <a href="/research" class="nav-mobile-link">Research</a>
+            </nav>
+            <a href="/shop/wici-one" class="nav-mobile-cta">Buy WiCi One</a>
+            <div class="nav-mobile-secondary">
+                <a href="/about">About</a>
+                <a href="/careers">Careers</a>
+                <a href="/about#contact">Contact</a>
+            </div>
+        </div>
+    </header>

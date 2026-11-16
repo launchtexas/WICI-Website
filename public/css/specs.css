@@ -1,0 +1,1136 @@
+/* =========================================
+   WiCi One figures — benchmarks, compare, tech specs
+   Loaded on top of common.css by wici-one.html (the #models Benchmarks
+   band, the #specs Compare table and spec grid) and by shop/wici-one.html,
+   whose three sheets carry copies of the same figures. Owns:
+   - .models-switch / .models-table / .models-notes — the workload
+     switcher (js/specs.js) and the two-edition benchmark table (both
+     product pages' #models above 720px)
+   - .bench-* — the benchmark accordion (the buy sheet at every width,
+     and the product pages' #models at phone widths; js/specs.js)
+   - .vs-table — the WiCi One vs. pocket AI boxes vs. Mac Studio
+     comparison, .vs-dots, its scroll indicator on phones (js/specs.js),
+     and .specs-compare-notes, its numbered footnotes
+   - .specs-grid / .spec — the three-column tech spec sheet
+   Page-specific placement (the tinted band, the protocol copy beside
+   the table, the section headers, the sheet chrome) stays in
+   product.css / buy.css.
+   ========================================= */
+
+/* ---- Compare table ---- */
+/* One comparison table, Apple style: hairlines between rows, a column
+   per device, the WiCi column on a soft lavender box with a rounded
+   top. Quantitative rows carry the multiple over a
+   pill bar on a grey track and a one-line note; the other rows carry
+   a check or dash. WiCi's bar is the row's full length; the two
+   comparison bars share one scale per row, where 1× is `--vs-one`
+   percent of the track and the other is proportional to it, so 0.5×
+   reads as half of 1× instead of both collapsing into a dot. */
+.vs-table-wrap {
+    overflow-x: auto;
+    /* Room for the WiCi box's rounded top, which reaches above the
+       header row: the wrap clips whatever sticks out of it. */
+    padding-top: 20px;
+}
+
+/* Scroll indicator: one dot per device column, drawn by js/specs.js
+   above the wrap and shown only while the table actually scrolls
+   (phones, narrow tablets). A filled dot is a column fully in view;
+   pressing a dot scrolls that column into view. Each dot is a 10px
+   circle inside a 24px hit area (the hit areas set the spacing). */
+.vs-dots {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin: 0 0 8px;   /* the wrap's top padding adds the rest */
+}
+
+.vs-dots[hidden] {
+    display: none;
+}
+
+.vs-dot {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    appearance: none;
+    cursor: pointer;
+    border-radius: 50%; corner-shape: round;
+}
+
+.vs-dot::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%; corner-shape: round;
+    box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.vs-dot.is-on::before {
+    background: var(--accent);
+}
+
+.vs-dot:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.vs-table {
+    --vs-one: 14;   /* the 1× bar, as a percentage of the track */
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.vs-table th,
+.vs-table td {
+    padding: 22px 24px 22px 0;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+}
+
+.vs-table thead th {
+    padding-top: 0;
+    padding-bottom: 14px;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--line-strong);
+}
+
+.vs-table thead th.is-wici {
+    color: var(--accent-bright);
+}
+
+/* The WiCi column's lavender box: each cell paints it on an ::after
+   behind its own content (::before is the check / dash icon), which
+   works under border-collapse; the header rounds the top corners and
+   reaches above its text, and the box ends square on the table's
+   closing hairline. The box
+   stops short of the cell's right edge so it never touches the next
+   column, and the cell's left padding matches, so the text sits the
+   same distance from both edges of the box. The row hairlines sit in
+   the border area, outside the box, so they cross it as on the other
+   columns. */
+.vs-table th.is-wici,
+.vs-table td.is-wici {
+    position: relative;
+    z-index: 0;
+    padding-left: 14px;
+    padding-right: 30px;   /* 14px inside the box, 16px clear of it */
+}
+
+.vs-table th.is-wici::after,
+.vs-table td.is-wici::after {
+    content: "";
+    position: absolute;
+    inset: 0 16px 0 0;
+    z-index: -1;
+    background: var(--accent-soft);
+}
+
+.vs-table thead th.is-wici::after {
+    top: -16px;
+    border-radius: 26px 26px 0 0;
+}
+
+.vs-table thead .pi-compare-logo {
+    display: inline-block;
+    height: 18px;
+    margin: 0 0 0 10px;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+}
+
+.vs-table tbody th {
+    width: 22%;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.vs-table tbody th small {
+    display: block;
+    font-weight: 400;
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+}
+
+.vs-table td {
+    width: 25%;
+}
+
+/* A little wider, so its bar is no shorter for the box's padding. */
+.vs-table td.is-wici {
+    width: 28%;
+}
+
+.vs-x {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: 1;
+    color: var(--ink-mute);
+}
+
+.vs-track {
+    display: block;
+    height: 10px;
+    margin: 12px 0 10px;
+    border-radius: 999px; corner-shape: round;
+    background: rgba(var(--ink-rgb), 0.12);
+}
+
+.vs-fill {
+    display: block;
+    height: 100%;
+    width: var(--w, 0%);
+    min-width: 4px;
+    border-radius: 999px; corner-shape: round;
+    background: var(--ink-mute);
+}
+
+/* The comparison bars: `--w` in the markup stays the data-true
+   fraction of WiCi; the row's `--one` is the 1× column's `--w` as a
+   plain number, so dividing by it puts 1× at exactly `--vs-one`
+   percent and the other bar in true proportion to it. A row without
+   `--one` falls back to the raw fraction. */
+.vs-table td:not(.is-wici) .vs-fill {
+    width: calc(var(--w, 0%) / var(--one, var(--vs-one)) * var(--vs-one));
+}
+
+.vs-table td.is-wici .vs-x {
+    color: var(--accent-bright);
+}
+
+.vs-table td.is-wici .vs-fill {
+    background: linear-gradient(90deg, var(--hero-lavender) 0%, var(--accent) 100%);
+}
+
+.vs-sub {
+    display: block;
+    font-size: var(--fs-caption);
+    line-height: 1.4;
+    color: var(--ink-mute);
+}
+
+.vs-table td.is-wici {
+    color: var(--ink);
+}
+
+.vs-table td.is-wici.vs-yes {
+    color: var(--accent-bright);
+}
+
+.vs-yes::before,
+.vs-no::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    vertical-align: -2px;
+    border-radius: 50%; corner-shape: round;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 10px 10px;
+}
+
+.vs-yes::before {
+    background-color: var(--accent);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5.2l2 2 4-4' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.vs-no::before {
+    background-color: var(--line-strong);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M3 5h4' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Footnote markers in the table and the numbered notes under it */
+.vs-fn {
+    font-size: 0.62em;
+    line-height: 0;
+    margin-left: 2px;
+}
+
+.vs-fn a {
+    color: var(--accent-bright);
+    padding: 0 1px;
+}
+
+.vs-fn a:hover {
+    text-decoration: underline;
+}
+
+.specs-compare-notes {
+    margin: 0;
+    padding-left: 1.4em;
+    max-width: 90ch;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.specs-compare-notes li + li {
+    margin-top: 8px;
+}
+
+.specs-compare-notes li:target {
+    color: var(--ink);
+}
+
+/* ---- Benchmark table + workload switcher ---- */
+/* Workload switcher — a slash-separated, display-size tab strip above
+   the table card, after the Figma (356:199): plain labels, no glyphs,
+   no underline. The active workload runs ink, the rest and the static
+   slashes sit in the Figma's blue-grey, and the slashes let the strip
+   wrap like prose. The tabs swap which <tbody> of the table below is
+   visible. */
+.models-switch {
+    /* Idle labels and slashes: the Figma's blue-grey ("Color 8",
+       #889bb3) in its accessible form — the same family darkened to
+       clear 3:1 on the page ground. */
+    --switch-mute: var(--line-cool);
+    margin-bottom: 28px;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    letter-spacing: var(--ls-title);
+    line-height: var(--lh-body);
+}
+
+/* Each tab and the slash after it share one unbreakable item, so the
+   strip wraps BETWEEN items: never inside a label, and never with a
+   slash starting a line (an inline-block button's edge would
+   otherwise be a break opportunity). */
+.models-switch-item {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.models-switch-tab {
+    display: inline-block;
+    padding: 0;
+    color: var(--switch-mute);
+    transition: color 0.25s var(--ease);
+}
+
+.models-switch-tab:hover {
+    color: var(--ink-soft);
+}
+
+/* Placed after :hover so the selected tab stays ink under the cursor. */
+.models-switch-tab[aria-selected="true"] {
+    color: var(--ink);
+}
+
+.models-switch-sep {
+    margin: 0 10px;
+    color: var(--switch-mute);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* The table lives in a white card so the stat block reads as one
+   designed object instead of hairlines floating on the page bg. */
+/* Hairline table in a light outline card — a quieter frame than the
+   old filled panel. */
+.models-table-wrap {
+    max-width: 800px;
+    /* No card chrome: the section carries the mist tint, so the table
+       sits flush in its column with its edges shared with the
+       take-aways below. */
+    margin: 0 auto;
+    padding: 0;
+}
+
+.models-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Panel swap: incoming rows and their footnote group fade in.
+   Toggling `hidden` flips each element's display, which restarts the
+   animation every time a workload is revealed — no JS involvement.
+   Opacity only: transforms on table row groups are unreliable across
+   engines. */
+@keyframes models-panel-in {
+    from { opacity: 0; }
+}
+
+.models-table tbody,
+.models-notes {
+    animation: models-panel-in 0.35s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .models-table tbody,
+    .models-notes { animation: none; }
+}
+
+.models-table th {
+    text-align: left;
+    padding: 0 0 12px;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--line);
+}
+
+.models-table td {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-body);
+    color: var(--ink-soft);
+    vertical-align: baseline;
+}
+
+.models-table th:not(:first-child),
+.models-table td:not(:first-child) {
+    text-align: right;
+    padding-left: 24px;
+    white-space: nowrap;
+}
+
+.models-table tbody tr:last-child td { border-bottom: none; }
+
+/* Benchmark name anchors each row; its detail sub-line sits below in
+   caption voice. */
+.models-table .models-bench {
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.models-table td strong {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.models-table td span {
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+}
+
+/* Keep the model variant physically inside its GPU column so mixed-size
+   comparisons cannot be mistaken for one shared configuration. */
+.models-table td .models-gpu-model {
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-bottom: 5px;
+    padding: 2px 7px;
+    border-radius: 999px; corner-shape: round;
+    background: var(--accent-soft);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    line-height: var(--lh-body);
+    color: var(--accent-hover);
+}
+
+/* Sub-line under a benchmark name (model size, game settings) —
+   caption voice inside the bold first column. */
+.models-table .models-bench-detail {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--fs-caption);
+    font-weight: 400;
+    color: var(--ink-mute);
+}
+
+/* App identity inside the row — square icon + name, or the game's
+   wordmark beside its name (mirrors the homepage switcher table). */
+.models-bench-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.models-bench-name img {
+    height: 22px;
+    width: auto;
+    display: block;
+}
+
+.models-bench-name .models-bench-wordmark {
+    height: 20px;
+}
+/* Per-workload footnote group, toggled by the switcher alongside its
+   tbody. The visible group carries the single hairline that separates
+   the notes from the stats (the last row's own border is dropped in
+   its favor). */
+.models-notes {
+    margin-top: 2px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+}
+
+.models-table-note {
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+}
+
+.models-table-note + .models-table-note {
+    margin-top: 8px;
+}
+
+.models-table-note--aligned {
+    display: grid;
+    grid-template-columns: 0.75em minmax(0, 1fr);
+    column-gap: 0.15em;
+    align-items: start;
+}
+
+.models-table-note-marker {
+    line-height: var(--lh-display);
+}
+
+.models-table-note a {
+    color: var(--accent-bright);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.models-table-note a:hover {
+    color: var(--accent-hover);
+}
+
+/* ---- Tech spec sheet ---- */
+/* Three architecture parts as open spec-sheet columns — no card
+   boxes. Each part name sits above a crisp ink rule, editorial-table
+   style, with the label/value rows below it. */
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+    max-width: 1100px;
+    margin: 72px auto 0;
+    text-align: left;
+}
+
+.spec {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.spec-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-h3);
+    line-height: var(--lh-title);
+    color: var(--ink);
+    margin: 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ink);
+}
+
+.spec-lines {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.spec-lines li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    color: var(--ink-soft);
+}
+
+.spec-lines li > span {
+    flex: 0 0 64px;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.9;
+}
+
+.spec-val {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: var(--lh-body);
+}
+
+/* Apple-style technology sub-line directly under a spec value:
+   second line, smaller, slightly grey. */
+.spec-sub {
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+}
+
+/* Source link in a sub-line: underlined but keeping the sub's grey. */
+.spec-sub a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* Compact per-model table in the .spec-sub voice (LLM throughput). */
+.spec-subtable {
+    border-collapse: collapse;
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+}
+
+.spec-subtable th,
+.spec-subtable td {
+    padding: 0 0 2px;
+    font-weight: 400;
+    text-align: left;
+}
+
+.spec-subtable th,
+.spec-subtable td:not(:last-child) {
+    padding-right: 16px;
+}
+
+/* Footnote hint under a column's rows (Driver mode vs SDK mode). */
+.spec-note {
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+    margin: 0;
+}
+
+.spec-note a {
+    display: block;
+    margin-top: 8px;
+    color: var(--accent-bright);
+    white-space: nowrap;
+}
+
+.spec-note a:hover {
+    text-decoration: underline;
+}
+
+/* GPU spec: the official NVIDIA lockup sits under the row's "GPU"
+   label, sized to the 64px label column. */
+.spec-nv {
+    display: block;
+    width: 56px;
+    height: auto;
+    margin-top: 6px;
+}
+
+/* Quiet text link out to the technology deep-dive page, tucked at the
+   bottom of the Unified Hierarchical Memory card. */
+.specs-more {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    color: var(--accent-bright);
+    text-decoration: none;
+}
+
+.specs-more:hover {
+    text-decoration: underline;
+}
+
+/* ---- Phones / tablets ---- */
+@media (max-width: 960px) {
+    .specs-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+/* Phones: the table keeps its columns and scrolls sideways, bleeding
+   to the 20px gutters; the row labels stay pinned on the left. Its own
+   pan-x override of the global touch-action: pan-y. */
+@media (max-width: 720px) {
+    .vs-table-wrap {
+        /* No scrollport padding: the pinned label column carries the
+           gutter itself, so nothing can scroll past it (box-shadow is
+           unreliable on collapsed table cells). */
+        margin: 0 -20px;
+        padding: 20px 0 0;
+        overflow-x: auto;
+        touch-action: pan-x pan-y;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+    /* Columns sized so a 375px phone shows the label column, two
+       device columns, and the edge of the third — the cue that there
+       is more to the right, backed up by the dots above. The width
+       comes from the cells' minimums, not a table-wide floor. */
+    .vs-table {
+        --vs-one: 17;   /* a shorter track, so 1× gets a larger share */
+        min-width: 0;
+    }
+    .vs-table th,
+    .vs-table td {
+        padding-right: 16px;
+    }
+    .vs-table thead th:first-child,
+    .vs-table tbody th {
+        width: 120px;
+        min-width: 120px;
+        padding-left: 20px;
+        padding-right: 12px;
+        font-size: var(--fs-body-s);
+    }
+    .vs-table td {
+        width: auto;
+        min-width: 110px;
+    }
+    /* The box's insets come out of the column, not the bar: 12px of
+       box on either side of the text, then a 12px gap to the next
+       column. */
+    .vs-table th.is-wici,
+    .vs-table td.is-wici {
+        min-width: 132px;
+        padding-left: 12px;
+        padding-right: 24px;
+    }
+    .vs-table th.is-wici::after,
+    .vs-table td.is-wici::after {
+        right: 12px;
+    }
+    .vs-table td:last-child,
+    .vs-table thead th:last-child {
+        padding-right: 20px;
+    }
+    /* Slightly shorter bars, leaving a little air on the right of
+       each column. */
+    .vs-track {
+        width: 84%;
+    }
+    /* Pinned row labels on the section's ground */
+    .vs-table thead th:first-child,
+    .vs-table tbody th {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        background: var(--bg-soft);
+    }
+    /* The pinned header also covers the wrap's top padding, so the
+       WiCi box's rounded top slides under it like the rest. */
+    .vs-table thead th:first-child::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 100%;
+        height: 20px;
+        background: inherit;
+    }
+    /* The lockup drops under "WiCi One" in the narrow column: on its
+       own line, flush left with the label rather than indented. */
+    .vs-table thead .pi-compare-logo {
+        display: block;
+        height: 16px;
+        margin: 6px 0 0;
+        top: 0;
+    }
+}
+
+@media (max-width: 720px) {
+    /* Workload switcher keeps its slash-separated Apple strip, one
+       size down so it wraps in two lines instead of four. */
+    .models-switch {
+        min-width: 0;
+        margin-bottom: 22px;
+        font-size: var(--fs-h3);
+        line-height: 1.5;
+    }
+    .models-switch-sep {
+        margin: 0 8px;
+    }
+}
+
+@media (max-width: 640px) {
+    .models-table,
+    .models-table tbody {
+        display: block;
+    }
+
+    /* `display: block` above out-ranks the UA's `[hidden]` styling —
+       restate it so inactive workload panels stay hidden when stacked. */
+    .models-table tbody[hidden] {
+        display: none;
+    }
+
+    .models-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .models-table tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 24px;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .models-table tbody tr:last-child { border-bottom: none; }
+
+    .models-table td {
+        padding: 0;
+        border: 0;
+        white-space: normal;
+    }
+
+    /* Stacked cards read left-to-right again: undo the desktop
+       right-alignment of the value columns and their chips. */
+    .models-table th:not(:first-child),
+    .models-table td:not(:first-child) {
+        text-align: left;
+        padding-left: 0;
+        white-space: normal;
+    }
+
+    .models-table td .models-gpu-model {
+        margin-left: 0;
+    }
+
+    .models-table .models-bench {
+        grid-column: 1 / -1;
+    }
+
+    /* Only labeled cells (the two rate columns) grow the mini-label;
+       benchmark cells carry no data-label. */
+    .models-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 5px;
+        font-size: var(--fs-micro);
+        font-weight: 600;
+        letter-spacing: var(--ls-caps);
+        text-transform: uppercase;
+        color: var(--ink-mute);
+    }
+}
+
+/* ---- Benchmark accordion ----
+   The #models figures as one native <details> per workload. Used by
+   shop/wici-one.html (the Benchmarks sheet, at every width) and by the #models
+   band of wici-one.html at phone widths (in both of its modes), where
+   product.css swaps it in for the table.
+   One native <details> per workload, exclusive through their shared
+   `name`, so no script is involved. A head row carries the workload, a
+   one-line peek at its first two figures, and its row count; the open
+   group drops its table and footnote underneath. */
+.bench-acc {
+    border-top: 1px solid var(--line);
+}
+
+.bench-group {
+    border-bottom: 1px solid var(--line);
+}
+
+.bench-group-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 16px;
+    padding: 22px 8px;
+    list-style: none;
+    cursor: pointer;
+    color: var(--ink);
+}
+
+.bench-group-head::-webkit-details-marker {
+    display: none;
+}
+
+.bench-group-head:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    border-radius: 13px;
+}
+
+.bench-group-chevron {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    color: var(--ink-mute);
+    transition: transform 0.25s var(--ease);
+}
+
+.bench-group[open] .bench-group-chevron {
+    transform: rotate(90deg);
+}
+
+.bench-group-label {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    min-width: 0;
+}
+
+.bench-group-name {
+    flex: 0 0 auto;
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
+}
+
+.bench-group-peek {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--fs-body);
+    color: var(--ink-mute);
+}
+
+.bench-group-count {
+    font-size: var(--fs-body-s);
+    color: var(--ink-mute);
+    white-space: nowrap;
+}
+
+/* js/specs.js slides the body open and shut. */
+.bench-group-body {
+    padding: 0 8px 28px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bench-group-chevron { transition: none; }
+}
+
+.bench-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bench-table th {
+    padding: 0 0 12px;
+    text-align: left;
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--line);
+}
+
+.bench-table td {
+    position: relative;
+    padding: 18px 0;
+    vertical-align: middle;
+}
+
+/* Row rules are drawn per cell so the name column's can stop short of
+   the value columns, leaving the small break in the line. */
+.bench-table td::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--line);
+}
+
+.bench-table td.bench-cell::after {
+    right: 24px;
+}
+
+.bench-table th:not(:first-child),
+.bench-table td:not(:first-child) {
+    text-align: right;
+    padding-left: 24px;
+    white-space: nowrap;
+}
+
+.bench-app {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.bench-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 8px;
+    border-radius: 16px;
+    background: var(--accent-soft);
+}
+
+.bench-icon img {
+    display: block;
+    height: 22px;
+    width: auto;
+}
+
+.bench-icon--wide img {
+    height: 14px;
+}
+
+.bench-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 8px;
+}
+
+.bench-name {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.bench-detail {
+    font-size: var(--fs-body);
+    color: var(--ink-mute);
+}
+
+.bench-value strong {
+    font-size: var(--fs-h3-lg);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.bench-unit {
+    font-size: var(--fs-body-s);
+    color: var(--ink-mute);
+}
+
+/* Model variant pill, kept inside its edition's cell (as on the
+   product page) so mixed-size comparisons read as what they are. */
+.bench-variant {
+    display: block;
+    width: fit-content;
+    margin: 0 0 4px auto;
+    padding: 2px 7px;
+    border-radius: 999px; corner-shape: round;
+    background: var(--accent-soft);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    line-height: var(--lh-body);
+    color: var(--accent-hover);
+}
+
+.bench-note {
+    display: grid;
+    grid-template-columns: 0.75em minmax(0, 1fr);
+    column-gap: 0.15em;
+    align-items: start;
+    margin: 16px 0 0;
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+}
+
+.bench-note-marker {
+    line-height: var(--lh-display);
+}
+
+.bench-note a {
+    color: var(--accent-bright);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.bench-note a:hover {
+    color: var(--accent-hover);
+}
+
+@media (max-width: 720px) {
+    /* Benchmark accordion: every head is exactly two lines, the workload
+       name over a one-line peek at its apps (ellipsized, as on desktop,
+       one step smaller); the row count is dropped, the peek already says
+       what the group holds. Each table row becomes a block with the two
+       edition values side by side under their labels. */
+    .bench-group-head {
+        grid-template-columns: auto minmax(0, 1fr);
+        padding: 20px 0;
+    }
+    .bench-group-label {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    .bench-group-peek {
+        max-width: 100%;   /* a nowrap flex item would otherwise grow to its text */
+        font-size: var(--fs-body-s);
+    }
+    .bench-group-count {
+        display: none;
+    }
+    .bench-group-body {
+        padding: 0 0 22px;
+    }
+    .bench-table thead {
+        display: none;
+    }
+    .bench-table,
+    .bench-table tbody,
+    .bench-table td {
+        display: block;
+    }
+    .bench-table tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 16px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+    }
+    .bench-table td {
+        padding: 0;
+    }
+    .bench-table td::after {
+        display: none;
+    }
+    .bench-table td.bench-cell {
+        grid-column: 1 / -1;
+    }
+    .bench-table td:not(:first-child) {
+        text-align: left;
+        padding-left: 0;
+        white-space: normal;
+    }
+    .bench-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 2px;
+        font-size: var(--fs-caption);
+        color: var(--ink-mute);
+    }
+    .bench-variant {
+        margin-left: 0;
+    }
+    .bench-name {
+        font-size: var(--fs-lead);
+    }
+    .bench-value strong {
+        font-size: var(--fs-h3);
+    }
+}

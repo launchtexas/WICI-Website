@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy WiCi One</title>
+    <meta name="description" content="Choose a WiCi One edition and check out securely on the WiCi store.">
+    <meta property="og:image" content="https://wici.ai/images/common/og-device-flatlay.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WiCi One on a violet box among a headset, a tablet, a laptop, and a Mac mini.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="preload" href="../css/fonts/test-financier-display-medium-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://store.wici.ai">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/specs.css">
+    <link rel="stylesheet" href="../css/buy.css">
+    <link rel="icon" type="image/png" href="../images/common/favicon.png">
+    <link rel="apple-touch-icon" href="../images/common/apple-touch-icon.png">
+    <script src="../js/tracking.js"></script>
+</head>
+<body class="page--buy">
+
+    <!-- Primary site nav -->
+    <header class="nav" id="nav">
+        <div class="container nav-inner">
+            <nav class="nav-links nav-links--left" aria-label="Primary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../wici-one.html" class="nav-link nav-drop-btn nav-link--activity is-current" aria-haspopup="true" aria-expanded="false" aria-controls="navOneMenu">WiCi One<span class="nav-activity-badge">Wireless GPU</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navOneMenu">
+                        <a class="nav-drop-item" href="../wici-one.html" aria-current="page"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The first wireless GPU for frontier AI.</span></a>
+                        <a class="nav-drop-item" href="../technology.html"><span class="nav-drop-item-title">How it works</span><span class="nav-drop-item-desc">The technology behind WiCi One.</span></a>
+                        <a class="nav-drop-item" href="../wici-one.html#developers"><span class="nav-drop-item-title">For developers</span><span class="nav-drop-item-desc">Driver, SDK, and API.</span></a>
+                    </div>
+                </div>
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../wici-infer.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navInferMenu">WiCi Infer<span class="nav-activity-badge">Local Inference</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navInferMenu">
+                        <a class="nav-drop-item" href="../wici-infer.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The fastest local inference, on your Mac or PC.</span></a>
+                        <a class="nav-drop-item" href="../wici-infer.html#benchmarks"><span class="nav-drop-item-title">Benchmarks</span><span class="nav-drop-item-desc">Measured on Apple and NVIDIA systems.</span></a>
+                        <a class="nav-drop-item" href="../wici-infer.html#engine"><span class="nav-drop-item-title nav-link--activity">InferSSD engine<span class="nav-status-badge">Open source</span></span><span class="nav-drop-item-desc">Open-source inference, source code and docs.</span></a>
+                    </div>
+                </div>
+            </nav>
+            <a href="../index.html" class="nav-brand" aria-label="WiCi home">
+                <img class="nav-brand-lockup" src="../images/common/logo-lockup.svg" alt="WiCi">
+            </a>
+            <nav class="nav-links nav-links--right" aria-label="Secondary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="../solutions/index.html" class="nav-link nav-drop-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navSolutionsMenu">Solutions<svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navSolutionsMenu">
+                        <a class="nav-drop-item" href="../solutions/local-ai.html"><span class="nav-drop-item-title">Local AI</span><span class="nav-drop-item-desc">Trillion-parameter models on hardware you own.</span></a>
+                        <a class="nav-drop-item" href="../solutions/creative-production.html"><span class="nav-drop-item-title">Creative artists</span><span class="nav-drop-item-desc">One GPU for the whole studio.</span></a>
+                        <a class="nav-drop-item" href="../solutions/physical-intelligence.html"><span class="nav-drop-item-title">Robotics</span><span class="nav-drop-item-desc">On-site GPU inference for robots.</span></a>
+                        <a class="nav-drop-item" href="../solutions/virtual-reality.html"><span class="nav-drop-item-title">Virtual reality</span><span class="nav-drop-item-desc">Heavy spatial compute, off the headset.</span></a>
+                        <a class="nav-drop-item" href="../solutions/smart-home.html"><span class="nav-drop-item-title">Smart home</span><span class="nav-drop-item-desc">Private AI context for every device.</span></a>
+                    </div>
+                </div>
+                <a href="../research.html" class="nav-link">Research</a>
+            </nav>
+            <div class="nav-cta">
+                <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-mobile" id="navMobile" data-lenis-prevent>
+            <nav class="nav-mobile-links" aria-label="Menu">
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileOne">WiCi One<span class="nav-activity-badge">First wireless GPU</span></button>
+                <div class="nav-mobile-sub" id="navMobileOne" hidden>
+                    <a href="../wici-one.html" class="nav-mobile-link nav-mobile-link--sub" aria-current="page">Overview</a>
+                    <a href="../technology.html" class="nav-mobile-link nav-mobile-link--sub">How it works</a>
+                    <a href="../wici-one.html#developers" class="nav-mobile-link nav-mobile-link--sub">For developers</a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileInfer">WiCi Infer<span class="nav-activity-badge">Fastest local inference</span></button>
+                <div class="nav-mobile-sub" id="navMobileInfer" hidden>
+                    <a href="../wici-infer.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="../wici-infer.html#benchmarks" class="nav-mobile-link nav-mobile-link--sub">Benchmarks</a>
+                    <a href="../wici-infer.html#engine" class="nav-mobile-link nav-mobile-link--sub">InferSSD engine<span class="nav-status-badge">Open source</span></a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn" aria-expanded="false" aria-controls="navMobileSolutions">Solutions</button>
+                <div class="nav-mobile-sub" id="navMobileSolutions" hidden>
+                    <a href="../solutions/index.html" class="nav-mobile-link nav-mobile-link--sub">All solutions</a>
+                    <a href="../solutions/local-ai.html" class="nav-mobile-link nav-mobile-link--sub">Local AI</a>
+                    <a href="../solutions/creative-production.html" class="nav-mobile-link nav-mobile-link--sub">Creative artists</a>
+                    <a href="../solutions/physical-intelligence.html" class="nav-mobile-link nav-mobile-link--sub">Robotics</a>
+                    <a href="../solutions/virtual-reality.html" class="nav-mobile-link nav-mobile-link--sub">Virtual reality</a>
+                    <a href="../solutions/smart-home.html" class="nav-mobile-link nav-mobile-link--sub">Smart home</a>
+                </div>
+                <a href="../research.html" class="nav-mobile-link">Research</a>
+            </nav>
+            <a href="wici-one.html" class="nav-mobile-cta">Buy WiCi One</a>
+            <div class="nav-mobile-secondary">
+                <a href="../about.html">About</a>
+                <a href="../careers.html">Careers</a>
+                <a href="../about.html#contact">Contact</a>
+            </div>
+        </div>
+    </header>
+
+
+    <main id="top">
+
+        <!-- Buy — test bed for the WiCi One purchase flow, in the manner of
+             Apple's Buy iPhone pages: a hero with the price, a sticky
+             product/price bar, a sticky image gallery on the left beside
+             the configurator steps on the right (Edition is the only step
+             that maps to a store variant; the comparison and payment steps
+             are informational), then the "awaits" summary with the Continue
+             button. Continue is a plain link to a Shopify cart permalink on
+             store.wici.ai (variant ID + quantity 1, with ref and a source
+             attribute), which 302s straight into Shopify checkout; the site
+             never handles payment. Without JS the page sells the 5060 Ti
+             edition (the checked radio's link). Prices and the two variant
+             IDs are hand-copied from the store (September 2026); sweep the
+             radios' data-* when the store changes. js/buy.js: selection
+             sync, gallery, wici_one_config_confirmed dataLayer event. -->
+
+        <!-- Hero: kicker, name, availability, price. -->
+        <section class="buy-hero" id="buy">
+            <div class="container buy-hero-inner">
+                <div class="buy-hero-text">
+                    <span class="buy-kicker">New</span>
+                    <h1 class="buy-title">WiCi One</h1>
+                    <p class="buy-avail">Ships in 8 weeks.</p>
+                    <p class="buy-hero-price">Buy from <del class="buy-hero-was" data-offer-was hidden>$3,499</del> <strong data-offer-price data-full="3499">$3,499</strong></p>
+                    <p class="buy-hero-launch" data-offer-line hidden><span data-offer-lead>Exclusive offer</span>: <strong><span data-offer-amount>$800</span> off</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sticky product bar: sits under the site nav once the hero scrolls
+             away, carrying the name and the current price. -->
+        <div class="buy-bar" id="buyBar" data-sticky-bar>
+            <div class="container buy-bar-inner">
+                <span class="buy-bar-name">WiCi One <span class="buy-bar-edition" data-buy-edition>5060 Ti edition</span></span>
+                <span class="buy-bar-price"><span data-buy-pay-label>Buy</span> <strong data-buy-price>$3,499</strong><span class="buy-bar-ship">Ships in 8 weeks</span><span class="buy-bar-discount" data-buy-bar-discount hidden></span></span>
+            </div>
+        </div>
+
+        <!-- Gallery + configurator -->
+        <section class="buy-layout">
+            <div class="container buy-layout-inner">
+
+                <div class="buy-gallery" id="buyGallery">
+                    <div class="buy-stage">
+                        <div class="buy-track" tabindex="0" aria-label="Product images">
+                        <!-- First slide: a looping film, the 360° turn (the shell fading
+                             to the interior on the far side) and then the exploded turn
+                             (the device coming apart into its layers and closing again),
+                             20.8 s: the first runs at 25 fps, the second a quarter faster
+                             at 31.25 fps. It has no alpha: the frames are composited on
+                             the stage's own grey (--bg-soft), so it fills the slide edge
+                             to edge and no rectangle shows. The gallery does not advance
+                             on its own; js/buy.js keeps the poster under reduced motion. -->
+                        <figure class="buy-slide buy-slide--film">
+                            <video autoplay muted loop playsinline preload="auto" width="1600" height="1200" poster="../images/media/render-turntable-exploded-poster.webp" aria-label="WiCi One turning a full circle, its shell fading away to show the GPU, board, and cooling stack; then turning again as it comes apart into its layers and closes.">
+                                <source src="../cdn.wici.ai/video/render-turntable-exploded-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                                <source src="../cdn.wici.ai/video/render-turntable-exploded-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+                            </video>
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="../images/media/render-exterior-left-full.jpg" width="1600" height="900" alt="WiCi One, front three-quarter view: the wave-textured top and the perforated panel with the WiCi mark." loading="lazy">
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="../images/media/render-exterior-front-full.jpg" width="1600" height="900" alt="WiCi One, straight on: the sculpted front face and the finned metal edge." loading="lazy">
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="../images/media/render-interior-board-full.jpg" width="1600" height="900" alt="Inside WiCi One, seen through the shell: the GPU, the board, and the cooling stack." loading="lazy">
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="../images/media/render-rear-io-full.jpg" width="1600" height="900" alt="The rear of WiCi One with its I/O panel." loading="lazy">
+                        </figure>
+                        <figure class="buy-slide">
+                            <img src="../images/media/render-exploded-landscape-full.jpg" width="1600" height="900" alt="WiCi One exploded into its layers: shell, cooling, GPU, board, and base." loading="lazy">
+                        </figure>
+                        </div>
+                        <button type="button" class="buy-arrow buy-arrow--prev" data-dir="-1" aria-label="Previous image" hidden>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m10 3-5 5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button type="button" class="buy-arrow buy-arrow--next" data-dir="1" aria-label="Next image">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <div class="buy-dots" role="tablist" aria-label="Choose image"><button type="button" class="buy-dot is-active" data-slide="0" aria-label="Image 1 of 6"></button><button type="button" class="buy-dot" data-slide="1" aria-label="Image 2 of 6"></button><button type="button" class="buy-dot" data-slide="2" aria-label="Image 3 of 6"></button><button type="button" class="buy-dot" data-slide="3" aria-label="Image 4 of 6"></button><button type="button" class="buy-dot" data-slide="4" aria-label="Image 5 of 6"></button><button type="button" class="buy-dot" data-slide="5" aria-label="Image 6 of 6"></button></div>
+                    </div>
+                </div>
+
+                <div class="buy-steps">
+
+                    <!-- Step: Edition (the only choice that maps to a store variant) -->
+                    <fieldset class="buy-step" id="edition">
+                        <legend class="buy-step-title"><strong>Edition.</strong> Which GPU is right for you?</legend>
+                        <div class="buy-options">
+                            <label class="buy-option is-selected">
+                                <input class="sr-only" type="radio" name="edition" value="5060ti" checked
+                                       data-label="5060 Ti edition" data-variant-id="48476761522402" data-variant-title="NVIDIA RTX 5060 Ti · 16GB"
+                                       data-price="3499" data-price-text="$3,499" data-href="https://store.wici.ai/cart/48476761522402:1?ref=shop&amp;attributes%5Bsource%5D=wici.ai">
+                                <span class="buy-option-main">
+                                    <span class="buy-option-name">5060 Ti</span>
+                                    <span class="buy-option-sub">NVIDIA RTX 5060&nbsp;Ti · 16GB</span>
+                                </span>
+                                <span class="buy-option-price">Buy <del class="buy-price-was" data-offer-was hidden>$3,499</del> <strong data-offer-price data-full="3499">$3,499</strong></span>
+                            </label>
+                            <label class="buy-option">
+                                <input class="sr-only" type="radio" name="edition" value="5090"
+                                       data-label="5090 edition" data-variant-id="48476761555170" data-variant-title="NVIDIA RTX 5090 · 32GB"
+                                       data-price="12999" data-price-text="$12,999" data-href="https://store.wici.ai/cart/48476761555170:1?ref=shop&amp;attributes%5Bsource%5D=wici.ai">
+                                <span class="buy-option-main">
+                                    <span class="buy-option-name">5090</span>
+                                    <span class="buy-option-sub">NVIDIA RTX 5090 · 32GB</span>
+                                </span>
+                                <span class="buy-option-price">Buy <del class="buy-price-was" data-offer-was hidden>$12,999</del> <strong data-offer-price data-full="12999">$12,999</strong></span>
+                            </label>
+                        </div>
+                        <button type="button" class="buy-help" data-sheet="bench">
+                            <span class="buy-help-text">
+                                <strong>Not sure which edition to get?</strong>
+                                See how each one runs models and creative tools.
+                            </span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        </button>
+                        <button type="button" class="buy-help" data-sheet="specs">
+                            <span class="buy-help-text">
+                                <strong>Tech specs and comparison.</strong>
+                                The full specifications, and how WiCi One compares with pocket AI boxes and the Mac Studio.
+                            </span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        </button>
+                    </fieldset>
+
+                    <!-- Step: side-by-side figures from the product page's Benchmarks table -->
+                    <div class="buy-step" id="compare">
+                        <h2 class="buy-step-title"><strong>Compare.</strong> The two editions, side by side.</h2>
+                        <div class="buy-compare-wrap">
+                            <table class="buy-compare">
+                                <caption class="sr-only">Selected benchmarks for the 5060 Ti and 5090 editions</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col" data-edition="5060ti">5060 Ti</th>
+                                        <th scope="col" data-edition="5090">5090</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Kimi K3<small>2.8T params</small></th>
+                                    <td data-edition="5060ti">2.5 tok/s</td>
+                                    <td data-edition="5090">5 tok/s</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Gemma 4<small>26B params</small></th>
+                                    <td data-edition="5060ti">140 tok/s</td>
+                                    <td data-edition="5090">500+ tok/s</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">FLUX.2 Klein<small>1024² images</small></th>
+                                    <td data-edition="5060ti">~0.49 img/s</td>
+                                    <td data-edition="5090">~0.92 img/s</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Premiere Pro<small>4K H.264 export</small></th>
+                                    <td data-edition="5060ti">70 fps</td>
+                                    <td data-edition="5090">90 fps</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="buy-fine">Figures from the full <button type="button" class="buy-link" data-sheet="bench">Benchmarks</button>, where every workload and its notes live.</p>
+                    </div>
+
+                    <!-- Step: Payment. Two radio cards, no store variant behind
+                         them: pay in full (the edition's price) or installments
+                         over up to 18 months (the price / 18 to the cent, the
+                         months on the radio's data-months). The choice switches
+                         the price bar's and the summary's label and figure, and
+                         adds payment=shop_pay to Continue so checkout opens in
+                         Shop Pay, where the plan is offered (js/buy.js). -->
+                    <fieldset class="buy-step" id="payment">
+                        <legend class="buy-step-title"><strong>Payment.</strong> Pay securely at checkout.</legend>
+                        <div class="buy-options">
+                            <label class="buy-option is-selected">
+                                <input class="sr-only" type="radio" name="payment" value="full" checked>
+                                <span class="buy-option-main">
+                                    <span class="buy-option-name">Buy</span>
+                                    <span class="buy-option-sub">Pay in full at checkout. Taxes and shipping are calculated there.</span>
+                                </span>
+                                <span class="buy-option-price">One payment <strong data-buy-price-full>$3,499</strong></span>
+                            </label>
+                            <label class="buy-option">
+                                <input class="sr-only" type="radio" name="payment" value="installments" data-months="18">
+                                <span class="buy-option-main">
+                                    <span class="buy-option-name">Installments</span>
+                                    <span class="buy-option-sub">Pay over up to 18 months. Credit option and approval provided by Shop Pay.</span>
+                                </span>
+                                <span class="buy-option-price">As low as <strong><span data-buy-monthly>$194.39</span>/mo.</strong></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary: the selection, the price, and the Continue link into checkout -->
+        <section class="buy-summary" id="summary">
+            <div class="container">
+                <h2 class="buy-summary-title"><strong>Summary.</strong> Review your order.</h2>
+                <div class="buy-summary-card">
+                    <div class="buy-summary-text">
+                        <p class="buy-summary-line">WiCi One · <span data-buy-edition>5060 Ti edition</span></p>
+                        <p class="buy-summary-price"><span data-buy-pay-label>Buy</span> <strong data-buy-price>$3,499</strong></p>
+                        <!-- Shown by js/buy.js when the visitor came with a discount
+                             code (?discount=, the links in our emails): the code
+                             rides the Continue link into checkout. -->
+                        <p class="buy-summary-discount" id="buyDiscount" hidden>Discount code <strong data-buy-discount></strong> <span data-buy-discount-rest>is applied at checkout.</span></p>
+                        <p class="buy-summary-ship">Ships in 8 weeks. Taxes and shipping are calculated at checkout.</p>
+                    </div>
+                    <div class="buy-summary-actions">
+                        <a class="cta cta--primary buy-continue" id="buyContinue" href="https://store.wici.ai/cart/48476761522402:1?ref=shop&amp;attributes%5Bsource%5D=wici.ai" rel="noopener"
+                           data-buy="shop-wici-one" data-variant-id="48476761522402" data-variant-title="NVIDIA RTX 5060 Ti · 16GB" data-price="3499">
+                            <span>Continue</span>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                        <p class="buy-summary-note"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Secure checkout</span></p>
+                        <!-- The purchase policies, one tab each on shop/policies. -->
+                        <p class="buy-summary-policies"><a href="policies.html#shipping">Shipping</a> · <a href="policies.html#returns">Returns &amp; refunds</a> · <a href="policies.html#warranty">Warranty</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-col--brand">
+                    <a href="../index.html" class="footer-brand" aria-label="WiCi home">
+                        <img src="../images/common/logo-lockup.svg" alt="WiCi">
+                    </a>
+                    <p class="footer-tagline">Making Local Frontier AI Accessible to Everyone</p>
+                    <ul class="footer-social" aria-label="WiCi on social media">
+                        <li><a href="https://www.instagram.com/wici_ai/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/company/wici-ai/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://discord.gg/wici" target="_blank" rel="noopener" aria-label="Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" fill="currentColor"/></svg></a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Company</h4>
+                    <ul class="footer-list">
+                        <li><a href="../about.html">About WiCi</a></li>
+                        <li><a href="../careers.html">Join WiCi</a></li>
+                        <li><a href="../media/newsroom.html">Newsroom</a></li>
+                        <li><a href="../about.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi One</h4>
+                    <p class="footer-col-desc">The first wireless GPU for frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="../wici-one.html">Overview</a></li>
+                        <li><a href="../technology.html">How it works</a></li>
+                        <li><a href="../developers.html">For developers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi Infer</h4>
+                    <p class="footer-col-desc">The desktop app for local frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="../wici-infer.html">Overview</a></li>
+                        <li><a href="../wici-infer.html#benchmarks">Benchmarks</a></li>
+                        <li><a href="../wici-infer.html#engine">InferSSD engine</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Solutions</h4>
+                    <ul class="footer-list">
+                        <li><a href="../solutions/local-ai.html">Local AI</a></li>
+                        <li><a href="../solutions/creative-production.html">Creative artists</a></li>
+                        <li><a href="../solutions/physical-intelligence.html">Robotics</a></li>
+                        <li><a href="../solutions/index.html">All solutions</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Research</h4>
+                    <ul class="footer-list">
+                        <li><a href="../article/nearby-gpu-feel-local.html">Wireless GPU</a></li>
+                        <li><a href="../article/running-800b-models-with-inferssd.html">SSD inference</a></li>
+                        <li><a href="../article/gpu-never-learned-to-share.html">GPU sharing</a></li>
+                        <li><a href="../article/answering-is-not-buzzing.html">Real-time AI</a></li>
+                        <li><a href="../research.html">All research</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span class="footer-copyright">© <span id="year">2026</span> WiCi<span class="footer-version">v=20261111f</span></span>
+                    <a href="../privacy.html">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- In-page sheets, in the manner of Apple's Buy pages: the two help
+         cards under the Edition step and the Compare step's fine print
+         open these instead of leaving for the product page. Each carries
+         copies of wici-one.html figures — Benchmarks: the #models figures as
+         a per-workload accordion (.bench-*, css/buy.css); Tech specs: the
+         #specs spec grid, then the Compare table with its footnotes (#specs
+         + #footnotes), styled by css/specs.css; keep the copies in sync.
+         Native <dialog>, opened by js/buy.js (data-sheet / data-sheet-close). -->
+    <dialog class="buy-sheet" id="sheet-bench" aria-labelledby="sheet-bench-title">
+        <button type="button" class="buy-sheet-close" data-sheet-close aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <div class="buy-sheet-inner" data-lenis-prevent>
+            <header class="buy-sheet-head">
+                <span class="buy-sheet-kicker">Benchmarks</span>
+                <h2 class="buy-sheet-title" id="sheet-bench-title">Minimum overhead, strong performance.</h2>
+                <p class="buy-sheet-lede">Both editions on open models and creative apps, measured over Wi-Fi 7 on a production WiCi One.</p>
+            </header>
+            <!-- One <details> per workload; the shared `name` makes them
+                 exclusive (one open at a time); js/specs.js takes that
+                 over and slides them open and shut. Each head
+                 shows the workload, the apps it covers, and its row
+                 count; the open group reveals its
+                 table and footnote. Values are the product page's. -->
+            <div class="bench-acc">
+                <details class="bench-group" name="bench" data-workload="llm" open>
+                    <summary class="bench-group-head">
+                        <span class="bench-group-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="bench-group-label">
+                            <span class="bench-group-name">LLM throughput</span>
+                            <span class="bench-group-peek">Kimi K3 · DeepSeek V4.1 Flash · Gemma 4</span>
+                        </span>
+                        <span class="bench-group-count">3 benchmarks</span>
+                    </summary>
+                    <div class="bench-group-body">
+                        <table class="bench-table" aria-label="LLM throughput on both WiCi One editions">
+                            <thead>
+                                <tr><th scope="col">Benchmark<sup>†</sup></th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/kimi.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Kimi K3</span><span class="bench-detail">2.8T params</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>2.5</strong> <span class="bench-unit">tok/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>5</strong> <span class="bench-unit">tok/s</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/deepseek.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">DeepSeek V4.1 Flash</span><span class="bench-detail">748B params</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>8</strong> <span class="bench-unit">tok/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>20</strong> <span class="bench-unit">tok/s</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/gemma.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Gemma 4</span><span class="bench-detail">26B params</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>140</strong> <span class="bench-unit">tok/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>500+</strong> <span class="bench-unit">tok/s</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="bench-note"><sup class="bench-note-marker">†</sup><span>Open-weight models over Wi-Fi 7 on a production WiCi One, close to cloud rates of <a href="https://openrouter.ai/moonshotai/kimi-k3:nitro#providers" target="_blank" rel="noopener">20-40 tok/s</a>. <a href="../article/running-800b-models-with-inferssd.html">How InferSSD serves large models.</a></span></p>
+                    </div>
+                </details>
+                <details class="bench-group" name="bench" data-workload="image">
+                    <summary class="bench-group-head">
+                        <span class="bench-group-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="bench-group-label">
+                            <span class="bench-group-name">Image &amp; video generation</span>
+                            <span class="bench-group-peek">FLUX.2 Klein · Z-Image-Turbo · Wan 2.2 · MiniMax H3</span>
+                        </span>
+                        <span class="bench-group-count">4 benchmarks</span>
+                    </summary>
+                    <div class="bench-group-body">
+                        <table class="bench-table" aria-label="Image and video generation on both WiCi One editions">
+                            <thead>
+                                <tr><th scope="col">Benchmark<sup>†</sup></th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/flux.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">FLUX.2 Klein</span><span class="bench-detail">1024²</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><span class="bench-variant">Model · 4B</span><strong>~0.49</strong> <span class="bench-unit">img/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><span class="bench-variant">Model · 9B</span><strong>~0.92</strong> <span class="bench-unit">img/s</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/tongyi.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Z-Image-Turbo</span><span class="bench-detail">1024²</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><span class="bench-variant">Model · 6B</span><strong>~0.22</strong> <span class="bench-unit">img/s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><span class="bench-variant">Model · 6B</span><strong>~1.19</strong> <span class="bench-unit">img/s</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/tongyi.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Wan 2.2</span><span class="bench-detail">720p</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><span class="bench-variant">Model · TI2V-5B</span><strong>~6.4</strong> <span class="bench-unit">gen fps</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><span class="bench-variant">Model · I2V-A14B</span><strong>~3.0</strong> <span class="bench-unit">gen fps</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/minimax.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">MiniMax H3</span><span class="bench-detail">0.5 MP · native audio</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><span class="bench-variant">Model · 33B</span><strong>~0.7</strong> <span class="bench-unit">gen fps</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><span class="bench-variant">Model · 33B</span><strong>~4.1</strong> <span class="bench-unit">gen fps</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="bench-note"><sup class="bench-note-marker">†</sup><span>Open image models on the WiCi SDK, over Wi-Fi 7 on a production WiCi One.</span></p>
+                    </div>
+                </details>
+                <details class="bench-group" name="bench" data-workload="creative">
+                    <summary class="bench-group-head">
+                        <span class="bench-group-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="bench-group-label">
+                            <span class="bench-group-name">Creative editing</span>
+                            <span class="bench-group-peek">CapCut · Premiere Pro · Audio Memory</span>
+                        </span>
+                        <span class="bench-group-count">3 benchmarks</span>
+                    </summary>
+                    <div class="bench-group-body">
+                        <table class="bench-table" aria-label="Creative editing on both WiCi One editions">
+                            <thead>
+                                <tr><th scope="col">Benchmark<sup>†</sup></th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/capcut.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">CapCut</span><span class="bench-detail">4K export</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>75</strong> <span class="bench-unit">fps</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>90</strong> <span class="bench-unit">fps</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/premiere-pro.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Premiere Pro</span><span class="bench-detail">4K H.264 export</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>70</strong> <span class="bench-unit">fps</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>90</strong> <span class="bench-unit">fps</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/common/logo-mark.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Audio Memory</span><span class="bench-detail">TTFA</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>≤1.2</strong> <span class="bench-unit">s</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>≤0.8</strong> <span class="bench-unit">s</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="bench-note"><sup class="bench-note-marker">†</sup><span>CapCut and Premiere Pro unmodified in Driver mode; audio memory on the WiCi SDK. Over Wi-Fi 7 on a production WiCi One.</span></p>
+                    </div>
+                </details>
+                <details class="bench-group" name="bench" data-workload="rendering">
+                    <summary class="bench-group-head">
+                        <span class="bench-group-chevron" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="bench-group-label">
+                            <span class="bench-group-name">3D rendering</span>
+                            <span class="bench-group-peek">Blender</span>
+                        </span>
+                        <span class="bench-group-count">1 benchmark</span>
+                    </summary>
+                    <div class="bench-group-body">
+                        <table class="bench-table" aria-label="3D rendering on both WiCi One editions">
+                            <thead>
+                                <tr><th scope="col">Benchmark<sup>†</sup></th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bench-cell"><span class="bench-app"><span class="bench-icon"><img src="../images/apps/blender.svg" alt="" loading="lazy"></span><span class="bench-title"><span class="bench-name">Blender</span><span class="bench-detail">Cycles render</span></span></span></td>
+                                    <td class="bench-value" data-label="5060 Ti edition"><strong>2,900</strong> <span class="bench-unit">samples/min</span></td>
+                                    <td class="bench-value" data-label="5090 edition"><strong>6,000</strong> <span class="bench-unit">samples/min</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="bench-note"><sup class="bench-note-marker">†</sup><span>Blender unmodified in Driver mode, on its standard benchmark scene, over Wi-Fi 7.</span></p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </dialog>
+    <dialog class="buy-sheet" id="sheet-specs" aria-labelledby="sheet-specs-title">
+        <button type="button" class="buy-sheet-close" data-sheet-close aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <div class="buy-sheet-inner" data-lenis-prevent>
+            <header class="buy-sheet-head">
+                <span class="buy-sheet-kicker">Specs</span>
+                <h2 class="buy-sheet-title" id="sheet-specs-title">Tech specifications</h2>
+                <p class="buy-sheet-lede">What is inside WiCi One, how your apps reach it, and how it compares.</p>
+            </header>
+            <div class="specs-grid">
+                <article class="spec">
+                    <h3 class="spec-name">Wireless AI Computing</h3>
+                    <ul class="spec-lines">
+                        <li>
+                            <span>GPU
+                                <img class="spec-nv" src="../images/common/nvidia-logo.png" alt="">
+                            </span>
+                            <div class="spec-val">
+                                NVIDIA RTX 5060&nbsp;Ti · 16GB GDDR7
+                                <span class="spec-sub">5060 Ti edition</span>
+                                NVIDIA RTX 5090 · 32GB GDDR7
+                                <span class="spec-sub">5090 edition</span>
+                                <span class="spec-sub">AirCompute GPU sharing</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>CPU</span>
+                            <div class="spec-val">
+                                Intel Core 3 100U
+                                <span class="spec-sub">5060 Ti edition</span>
+                                Intel Core Ultra 7 255H
+                                <span class="spec-sub">5090 edition</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>Wi-Fi</span>
+                            <div class="spec-val">
+                                Wi-Fi 7 · 4×4 MIMO · 320MHz
+                                <span class="spec-sub">Router-grade AirLink Multi-Link transport</span>
+                            </div>
+                        </li>
+                    </ul>
+                </article>
+                <article class="spec">
+                    <h3 class="spec-name">Fully Flexible GPU Runtime</h3>
+                    <ul class="spec-lines">
+                        <li>
+                            <span>Driver mode</span>
+                            <div class="spec-val">
+                                WiCi Virtual GPU on macOS, Windows &amp; Linux
+                                <span class="spec-sub">ZeroTrip caching &amp; trace replay</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>SDK mode</span>
+                            <div class="spec-val">
+                                Python · JavaScript · Swift
+                                <span class="spec-sub">Out-of-the-box inference with multimodal support</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>API mode</span>
+                            <div class="spec-val">
+                                OpenAI-compatible endpoint
+                                <span class="spec-sub">Drop-in for existing clients</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="spec-note">
+                        WiCi One is fully application-transparent in Driver mode, inference-optimized through the SDK, and OpenAI-compatible in API mode. Whichever path you take, your applications get full computing flexibility.
+                        <a href="../developers.html">Build on WiCi <span aria-hidden="true">→</span></a>
+                    </p>
+                </article>
+                <article class="spec">
+                    <h3 class="spec-name">Unified Hierarchical Memory</h3>
+                    <ul class="spec-lines">
+                        <li>
+                            <span>Storage</span>
+                            <div class="spec-val">
+                                NVMe 4 · 1TB
+                                <span class="spec-sub">5060 Ti edition</span>
+                                NVMe 5 · 4TB
+                                <span class="spec-sub">5090 edition</span>
+                                <span class="spec-sub">TurboStream weight paging</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span>LLM</span>
+                            <div class="spec-val">
+                                Trillion-parameter models
+                                <table class="spec-subtable">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Kimi K3</th>
+                                            <td>2.8T</td>
+                                            <td>5 tok/s</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">DeepSeek V4.1 Flash</th>
+                                            <td>748B</td>
+                                            <td>20 tok/s</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Gemma 4</th>
+                                            <td>26B</td>
+                                            <td>500+ tok/s</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <span class="spec-sub">Measured on WiCi One 5090 edition, close to <a href="https://openrouter.ai/moonshotai/kimi-k3:nitro#providers" target="_blank" rel="noopener">cloud rates of 20-40 tok/s</a></span>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="spec-note">
+                        TurboStream turns up to 4TB of NVMe into working VRAM: trillion-parameter models, no cloud cost required. State-of-the-art research from our systems researchers and engineers, built into WiCi One.
+                    </p>
+                    <a href="../technology.html" class="specs-more">Read more about our technologies →</a>
+                </article>
+            </div>
+            <section class="buy-sheet-section" aria-labelledby="sheet-specs-compare-title">
+                <header class="buy-sheet-head buy-sheet-head--section">
+                    <span class="buy-sheet-kicker">Compare</span>
+                    <h3 class="buy-sheet-title buy-sheet-title--section" id="sheet-specs-compare-title">Compute, memory, and work.</h3>
+                    <p class="buy-sheet-lede">WiCi One beside two pocket AI boxes and the Mac Studio M5 Max.</p>
+                </header>
+                <div class="vs-table-wrap">
+                    <table class="vs-table">
+                        <caption class="sr-only">WiCi One compared with pocket AI boxes and the Mac Studio M5 Max</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col" class="is-wici">WiCi One <img class="pi-compare-logo" src="../images/common/logo-lockup.svg" alt="WiCi"></th>
+                                <th scope="col">Pocket AI boxes<sup class="vs-fn">3</sup></th>
+                                <th scope="col">Mac Studio M5 Max</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr style="--one: 9.5;">
+                            <th scope="row">AI compute <small>dense FP16 TFLOPS</small><sup class="vs-fn">1</sup></th>
+                            <td class="is-wici" data-col="WiCi One">
+                                <span class="vs-x">10&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 100%;"></span></span>
+                                <span class="vs-sub">~420 on the 5090 edition; ~95 on the 5060&nbsp;Ti (2.4&times;)</span>
+                            </td>
+                            <td data-col="Pocket AI boxes">
+                                <span class="vs-x">1&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 9.5%;"></span></span>
+                                <span class="vs-sub">~40, estimated from 160 to 275 INT8 TOPS<sup class="vs-fn">1</sup></span>
+                            </td>
+                            <td data-col="Mac Studio M5 Max">
+                                <span class="vs-x">1.8&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 16.7%;"></span></span>
+                                <span class="vs-sub">~70</span>
+                            </td>
+                        </tr>
+                        <tr style="--one: 2;">
+                            <th scope="row">Memory for models</th>
+                            <td class="is-wici" data-col="WiCi One">
+                                <span class="vs-x">50&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 100%;"></span></span>
+                                <span class="vs-sub">Up to 4&nbsp;TB NVMe weight paging (TurboStream)</span>
+                            </td>
+                            <td data-col="Pocket AI boxes">
+                                <span class="vs-x">1&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 2%;"></span></span>
+                                <span class="vs-sub">64 to 80&nbsp;GB LPDDR5</span>
+                            </td>
+                            <td data-col="Mac Studio M5 Max">
+                                <span class="vs-x">0.5&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 0.9%;"></span></span>
+                                <span class="vs-sub">36&nbsp;GB unified, up to 128&nbsp;GB</span>
+                            </td>
+                        </tr>
+                        <tr style="--one: 4.3;">
+                            <th scope="row">Largest model</th>
+                            <td class="is-wici" data-col="WiCi One">
+                                <span class="vs-x">23&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 100%;"></span></span>
+                                <span class="vs-sub">Kimi K3, 2.8T parameters, measured at 5&nbsp;tok/s</span>
+                            </td>
+                            <td data-col="Pocket AI boxes">
+                                <span class="vs-x">1&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 4.3%;"></span></span>
+                                <span class="vs-sub">120B parameters, claimed</span>
+                            </td>
+                            <td data-col="Mac Studio M5 Max">
+                                <span class="vs-x">0.6&times;</span>
+                                <span class="vs-track"><span class="vs-fill" style="--w: 2.5%;"></span></span>
+                                <span class="vs-sub">~70B on 36&nbsp;GB, estimated<sup class="vs-fn">2</sup></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Serves every device as a local GPU over Wi&#8209;Fi</th>
+                            <td data-col="WiCi One" class="is-wici vs-yes">Yes</td>
+                            <td data-col="Pocket AI boxes" class="vs-no">Standalone box</td>
+                            <td data-col="Mac Studio M5 Max" class="vs-no">Standalone Mac</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Creative apps, unmodified</th>
+                            <td data-col="WiCi One" class="is-wici vs-yes">Yes</td>
+                            <td data-col="Pocket AI boxes" class="vs-no">No discrete GPU</td>
+                            <td data-col="Mac Studio M5 Max" class="vs-no">Mac apps only</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Trillion-parameter models</th>
+                            <td data-col="WiCi One" class="is-wici vs-yes">Yes</td>
+                            <td data-col="Pocket AI boxes" class="vs-no">No</td>
+                            <td data-col="Mac Studio M5 Max" class="vs-no">No</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Price</th>
+                            <td data-col="WiCi One" class="is-wici">From $3,499<span class="vs-sub">5060 Ti edition.</span></td>
+                            <td data-col="Pocket AI boxes">$1,399 to $2,999</td>
+                            <td data-col="Mac Studio M5 Max">From $2,499</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <ol class="specs-compare-notes">
+                    <li>Unit: dense FP16 TFLOPS, the rate most model inference runs at. NVIDIA and Apple publish it. The pocket AI boxes publish sparse INT8 TOPS. Conversion: INT8 to FP16 halves the rate; removing the sparsity assumption halves it again. 160 to 275 sparse INT8 TOPS is therefore 40 to 70 dense FP16 TFLOPS. The 275 figure includes two fixed-function accelerators that do not run general model math. The table uses ~40.</li>
+                    <li>36&nbsp;GB of unified memory holds about 70 billion parameters at 4-bit weights, with room for context. The 128&nbsp;GB configuration holds proportionally more.</li>
+                    <li>Figures as published by the vendors in September 2026. The pocket AI box column covers two current crowdfunded pocket AI computers, and ranges span both. Product names belong to their owners.</li>
+                </ol>
+            </section>
+        </div>
+    </dialog>
+
+    <script src="../js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/specs.js"></script>
+    <script src="../js/buy.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "route": "/",
+  "bodyClass": "nl-home",
+  "mainAttrs": "id=\"top\" class=\"ix\""
+}

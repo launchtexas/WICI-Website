@@ -1,0 +1,496 @@
+
+
+    <!-- Lightbox -->
+    <div class="mk-lb" id="mk-lb" role="dialog" aria-modal="true" aria-label="Media viewer">
+        <button type="button" class="mk-lb-close" aria-label="Close">&#215;</button>
+        <button type="button" class="mk-lb-prev" aria-label="Previous image">&#8249;</button>
+        <button type="button" class="mk-lb-next" aria-label="Next image">&#8250;</button>
+        <figure>
+            <img src="/" alt="">
+            <video controls playsinline preload="metadata" hidden></video>
+            <figcaption></figcaption>
+            <!-- For the render stills: white or transparent ground (the
+                 render-*-alpha.png files), and a download of the one shown. -->
+            <div class="mk-lb-tools" hidden>
+                <div class="mk-lb-ground" role="group" aria-label="Background">
+                    <button type="button" class="mk-lb-ground-btn is-on" data-ground="white" aria-pressed="true">White</button>
+                    <button type="button" class="mk-lb-ground-btn" data-ground="alpha" aria-pressed="false">Transparent</button>
+                </div>
+                <a class="mk-lb-dl" href="/" download="" target="_blank" rel="noopener">Download&nbsp;&#8599;</a>
+            </div>
+        </figure>
+    </div>
+
+    <script src="/js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script>
+        (function () {
+            'use strict';
+
+            // Section menu: light the link of the section under the bars,
+            // and keep it in view when the row scrolls sideways on phones.
+
+            var eventTabs = Array.prototype.slice.call(document.querySelectorAll('.nr-event-tabs [role="tab"]'));
+            var eventPanels = Array.prototype.slice.call(document.querySelectorAll('.nr-event-panel'));
+            function selectEvent(panelId) {
+                eventTabs.forEach(function (tab) {
+                    var selected = tab.getAttribute('aria-controls') === panelId;
+                    tab.setAttribute('aria-selected', String(selected));
+                    tab.tabIndex = selected ? 0 : -1;
+                });
+                eventPanels.forEach(function (panel) {
+                    panel.hidden = panel.id !== panelId;
+                    if (!panel.hidden) { document.getElementById('nr-event-date').textContent = panel.getAttribute('data-date'); }
+                    else { panel.querySelectorAll('video').forEach(function (video) { video.pause(); }); }
+                });
+            }
+            document.querySelectorAll('[data-event-panel]').forEach(function (link) {
+                link.addEventListener('click', function () { selectEvent(link.getAttribute('data-event-panel')); });
+            });
+            eventTabs.forEach(function (tab, index) {
+                tab.addEventListener('click', function () { selectEvent(tab.getAttribute('aria-controls')); });
+                tab.addEventListener('keydown', function (event) {
+                    var next;
+                    if (event.key === 'ArrowRight') { next = (index + 1) % eventTabs.length; }
+                    else if (event.key === 'ArrowLeft') { next = (index + eventTabs.length - 1) % eventTabs.length; }
+                    else if (event.key === 'Home') { next = 0; }
+                    else if (event.key === 'End') { next = eventTabs.length - 1; }
+                    else { return; }
+                    event.preventDefault();
+                    eventTabs[next].focus();
+                    selectEvent(eventTabs[next].getAttribute('aria-controls'));
+                });
+            });
+
+            // The directory owns navigation; content uses the document's single scroll.
+            var librarySection = document.getElementById('media-kit');
+            var library = document.createElement('div');
+            library.className = 'nr-library';
+            library.innerHTML = '<nav class="nr-library-nav" role="tablist" aria-label="Media kit files" aria-orientation="vertical"></nav><div class="nr-library-main"><div class="nr-library-list"></div><div class="nr-library-reading"></div></div>';
+            var libraryNav = library.querySelector('.nr-library-nav');
+            var libraryMain = library.querySelector('.nr-library-main');
+            var libraryList = libraryMain.querySelector('.nr-library-list');
+            var libraryReading = libraryMain.querySelector('.nr-library-reading');
+            var libraryPhone = window.matchMedia('(max-width: 720px)');
+            var rowMark = '<span class="nr-library-row-mark" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></span>';
+            var libraryRecords = [];
+            var activeLibraryFile = null;
+            var libraryGroups = [
+                { id: 'kit-company', name: 'WiCi Brand and Team', image: '../images/common/logo-mark.svg' },
+                { id: 'kit-one', name: 'WiCi One', image: '../images/media/render-exterior-left-thumb.jpg' },
+                { id: 'kit-infer', name: 'WiCi Infer', image: '../images/infer/app-icon.svg' }
+            ];
+            function libraryTopOffset() {
+                return document.getElementById('nav').offsetHeight + document.querySelector('.mk-menu').offsetHeight + 16;
+            }
+            function syncLibraryOffset() { library.style.setProperty('--nr-library-top', libraryTopOffset() + 'px'); }
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            function glideTo(top) {
+                // Lenis carries the glide where it runs (touch included); the browser's own smooth scroll otherwise.
+                if (window.lenis && !reduceMotion.matches) { window.lenis.scrollTo(top, { duration: 0.7 }); return; }
+                var root = document.documentElement;
+                var previousBehavior = root.style.scrollBehavior;
+                root.style.scrollBehavior = 'auto';
+                window.scrollTo({ top: top, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+                root.style.scrollBehavior = previousBehavior;
+            }
+            function positionLibraryFile(record, target, glide) {
+                requestAnimationFrame(function () {
+                    var offset = libraryTopOffset();
+                    if (libraryPhone.matches && (!target || target === record.file || target === record.item)) { target = record.row; }
+                    var top = (target || record.file).getBoundingClientRect().top;
+                    if (Math.abs(top - offset) <= 2) { return; }
+                    if (glide) { glideTo(window.scrollY + top - offset); return; }
+                    var root = document.documentElement;
+                    var previousBehavior = root.style.scrollBehavior;
+                    root.style.scrollBehavior = 'auto';
+                    window.scrollTo({ top: window.scrollY + top - offset, behavior: 'auto' });
+                    root.style.scrollBehavior = previousBehavior;
+                });
+            }
+            function playLibraryFile(record) {
+                record.file.querySelectorAll('video[data-resource-autoplay]').forEach(function (video) {
+                    if (!reduceMotion.matches) {
+                        var playback = video.play();
+                        if (playback) { playback.catch(function () {}); }
+                    }
+                });
+            }
+            function parkLibraryFile(record) {
+                record.file.querySelectorAll('video').forEach(function (video) { video.pause(); });
+                record.source.appendChild(record.file);
+            }
+            // Phones: every row folds and unfolds on its own; several can stand open.
+            function unfoldLibraryRow(record) {
+                if (record.open) { return; }
+                record.open = true;
+                record.slot.appendChild(record.file);
+                record.row.setAttribute('aria-expanded', 'true');
+                record.item.classList.add('is-open');
+                playLibraryFile(record);
+            }
+            function foldLibraryRow(record) {
+                if (!record.open) { return; }
+                record.open = false;
+                parkLibraryFile(record);
+                record.row.setAttribute('aria-expanded', 'false');
+                record.item.classList.remove('is-open');
+            }
+            // Desktop: one file in the reading area at a time.
+            function readLibraryFile(record) {
+                if (activeLibraryFile === record) { return; }
+                if (activeLibraryFile) { parkLibraryFile(activeLibraryFile); }
+                activeLibraryFile = record;
+                libraryReading.appendChild(record.file);
+                libraryRecords.forEach(function (item) {
+                    var selected = item === record;
+                    item.button.setAttribute('aria-selected', String(selected));
+                    item.button.tabIndex = selected ? 0 : -1;
+                });
+                playLibraryFile(record);
+            }
+            function selectLibraryFile(record, position, historyMode, toggle) {
+                if (!record) { return; }
+                if (libraryPhone.matches) {
+                    if (toggle && record.open) {
+                        foldLibraryRow(record);
+                        if (historyMode) { window.history.replaceState(null, '', '#media-kit'); }
+                        return;
+                    }
+                    unfoldLibraryRow(record);
+                } else {
+                    readLibraryFile(record);
+                }
+                if (historyMode) { window.history.replaceState(null, '', '#' + record.id); }
+                if (position) { positionLibraryFile(record, null, libraryPhone.matches); }
+            }
+            libraryGroups.forEach(function (group) {
+                var source = document.getElementById(group.id);
+                var section = document.createElement('div'); section.className = 'nr-library-group';
+                var heading = document.createElement('div'); heading.className = 'nr-library-group-head';
+                var icon = document.createElement('img'); icon.src = group.image; icon.alt = ''; icon.width = 36; icon.height = 36;
+                var title = document.createElement('h3'); title.textContent = group.name;
+                heading.append(icon, title); section.appendChild(heading); libraryNav.appendChild(section);
+                var listGroup = document.createElement('div'); listGroup.className = 'nr-library-list-group'; listGroup.textContent = group.name; libraryList.appendChild(listGroup);
+                source.querySelectorAll('.nr-resource').forEach(function (resource) {
+                    var id = resource.id;
+                    var summary = resource.querySelector('summary');
+                    var name = summary.querySelector('h3').textContent;
+                    var description = summary.querySelector('.nr-resource-name > span').textContent;
+                    var body = resource.querySelector('.nr-resource-body');
+                    var file = document.createElement('article'); file.id = id; file.className = 'nr-library-file'; file.tabIndex = 0; file.setAttribute('role', 'tabpanel');
+                    var fileHeading = document.createElement('header'); fileHeading.className = 'nr-library-file-head';
+                    var h3 = document.createElement('h3'); h3.textContent = name;
+                    var p = document.createElement('p'); p.textContent = description;
+                    fileHeading.append(h3, p); file.append(fileHeading, body);
+                    resource.id = id + '-source'; resource.appendChild(file);
+                    var button = document.createElement('button'); button.type = 'button'; button.id = id + '-library-tab'; button.textContent = name; button.setAttribute('role', 'tab'); button.setAttribute('aria-controls', id); button.setAttribute('aria-selected', 'false'); button.tabIndex = -1;
+                    file.setAttribute('aria-labelledby', button.id); section.appendChild(button);
+                    var item = document.createElement('div'); item.className = 'nr-library-item';
+                    var row = document.createElement('button'); row.type = 'button'; row.className = 'nr-library-row'; row.setAttribute('aria-controls', id); row.setAttribute('aria-expanded', 'false');
+                    row.innerHTML = '<span class="nr-library-row-text"><strong></strong><span></span></span>' + rowMark;
+                    row.querySelector('strong').textContent = name; row.querySelector('.nr-library-row-text > span').textContent = description;
+                    var slot = document.createElement('div'); slot.className = 'nr-library-slot';
+                    item.append(row, slot); libraryList.appendChild(item);
+                    var record = { id: id, name: name, file: file, source: resource, button: button, row: row, item: item, slot: slot, open: false };
+                    libraryRecords.push(record);
+                    button.addEventListener('click', function () { selectLibraryFile(record, true, true); });
+                    row.addEventListener('click', function () { selectLibraryFile(record, true, true, true); });
+                });
+            });
+            libraryRecords.forEach(function (record, index) {
+                ['button', 'row'].forEach(function (key) {
+                    record[key].addEventListener('keydown', function (event) {
+                        var next;
+                        if (event.key === 'ArrowDown' || event.key === 'ArrowRight') { next = (index + 1) % libraryRecords.length; }
+                        else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') { next = (index + libraryRecords.length - 1) % libraryRecords.length; }
+                        else if (event.key === 'Home') { next = 0; }
+                        else if (event.key === 'End') { next = libraryRecords.length - 1; }
+                        else { return; }
+                        event.preventDefault(); selectLibraryFile(libraryRecords[next], true, true); libraryRecords[next][key].focus({ preventScroll: true });
+                    });
+                });
+            });
+            librarySection.querySelector('.nr-kit-header').after(library);
+            librarySection.classList.add('nr-library-ready');
+            syncLibraryOffset(); window.addEventListener('resize', syncLibraryOffset);
+            // On phones the row's item carries the file's id, so a hash lands on the row, not under it.
+            function homeLibraryIds() {
+                libraryRecords.forEach(function (record) {
+                    if (libraryPhone.matches) { record.file.removeAttribute('id'); record.item.id = record.id; }
+                    else { record.item.removeAttribute('id'); record.file.id = record.id; }
+                });
+            }
+            homeLibraryIds();
+            if (!libraryPhone.matches) { selectLibraryFile(libraryRecords[0], false, false); }
+            libraryPhone.addEventListener('change', function () {
+                homeLibraryIds();
+                if (libraryPhone.matches) {
+                    // Into the phone layout: the file being read becomes the one open row.
+                    var reading = activeLibraryFile;
+                    if (reading) { activeLibraryFile = null; reading.source.appendChild(reading.file); unfoldLibraryRow(reading); }
+                } else {
+                    // Into the desktop layout: the first open row is read; the others fold.
+                    var first = libraryRecords.find(function (record) { return record.open; }) || libraryRecords[0];
+                    libraryRecords.forEach(foldLibraryRow);
+                    readLibraryFile(first);
+                }
+            });
+            function revealLibraryHash(hash, position) {
+                var target;
+                try { target = document.getElementById(decodeURIComponent(hash.slice(1))); } catch (e) { return false; }
+                if (!target) { return false; }
+                var holder = target.closest('.nr-library-file, .nr-library-item');
+                var record = holder && libraryRecords.find(function (item) { return item.file === holder || item.item === holder; });
+                if (!record) { return false; }
+                selectLibraryFile(record, false, false);
+                if (position) { positionLibraryFile(record, target, libraryPhone.matches); }
+                return true;
+            }
+            document.addEventListener('click', function (event) {
+                var link = event.target.closest('a[href^="#"]');
+                if (link && revealLibraryHash(link.getAttribute('href'), true)) {
+                    event.preventDefault(); event.stopImmediatePropagation(); history.replaceState(null, '', link.getAttribute('href'));
+                }
+            }, true);
+            window.addEventListener('hashchange', function () { revealLibraryHash(location.hash, true); });
+            revealLibraryHash(location.hash, false);
+
+            var menuLinks = document.querySelector('.mk-menu-links');
+            var links = Array.prototype.slice.call(menuLinks.querySelectorAll('a'));
+            var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+            var current = null;
+            function spy() {
+                var line = document.getElementById('nav').offsetHeight + document.querySelector('.mk-menu').offsetHeight + 32;
+                var pick = null;
+                sections.forEach(function (sec, i) {
+                    if (sec && sec.getBoundingClientRect().top <= line) { pick = links[i]; }
+                });
+                if (pick === current) { return; }
+                if (current) { current.classList.remove('is-current'); current.removeAttribute('aria-current'); }
+                current = pick;
+                if (!current) { return; }
+                current.classList.add('is-current');
+                current.setAttribute('aria-current', 'location');
+                if (menuLinks.scrollWidth > menuLinks.clientWidth) {
+                    var left = current.offsetLeft - (menuLinks.clientWidth - current.offsetWidth) / 2;
+                    menuLinks.scrollTo({ left: left, behavior: 'smooth' });
+                }
+            }
+            var spyQueued = false;
+            window.addEventListener('scroll', function () {
+                if (spyQueued) { return; }
+                spyQueued = true;
+                requestAnimationFrame(function () { spyQueued = false; spy(); });
+            }, { passive: true });
+            spy();
+
+            var lb = document.getElementById('mk-lb');
+            var lbImg = lb.querySelector('img');
+            var lbVideo = lb.querySelector('video');
+            var lbCap = lb.querySelector('figcaption');
+            var lbFig = lb.querySelector('figure');
+            var lbTools = lb.querySelector('.mk-lb-tools');
+            var lbGroundBtns = Array.prototype.slice.call(lb.querySelectorAll('.mk-lb-ground-btn'));
+            var lbDl = lb.querySelector('.mk-lb-dl');
+            var ground = 'white';   // 'white' or 'alpha', kept while the lightbox is open
+            var closeBtn = lb.querySelector('.mk-lb-close');
+            var prevBtn = lb.querySelector('.mk-lb-prev');
+            var nextBtn = lb.querySelector('.mk-lb-next');
+            var items = Array.prototype.slice.call(document.querySelectorAll('button.mk-thumb[data-group]'));
+            var group = [];
+            var index = -1;
+            var lastFocus = null;
+            var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            // The video slot takes its sources from a button's data attributes
+            // (AV1 first, H.264 fallback; the browser picks by <source> type).
+            function clearVideo() {
+                lbVideo.pause();
+                while (lbVideo.firstChild) { lbVideo.removeChild(lbVideo.firstChild); }
+                lbVideo.removeAttribute('src');
+                lbVideo.load();
+            }
+            function setVideo(btn, loop) {
+                clearVideo();
+                [['data-av1', 'video/mp4; codecs="av01.0.08M.08"'], ['data-h264', 'video/mp4; codecs="avc1.640028"']].forEach(function (pair) {
+                    var src = btn.getAttribute(pair[0]);
+                    if (!src) { return; }
+                    var source = document.createElement('source');
+                    source.src = src;
+                    source.type = pair[1];
+                    lbVideo.appendChild(source);
+                });
+                // A loop (the turntable) plays like an image: silent, endless,
+                // no controls, unless reduced motion asks for them instead.
+                lbVideo.loop = loop;
+                lbVideo.muted = loop;
+                lbVideo.controls = !loop || reduceMotion;
+                lbVideo.classList.toggle('is-loop', loop);
+                lbVideo.setAttribute('aria-label', btn.getAttribute('data-cap') || 'Video');
+                lbImg.hidden = true;
+                lbImg.src = '/';
+                lbVideo.hidden = false;
+                lbVideo.load();
+                if (loop && reduceMotion) { return; }
+                var p = lbVideo.play();
+                if (p && p.catch) { p.catch(function () {}); }
+            }
+
+            // A render still with a transparent version (data-alpha) gets the
+            // ground switch and a download of whichever version is shown; the
+            // download is named after the tile's own caption.
+            function fileName(el, alpha) {
+                var cap = el.parentNode.querySelector('.mk-cap');
+                var name = (cap ? cap.textContent : el.getAttribute('data-cap') || 'render').trim().replace(/\//g, '-');
+                return 'WiCi One - ' + name + (alpha ? ' (transparent).png' : '.jpg');
+            }
+            function showStill(el) {
+                var alpha = ground === 'alpha' && el.hasAttribute('data-alpha');
+                lbImg.src = el.getAttribute(alpha ? 'data-alpha' : 'data-full');
+                lbImg.classList.toggle('is-alpha', alpha);
+                lbImg.alt = el.getAttribute('data-cap') || '';
+                var has = el.hasAttribute('data-alpha');
+                lbTools.hidden = !has;
+                lbFig.classList.toggle('has-tools', has);
+                if (!has) { return; }
+                lbGroundBtns.forEach(function (b) {
+                    var on = b.getAttribute('data-ground') === (alpha ? 'alpha' : 'white');
+                    b.classList.toggle('is-on', on);
+                    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+                });
+                lbDl.href = lbImg.src;
+                lbDl.setAttribute('download', fileName(el, alpha));
+            }
+            lbGroundBtns.forEach(function (b) {
+                b.addEventListener('click', function () {
+                    ground = b.getAttribute('data-ground');
+                    if (index >= 0 && group[index] && group[index].hasAttribute('data-full')) { showStill(group[index]); }
+                });
+            });
+
+            function render() {
+                var el = group[index];
+                if (el.hasAttribute('data-full')) {
+                    clearVideo();
+                    lbVideo.hidden = true;
+                    lbImg.hidden = false;
+                    showStill(el);
+                } else {
+                    setVideo(el, true);
+                    lbTools.hidden = true;
+                    lbFig.classList.remove('has-tools');
+                }
+                lbCap.textContent = el.getAttribute('data-cap') || '';
+                var multi = group.length > 1;
+                prevBtn.style.display = multi ? '' : 'none';
+                nextBtn.style.display = multi ? '' : 'none';
+            }
+
+            function open(el) {
+                var g = el.getAttribute('data-group');
+                group = items.filter(function (it) { return it.getAttribute('data-group') === g; });
+                index = group.indexOf(el);
+                lastFocus = el;
+                lb.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+                render();
+                closeBtn.focus();
+            }
+
+            function close() {
+                lb.classList.remove('is-open');
+                document.body.style.overflow = '';
+                lbImg.src = '/';
+                lbImg.classList.remove('is-alpha');
+                ground = 'white';
+                clearVideo();
+                lbVideo.hidden = true;
+                if (lastFocus) { lastFocus.focus(); }
+            }
+
+            function step(delta) {
+                if (group.length < 2) { return; }
+                index = (index + delta + group.length) % group.length;
+                render();
+            }
+
+            items.forEach(function (el) {
+                el.addEventListener('click', function () { open(el); });
+            });
+
+            // Demo films open in the lightbox as a <video> with sound and
+            // controls: the sources are attached on demand and unloaded on
+            // close, so nothing downloads until a film is asked for.
+            function openVideo(btn) {
+                group = [];
+                index = -1;
+                lastFocus = btn;
+                lbCap.textContent = btn.getAttribute('data-cap') || '';
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                lbTools.hidden = true;
+                lbFig.classList.remove('has-tools');
+                lb.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+                setVideo(btn, false);
+                closeBtn.focus();
+            }
+
+            // The hero film runs half again as fast as encoded; under reduced
+            // motion it stays on its poster.
+            var heroFilm = document.querySelector('.mk-hero-film video');
+            if (heroFilm) {
+                if (reduceMotion) {
+                    heroFilm.removeAttribute('autoplay');
+                    heroFilm.pause();
+                } else {
+                    heroFilm.defaultPlaybackRate = 1.5;
+                    heroFilm.playbackRate = 1.5;
+                    heroFilm.addEventListener('loadedmetadata', function () { heroFilm.playbackRate = 1.5; });
+                }
+            }
+
+            // The turntable tile keeps its poster under reduced motion.
+            if (reduceMotion) {
+                Array.prototype.forEach.call(document.querySelectorAll('.mk-thumb video'), function (v) {
+                    v.removeAttribute('autoplay');
+                    v.pause();
+                });
+            }
+            Array.prototype.forEach.call(document.querySelectorAll('button.mk-demo-play'), function (btn) {
+                btn.addEventListener('click', function () { openVideo(btn); });
+            });
+
+            closeBtn.addEventListener('click', close);
+            prevBtn.addEventListener('click', function () { step(-1); });
+            nextBtn.addEventListener('click', function () { step(1); });
+            lb.addEventListener('click', function (e) {
+                if (e.target === lb || e.target.tagName === 'FIGURE') { close(); }
+            });
+            document.addEventListener('keydown', function (e) {
+                if (!lb.classList.contains('is-open')) { return; }
+                if (e.key === 'Escape') { close(); }
+                else if (e.key === 'ArrowLeft') { step(-1); }
+                else if (e.key === 'ArrowRight') { step(1); }
+            });
+
+            // Swipe to navigate on touch devices
+            var swipe = null;
+            lb.addEventListener('pointerdown', function (e) {
+                if (e.isPrimary) { swipe = { x: e.clientX, y: e.clientY }; }
+            });
+            lb.addEventListener('pointerup', function (e) {
+                if (!swipe || !e.isPrimary) { return; }
+                var dx = e.clientX - swipe.x;
+                var dy = e.clientY - swipe.y;
+                swipe = null;
+                if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                    step(dx < 0 ? 1 : -1);
+                }
+            });
+            lb.addEventListener('pointercancel', function () { swipe = null; });
+        })();
+    </script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | WiCi</title>
+    <meta name="description" content="Founding roles at WiCi: engineering, hardware, product, and growth. Build the local compute layer for personal AI.">
+    <meta property="og:image" content="https://wici.ai/images/common/og-device-flatlay.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WiCi One on a violet box among a headset, a tablet, a laptop, and a Mac mini.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="preload" href="css/fonts/test-financier-display-medium-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="icon" type="image/png" href="images/common/favicon.png">
+    <link rel="apple-touch-icon" href="images/common/apple-touch-icon.png">
+    <script src="js/tracking.js"></script>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header class="nav" id="nav">
+        <div class="container nav-inner">
+            <nav class="nav-links nav-links--left" aria-label="Primary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="wici-one.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navOneMenu">WiCi One<span class="nav-activity-badge">Wireless GPU</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navOneMenu">
+                        <a class="nav-drop-item" href="wici-one.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The first wireless GPU for frontier AI.</span></a>
+                        <a class="nav-drop-item" href="technology.html"><span class="nav-drop-item-title">How it works</span><span class="nav-drop-item-desc">The technology behind WiCi One.</span></a>
+                        <a class="nav-drop-item" href="wici-one.html#developers"><span class="nav-drop-item-title">For developers</span><span class="nav-drop-item-desc">Driver, SDK, and API.</span></a>
+                    </div>
+                </div>
+                <div class="nav-drop" data-nav-drop>
+                    <a href="wici-infer.html" class="nav-link nav-drop-btn nav-link--activity" aria-haspopup="true" aria-expanded="false" aria-controls="navInferMenu">WiCi Infer<span class="nav-activity-badge">Local Inference</span><svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navInferMenu">
+                        <a class="nav-drop-item" href="wici-infer.html"><span class="nav-drop-item-title">Overview</span><span class="nav-drop-item-desc">The fastest local inference, on your Mac or PC.</span></a>
+                        <a class="nav-drop-item" href="wici-infer.html#benchmarks"><span class="nav-drop-item-title">Benchmarks</span><span class="nav-drop-item-desc">Measured on Apple and NVIDIA systems.</span></a>
+                        <a class="nav-drop-item" href="wici-infer.html#engine"><span class="nav-drop-item-title nav-link--activity">InferSSD engine<span class="nav-status-badge">Open source</span></span><span class="nav-drop-item-desc">Open-source inference, source code and docs.</span></a>
+                    </div>
+                </div>
+            </nav>
+            <a href="index.html" class="nav-brand" aria-label="WiCi home">
+                <img class="nav-brand-lockup" src="images/common/logo-lockup.svg" alt="WiCi">
+            </a>
+            <nav class="nav-links nav-links--right" aria-label="Secondary">
+                <div class="nav-drop" data-nav-drop>
+                    <a href="solutions/index.html" class="nav-link nav-drop-btn" aria-haspopup="true" aria-expanded="false" aria-controls="navSolutionsMenu">Solutions<svg class="nav-drop-chev" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    <div class="nav-drop-menu" id="navSolutionsMenu">
+                        <a class="nav-drop-item" href="solutions/local-ai.html"><span class="nav-drop-item-title">Local AI</span><span class="nav-drop-item-desc">Trillion-parameter models on hardware you own.</span></a>
+                        <a class="nav-drop-item" href="solutions/creative-production.html"><span class="nav-drop-item-title">Creative artists</span><span class="nav-drop-item-desc">One GPU for the whole studio.</span></a>
+                        <a class="nav-drop-item" href="solutions/physical-intelligence.html"><span class="nav-drop-item-title">Robotics</span><span class="nav-drop-item-desc">On-site GPU inference for robots.</span></a>
+                        <a class="nav-drop-item" href="solutions/virtual-reality.html"><span class="nav-drop-item-title">Virtual reality</span><span class="nav-drop-item-desc">Heavy spatial compute, off the headset.</span></a>
+                        <a class="nav-drop-item" href="solutions/smart-home.html"><span class="nav-drop-item-title">Smart home</span><span class="nav-drop-item-desc">Private AI context for every device.</span></a>
+                    </div>
+                </div>
+                <a href="research.html" class="nav-link">Research</a>
+            </nav>
+            <div class="nav-cta">
+                <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-mobile" id="navMobile" data-lenis-prevent>
+            <nav class="nav-mobile-links" aria-label="Menu">
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileOne">WiCi One<span class="nav-activity-badge">First wireless GPU</span></button>
+                <div class="nav-mobile-sub" id="navMobileOne" hidden>
+                    <a href="wici-one.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="technology.html" class="nav-mobile-link nav-mobile-link--sub">How it works</a>
+                    <a href="wici-one.html#developers" class="nav-mobile-link nav-mobile-link--sub">For developers</a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn nav-link--activity" aria-expanded="false" aria-controls="navMobileInfer">WiCi Infer<span class="nav-activity-badge">Fastest local inference</span></button>
+                <div class="nav-mobile-sub" id="navMobileInfer" hidden>
+                    <a href="wici-infer.html" class="nav-mobile-link nav-mobile-link--sub">Overview</a>
+                    <a href="wici-infer.html#benchmarks" class="nav-mobile-link nav-mobile-link--sub">Benchmarks</a>
+                    <a href="wici-infer.html#engine" class="nav-mobile-link nav-mobile-link--sub">InferSSD engine<span class="nav-status-badge">Open source</span></a>
+                </div>
+                <button type="button" class="nav-mobile-link nav-mobile-group-btn" aria-expanded="false" aria-controls="navMobileSolutions">Solutions</button>
+                <div class="nav-mobile-sub" id="navMobileSolutions" hidden>
+                    <a href="solutions/index.html" class="nav-mobile-link nav-mobile-link--sub">All solutions</a>
+                    <a href="solutions/local-ai.html" class="nav-mobile-link nav-mobile-link--sub">Local AI</a>
+                    <a href="solutions/creative-production.html" class="nav-mobile-link nav-mobile-link--sub">Creative artists</a>
+                    <a href="solutions/physical-intelligence.html" class="nav-mobile-link nav-mobile-link--sub">Robotics</a>
+                    <a href="solutions/virtual-reality.html" class="nav-mobile-link nav-mobile-link--sub">Virtual reality</a>
+                    <a href="solutions/smart-home.html" class="nav-mobile-link nav-mobile-link--sub">Smart home</a>
+                </div>
+                <a href="research.html" class="nav-mobile-link">Research</a>
+            </nav>
+            <a href="shop/wici-one.html" class="nav-mobile-cta">Buy WiCi One</a>
+            <div class="nav-mobile-secondary">
+                <a href="about.html">About</a>
+                <a href="careers.html">Careers</a>
+                <a href="about.html#contact">Contact</a>
+            </div>
+        </div>
+    </header>
+
+
+    <main id="top">
+
+        <!-- Hero -->
+        <section class="hero hero--page hero--careers">
+            <div class="container hero-careers-row">
+                <div class="hero-careers-text">
+                    <h1 class="hero-title">
+                        Help advance the future of
+                        <em>personal computing.</em>
+                    </h1>
+                    <p class="hero-lede">
+                        Our team works at the cutting edge of AI systems, hardware, and product design to tackle the deepest challenges in personal computing, and bring frontier intelligence to every device, anywhere.
+                    </p>
+                </div>
+                <figure class="hero-careers-figure">
+                    <img src="images/common/robot.png" alt="A pencil-illustrated humanoid robot dancing beside a vintage Mac with an eye on its screen, a houseplant, and an 'n' letterform sculpture: WiCi's mascot for the personal AI hardware era." loading="eager">
+                </figure>
+            </div>
+        </section>
+
+        <!-- Roles -->
+        <section class="section" id="roles">
+            <div class="container">
+
+                <div class="roles-group">
+                    <span class="section-kicker">Member of Technical Staff</span>
+                    <ol class="roles roles--cards">
+                        <li class="role-card">
+                            <h3 class="role-name">ML Infra · Database</h3>
+                            <p class="role-meta-line">Full-time · Internship</p>
+                            <p class="role-desc">Data layer for training, eval, and GPU-accelerated RAG on device.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Build training-data and feature pipelines end to end.</li>
+                                            <li>Ship on-device stores and GPU-accelerated RAG paths.</li>
+                                            <li>Optimize storage and query across cloud and device.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>Database internals: engines, indexing, or query planning.</li>
+                                            <li>ML data infrastructure at scale; strong I/O instincts.</li>
+                                            <li>Bonus: vector search or GPU-accelerated retrieval.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#81f5e0ede4eff5c1f6e8e2e8afe0e8bef2f4e3ebe4e2f5bcc0f1f1ede8e2e0f5e8eeefa4b3b1a4c4b3a4b9b1a4b8b5a4b3b1cccda4b3b1c8efe7f3e0a4b3b1a4c2b3a4c3b6a4b3b1c5e0f5e0e3e0f2e4">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="role-card">
+                            <h3 class="role-name">ML Infra · Post-training</h3>
+                            <p class="role-meta-line">Full-time · Internship</p>
+                            <p class="role-desc">LoRA / PEFT post-training that fits on a single GPU for personal agents.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Build LoRA / PEFT pipelines (SFT, preference, light distillation) for on-device agents.</li>
+                                            <li>Design recipes that fit one consumer GPU, not multi-node clusters.</li>
+                                            <li>Own data, evals, and release for adapters that ship with the product.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>Hands-on LoRA / PEFT / efficient fine-tuning on single-GPU budgets.</li>
+                                            <li>Quality vs. VRAM and step-time tradeoffs on a single consumer GPU.</li>
+                                            <li>Shipped adapters or models people use, not just benchmark runs.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#7602171a13180236011f151f58171f490503141c1315024b3706061a1f1517021f1918534446533344534e46534f425344463b3a5344463f18100417534446533544533441534446261905025b0204171f181f1811">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="role-card">
+                            <h3 class="role-name">ML Infra · Inference Kernel</h3>
+                            <p class="role-meta-line">Full-time · Internship</p>
+                            <p class="role-desc">Kernels and runtime that keep local GPU inference snappy.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Write GPU kernels for attention, matmul, and hot paths.</li>
+                                            <li>Tune KV-cache, batching, quant, and speculative decode.</li>
+                                            <li>Profile on real silicon with the GPU driver team.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>CUDA/Triton-style kernels for ML inference.</li>
+                                            <li>Transformer serving under memory and power limits.</li>
+                                            <li>Bonus: mobile or embedded GPUs.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#6a1e0b060f041e2a1d030903440b0355191f08000f091e572b1a1a0603090b1e0305044f585a4f2f584f525a4f535e4f585a27264f585a23040c180b4f585a4f29584f285d4f585a23040c0f180f04090f4f585a210f18040f06">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="role-card">
+                            <h3 class="role-name">GPU Driver</h3>
+                            <p class="role-meta-line">Full-time · Internship</p>
+                            <p class="role-desc">Driver stack between our local GPU and everything above it.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Own memory, command queues, scheduling, and power.</li>
+                                            <li>Bring up new silicon with hardware and firmware.</li>
+                                            <li>Expose the compute API the inference stack targets.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>GPU or accelerator drivers; strong C/C++.</li>
+                                            <li>Linux kernel drivers and hard HW/SW bugs.</li>
+                                            <li>Bonus: mobile or custom silicon bring-up.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#d5a1b4b9b0bba195a2bcb6bcfbb4bceaa6a0b7bfb0b6a1e894a5a5b9bcb6b4a1bcbabbf0e7e5f090e7f0ede5f0ece1f0e7e5928580f0e7e591a7bca3b0a7">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="role-card">
+                            <h3 class="role-name">WiFi Driver</h3>
+                            <p class="role-meta-line">Full-time · Internship</p>
+                            <p class="role-desc">Linux WiFi stack (mac80211, OpenWrt, OpenWiFi) for low-latency links.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Work across mac80211 / cfg80211, OpenWrt, and OpenWiFi-style stacks.</li>
+                                            <li>Push latency and throughput under real WiFi conditions.</li>
+                                            <li>Debug across driver, firmware, and host networking.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>Linux WiFi drivers, OpenWrt, or open WiFi platforms (softMAC / fullMAC).</li>
+                                            <li>802.11 basics: roaming, interference, rate control.</li>
+                                            <li>Kernel and firmware debugging comfort.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#1e6a7f727b706a5e69777d77307f77216d6b7c747b7d6a235f6e6e72777d7f6a7771703b2c2e3b5b2c3b262e3b272a3b2c2e497758773b2c2e5a6c77687b6c">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="role-card">
+                            <h3 class="role-name">File System</h3>
+                            <p class="role-meta-line">Full-time · Internship</p>
+                            <p class="role-desc">Storage that loads and swaps models fast enough for a local GPU.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Build the local FS, cache, and weight-streaming path.</li>
+                                            <li>Optimize for large sequential reads and fast cold-start.</li>
+                                            <li>Own power-loss safety, encryption, and integrity.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>File systems or storage engines, kernel or user-space.</li>
+                                            <li>Flash/embedded I/O and Linux storage stack depth.</li>
+                                            <li>Bonus: storage tuned for ML model loading.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#a5d1c4c9c0cbd1e5d2ccc6cc8bc4cc9ad6d0c7cfc0c6d198e4d5d5c9ccc6c4d1cccacb80979580e097809d95809c91809795e3ccc9c0809795f6dcd6d1c0c8">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="role-card">
+                            <h3 class="role-name">AI Product Manager</h3>
+                            <p class="role-meta-line">Full-time · Internship</p>
+                            <p class="role-desc">Define product for local AI, and build prototypes yourself.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Turn use cases and form factors into product direction.</li>
+                                            <li>Ship lightweight prototypes to validate before scale-up.</li>
+                                            <li>Write PRDs; partner with hardware and ML infra.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>AI or systems PM experience on technical products.</li>
+                                            <li>Can implement a basic prototype (code or demos).</li>
+                                            <li>Taste for what ships; clear roadmap thinking.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#04706568616a7044736d676d2a656d3b7771666e61677039457474686d6765706d6b6a213634214136213c34213d30213634454d21363454766b6071677021363449656a65636176">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="role-card">
+                            <h3 class="role-name">Supply Chain</h3>
+                            <p class="role-meta-line">Full-time · Internship</p>
+                            <p class="role-desc">0→1 AI hardware (mini PC / router class) from blank slate to ship.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Stand up a full supply chain for new AI hardware from zero.</li>
+                                            <li>Source parts, run builds, and own quality through first production.</li>
+                                            <li>Own packaging, logistics, and shipping to customers.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>0→1 hardware supply chain, not only sustaining a line.</li>
+                                            <li>Mini PC, router, gateway, or similar edge devices.</li>
+                                            <li>Procurement, sampling, QC, packaging, and fulfillment.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#e296838e878c96a2958b818bcc838bdd91978088878196dfa392928e8b8183968b8d8cc7d0d2c7a7d0c7dad2c7dbd6c7d0d2b19792928e9bc7d0d2a18a838b8c">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="roles-group">
+                    <span class="section-kicker">Member of Marketing Staff</span>
+                    <ol class="roles roles--cards">
+                        <li class="role-card">
+                            <h3 class="role-name">Feed Ads Optimizer</h3>
+                            <p class="role-meta-line">Full-time</p>
+                            <p class="role-desc">Paid acquisition across Meta, TikTok, YouTube, and other feed platforms.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Plan, launch, and optimize feed campaigns; own creative testing pipelines.</li>
+                                            <li>Own CAC, ROAS, LTV, and ad-to-preorder conversion.</li>
+                                            <li>Build attribution so spend efficiency is visible across platforms.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>Hands-on paid social/feed budgets with measurable results.</li>
+                                            <li>Meta, TikTok, and/or YouTube/Google Ads fluency; strong analytics.</li>
+                                            <li>Fast test–measure–scale mindset; hardware or new-category launch a plus.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#1165707d747f6551667872783f70782e6264737b7472652c5061617d78727065787e7f342321345423342921342825342321577474753423215075623423215e6165787c786b7463">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="role-card">
+                            <h3 class="role-name">Marketing Operations</h3>
+                            <p class="role-meta-line">Full-time</p>
+                            <p class="role-desc">Tooling, process, and data so a small marketing team can move fast.</p>
+                            <details class="role-details">
+                                <summary class="role-details-toggle">
+                                    <span class="role-details-toggle-label" data-open="Hide" data-closed="Details"></span>
+                                    <svg class="role-details-toggle-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </summary>
+                                <div class="role-details-body">
+                                    <div class="role-list">
+                                        <div class="role-list-label">What you'll do</div>
+                                        <ul class="role-bullets">
+                                            <li>Own CRM, lifecycle tools, analytics, and attribution.</li>
+                                            <li>Dashboards and campaign ops: briefs, timelines, launch checklists.</li>
+                                            <li>Keep waitlist-to-preorder instrumented; simplify and automate as we scale.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="role-list">
+                                        <div class="role-list-label">What we look for</div>
+                                        <ul class="role-bullets">
+                                            <li>Marketing ops at a startup: tooling, process, and data.</li>
+                                            <li>CRM, email, analytics/attribution fluency; cross-functional communication.</li>
+                                            <li>Bonus: hardware or consumer product launch support.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
+                            <a class="role-apply" href="cdn-cgi/l/email-protection.html#deaabfb2bbb0aa9ea9b7bdb7f0bfb7e1adabbcb4bbbdaae39faeaeb2b7bdbfaab7b1b0fbeceefb9becfbe6eefbe7eafbecee93bfacb5bbaab7b0b9fbecee91aebbacbfaab7b1b0ad">
+                                <span>Apply</span>
+                                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                    </ol>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Perks -->
+        <section class="section section--perks">
+            <div class="container">
+                <div class="perks">
+                    <div class="perk">
+                        <div class="perk-label">Team</div>
+                        <div class="perk-value">Top-tier academic and engineering bench.</div>
+                    </div>
+                    <div class="perk">
+                        <div class="perk-label">Resources</div>
+                        <div class="perk-value">Multi-million-dollar budget at day one.</div>
+                    </div>
+                    <div class="perk">
+                        <div class="perk-label">Org</div>
+                        <div class="perk-value">Flat, fast-moving, few meetings.</div>
+                    </div>
+                    <div class="perk">
+                        <div class="perk-label">Ecosystem</div>
+                        <div class="perk-value">Global builder community from launch.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Apply CTA (dark, matches untethered) -->
+        <section class="section section--untethered" id="apply">
+            <div class="container container--narrow untethered-inner">
+                <h2 class="section-title">Don't see your role?</h2>
+                <p class="apply-note">Apply directly via the role links above, or write to us if you think you'd bring something we haven't asked for yet. We respond to every serious note within a week.</p>
+                <a class="apply-link" href="cdn-cgi/l/email-protection.html#2155404d444f5561564842480f40481e5254434b4442551c6051514d48424055484e4f0413110464130419110418150413117648624804131162405344445352">
+                    <span><span class="__cf_email__" data-cfemail="a1d5c0cdc4cfd5e1d6c8c2c88fc0c8">[email&#160;protected]</span></span>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-col--brand">
+                    <a href="index.html" class="footer-brand" aria-label="WiCi home">
+                        <img src="images/common/logo-lockup.svg" alt="WiCi">
+                    </a>
+                    <p class="footer-tagline">Making Local Frontier AI Accessible to Everyone</p>
+                    <ul class="footer-social" aria-label="WiCi on social media">
+                        <li><a href="https://www.instagram.com/wici_ai/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/company/wici-ai/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg></a></li>
+                        <li><a href="https://discord.gg/wici" target="_blank" rel="noopener" aria-label="Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" fill="currentColor"/></svg></a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Company</h4>
+                    <ul class="footer-list">
+                        <li><a href="about.html">About WiCi</a></li>
+                        <li><a href="careers.html">Join WiCi</a></li>
+                        <li><a href="media/newsroom.html">Newsroom</a></li>
+                        <li><a href="about.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi One</h4>
+                    <p class="footer-col-desc">The first wireless GPU for frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="wici-one.html">Overview</a></li>
+                        <li><a href="technology.html">How it works</a></li>
+                        <li><a href="developers.html">For developers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">WiCi Infer</h4>
+                    <p class="footer-col-desc">The desktop app for local frontier AI</p>
+                    <ul class="footer-list">
+                        <li><a href="wici-infer.html">Overview</a></li>
+                        <li><a href="wici-infer.html#benchmarks">Benchmarks</a></li>
+                        <li><a href="wici-infer.html#engine">InferSSD engine</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Solutions</h4>
+                    <ul class="footer-list">
+                        <li><a href="solutions/local-ai.html">Local AI</a></li>
+                        <li><a href="solutions/creative-production.html">Creative artists</a></li>
+                        <li><a href="solutions/physical-intelligence.html">Robotics</a></li>
+                        <li><a href="solutions/index.html">All solutions</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Research</h4>
+                    <ul class="footer-list">
+                        <li><a href="article/nearby-gpu-feel-local.html">Wireless GPU</a></li>
+                        <li><a href="article/running-800b-models-with-inferssd.html">SSD inference</a></li>
+                        <li><a href="article/gpu-never-learned-to-share.html">GPU sharing</a></li>
+                        <li><a href="article/answering-is-not-buzzing.html">Real-time AI</a></li>
+                        <li><a href="research.html">All research</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span class="footer-copyright">© <span id="year">2026</span> WiCi<span class="footer-version">v=20261111f</span></span>
+                    <a href="privacy.html">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="js/common.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

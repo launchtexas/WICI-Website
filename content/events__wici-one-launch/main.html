@@ -1,0 +1,147 @@
+
+        <!-- Hero: the invitation. Title, the four-piece collage from the
+             "Launch event" Figma, the lede, and the facts row. -->
+        <section class="hero hero--event" aria-labelledby="evTitle">
+            <div class="container">
+                <div class="ev-top">
+                    <img class="ev-logo" src="/images/common/logo-lockup.svg" alt="WiCi" width="185" height="51">
+                </div>
+                <h1 class="hero-title" id="evTitle">Untethered<br>GPU Power</h1>
+                <div class="ev-stage">
+                    <div class="ev-product">
+                        <p class="ev-product-name">WiCi One</p>
+                        <span class="section-kicker ev-product-kicker">Product launch</span>
+                    </div>
+                    <!-- The invitation collage. The façade at bottom left is a
+                         video window: the piece's own alpha masks the 10-second
+                         gaming teaser, which plays twice and rests on its closing
+                         title card, centred in the window (js/event.js). The other
+                         pieces are the original stills, and browsers without CSS
+                         masks keep the plain façade too. -->
+                    <div class="ev-collage" aria-label="Collage of a violet sky and a grey building façade cut into angled panels, with the gaming demo playing in the bottom-left panel">
+                        <img class="ev-collage-building ev-collage-still" src="/images/event/collage-building.webp" alt="" width="1496" height="724" loading="eager" fetchpriority="high">
+                        <img class="ev-collage-sky" src="/images/event/collage-sky.webp" alt="" width="852" height="651" loading="eager">
+                        <img class="ev-collage-panel" src="/images/event/collage-panel.webp" alt="" width="348" height="920" loading="eager">
+                        <img class="ev-collage-sky-small" src="/images/event/collage-sky-small.webp" alt="" width="348" height="283" loading="eager">
+                        <div class="ev-collage-slot ev-collage-slot--building">
+                            <video muted autoplay playsinline preload="metadata" data-plays-max="2" poster="/images/product/use-case-gamers-1000.webp" aria-label="Gaming demo teaser">
+                                <source src="/cdn.wici.ai/video/demo-gaming-teaser-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                                <source src="/cdn.wici.ai/video/demo-gaming-teaser-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+                            </video>
+                        </div>
+                    </div>
+                </div>
+                <p class="hero-lede">Live wireless GPU demo<br>across AI, gaming, &amp; creative workflows</p>
+                <dl class="ev-facts">
+                    <div class="ev-fact ev-fact--date">
+                        <dt>Dates</dt>
+                        <dd>October 5 &amp; 6</dd>
+                    </div>
+                    <div class="ev-fact">
+                        <dt>Hours</dt>
+                        <dd>8:00 AM to 6:00 PM</dd>
+                    </div>
+                    <div class="ev-fact">
+                        <dt>Venue</dt>
+                        <dd><a href="https://maps.google.com/?q=The+Brownstone+Social,+109+W+25th+St,+New+York,+NY+10001" target="_blank" rel="noopener">The Brownstone Social</a><br>109 W 25th St<br>New York, NY 10001</dd>
+                    </div>
+                </dl>
+                <!-- The event is over: the panel leads to the recap. -->
+                <div class="ev-rsvp">
+                    <h2 class="ev-rsvp-title">This event has ended.</h2>
+                    <a class="cta cta--primary ev-rsvp-btn" href="/events/wici-one-launch-recap">Watch the recap<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                </div>
+            </div>
+            <div class="ev-bar" aria-hidden="true"></div>
+        </section>
+
+        <!-- Event listing: overview and details, with a sticky summary card. -->
+        <section class="ev-body" id="overview" aria-labelledby="overviewTitle">
+            <div class="container ev-body-grid">
+                <div class="ev-main">
+                    <h2 class="ev-h2" id="overviewTitle">Overview</h2>
+                    <p class="ev-lead">Join us in New York for the launch of WiCi One, a wireless, local AI GPU.</p>
+                    <p>Today, AI runs in one of two places. In the cloud, which is powerful but far away and paid for monthly. Or on your device, which is private but only as capable as the phone or laptop in your hand.</p>
+                    <p>WiCi One is a new option. It's a GPU that sits in your home or office and connects to your devices over Wi-Fi. Your phone, laptop and desktop get GPU power without a cable and without a graphics card of their own. Your data stays with you.</p>
+                    <p>Every demo runs on an ordinary phone, laptop or desktop, with a WiCi One nearby doing the heavy lifting, using WiCi's proprietary wireless computing technology. Demos are guided by the WiCi team and take 30 minutes.</p>
+
+                    <h3 class="ev-h3">What You'll Experience</h3>
+                    <p>See a wireless GPU power lightweight, fanless devices through real work. Every device on the floor is standard. The GPU is across the room.</p>
+                    <ul class="ev-demos">
+                        <li class="ev-demo">
+                            <span class="ev-demo-kicker">Local AI</span>
+                            <p>Voice assistants, language models and image generation, all running on site. No cloud.</p>
+                        </li>
+                        <li class="ev-demo">
+                            <span class="ev-demo-kicker">Gaming</span>
+                            <p>PC games rendered across the room and played on a thin, fanless laptop.</p>
+                        </li>
+                        <li class="ev-demo">
+                            <span class="ev-demo-kicker">Creative Work</span>
+                            <p>3D rendering on regular desktops, several at once, sharing one GPU.</p>
+                        </li>
+                    </ul>
+                    <ul class="ev-list">
+                        <li><strong>Hands-on with the hardware.</strong> See the device opened up at the tech table. Full specifications are announced at the event.</li>
+                        <li><strong>Time with the founder.</strong> Dr. Zili Meng, WiCi's co-founder and CEO and professor of electronic and computer engineering, is on site both days.</li>
+                    </ul>
+
+                    <h3 class="ev-h3">Why It Matters</h3>
+                    <p>Today, a GPU can only power the device it's built into. When you need more, you buy new hardware, switch to another machine or send your work to the cloud.<br>Each comes with a cost:</p>
+                    <ul class="ev-list">
+                        <li><strong>Cost.</strong> More devices means more GPUs, or another subscription. Most of that hardware sits unused. <span class="ev-src"><span class="ev-src-label">Extended reading:</span> <a href="https://www.bbc.com/news/articles/c872r52x7jgo" target="_blank" rel="noopener">Tokenomics: Why making AI pay is tricky<svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a><span class="ev-src-outlet">, BBC</span></span></li>
+                        <li><strong>Latency.</strong> Sending work to the cloud adds delay. Fine for a chatbot. Not for a robot. <span class="ev-src"><span class="ev-src-label">Extended reading:</span> <a href="https://newsletter.semianalysis.com/p/a-brain-too-big-to-carry-on-device" target="_blank" rel="noopener">A Brain Too Big to Carry: On-Device vs Datacenter Inference<svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a><span class="ev-src-outlet">, SemiAnalysis</span></span></li>
+                        <li><strong>Mobility.</strong> Demanding creative work stays at the desk. Laptops with GPUs run hot and heavy. <span class="ev-src"><span class="ev-src-label">Extended reading:</span> <a href="https://www.tomshardware.com/laptops/gaming-laptops/razer-blade-16-2026-review" target="_blank" rel="noopener">Razer Blade 16 (2026) review<svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a><span class="ev-src-outlet">, Tom's Hardware</span></span></li>
+                        <li><strong>Privacy.</strong> Cloud processing sends your conversations and documents off site. <span class="ev-src"><span class="ev-src-label">Extended reading:</span> <a href="https://www.nytimes.com/2026/09/10/science/chatbot-stealing-ideas.html" target="_blank" rel="noopener">Could Your Chatbot Be Stealing Ideas From You?<svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a><span class="ev-src-outlet">, The New York Times</span></span></li>
+                    </ul>
+
+                    <h2 class="ev-h2 ev-h2--know" id="knowTitle">Good to Know</h2>
+                    <div class="ev-know">
+                        <div class="ev-card">
+                            <h3>Highlights</h3>
+                            <ul class="ev-card-list">
+                                <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4.5l3 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>30-minute guided demos</li>
+                                <li><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 8h14M7 2.5v3M13 2.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Drop in, 8:00 AM to 6:00 PM, both days</li>
+                                <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 8h9a3 3 0 0 1 0 6H4zM4 8V6h9v2M6 14v2h5v-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>A specialty coffee bar, with drinks to try between demos</li>
+                                <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 17a6 6 0 0 1 12 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Dedicated slots with a CEO walkthrough, on request</li>
+                            </ul>
+                        </div>
+                        <div class="ev-card">
+                            <h3>Location</h3>
+                            <p class="ev-card-strong">The Brownstone Social</p>
+                            <p>109 W 25th St<br>New York, NY 10001</p>
+                            <a class="ev-card-link" href="https://maps.google.com/?q=The+Brownstone+Social,+109+W+25th+St,+New+York,+NY+10001" target="_blank" rel="noopener">Open in Maps<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                            <p class="ev-card-transport"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 12l1.5-5h11L17 12v3H3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="6.5" cy="15" r="1.5" fill="currentColor"/><circle cx="13.5" cy="15" r="1.5" fill="currentColor"/></svg>Transportation to and from the venue is covered for media.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="ev-side" aria-label="Event summary">
+                    <div class="ev-side-card">
+                        <p class="ev-side-kicker">Product launch</p>
+                        <p class="ev-side-date">October 5 &amp; 6, 2026</p>
+                        <p class="ev-side-line">8:00 AM to 6:00 PM</p>
+                        <p class="ev-side-line"><a href="https://maps.google.com/?q=The+Brownstone+Social,+109+W+25th+St,+New+York,+NY+10001" target="_blank" rel="noopener">The Brownstone Social</a><br>109 W 25th St, New York, NY 10001</p>
+                        <a class="cta cta--primary ev-side-cta" href="/events/wici-one-launch-recap">Watch the recap<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        <div class="ev-side-media">
+                            <h3>For Media</h3>
+                            <dl>
+                                <div>
+                                    <dt>Interviews</dt>
+                                    <dd>Dr. Zili Meng, CEO, professor of electronic and computer engineering. On site both days.</dd>
+                                </div>
+                                <div>
+                                    <dt>Media kit</dt>
+                                    <dd>Logos, renders, headshots, demo films.<br><a href="/media/newsroom">Open the kit<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></dd>
+                                </div>
+                                <div>
+                                    <dt>Contact</dt>
+                                    <dd><a href="mailto:pr@wici.ai">pr@wici.ai</a></dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    

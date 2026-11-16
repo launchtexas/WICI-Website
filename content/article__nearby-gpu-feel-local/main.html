@@ -1,0 +1,210 @@
+
+
+        <!-- Article header -->
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/nearby-gpu-feel-local.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-09-08">September 2026</time></p>
+                <h1 class="article-title">Making a Nearby GPU <em>Feel Local.</em></h1>
+                <p class="article-subtitle">What has to cross the link when the GPU leaves the device.</p>
+            </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">TL;DR</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#tldr">TL;DR</a></li>
+                        <li><a href="#the-gpu-has-to-leave-the-experience-cannot">The GPU has to leave, the experience cannot</a></li>
+                        <li><a href="#the-misleading-answer-is-just-call-an-api">The misleading answer is "just call an API"</a></li>
+                        <li><a href="#pcie-is-not-just-bandwidth">PCIe is not just bandwidth</a></li>
+                        <li><a href="#generic-rpc-is-the-wrong-layer">Generic RPC is the wrong layer</a></li>
+                        <li><a href="#why-prior-gpu-remoting-does-not-transfer">Why prior GPU remoting does not transfer</a></li>
+                        <li><a href="#a-nearby-gpu-needs-four-protocol-layers">A nearby GPU needs four protocol layers</a></li>
+                        <li><a href="#the-useful-analogy-is-not-cloud-gaming">The useful analogy is not cloud gaming</a></li>
+                        <li><a href="#what-we-learned-at-the-boundary">What we learned at the boundary</a></li>
+                        <li><a href="#what-we-are-not-claiming">What we are not claiming</a></li>
+                        <li><a href="#why-this-matters-for-personal-ai">Why this matters for personal AI</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/nearby-gpu-feel-local.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li>WiCi Research</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#tldr">TL;DR</a></li>
+                            <li><a href="#the-gpu-has-to-leave-the-experience-cannot">The GPU has to leave, the experience cannot</a></li>
+                            <li><a href="#the-misleading-answer-is-just-call-an-api">The misleading answer is "just call an API"</a></li>
+                            <li><a href="#pcie-is-not-just-bandwidth">PCIe is not just bandwidth</a></li>
+                            <li><a href="#generic-rpc-is-the-wrong-layer">Generic RPC is the wrong layer</a></li>
+                            <li><a href="#why-prior-gpu-remoting-does-not-transfer">Why prior GPU remoting does not transfer</a></li>
+                            <li><a href="#a-nearby-gpu-needs-four-protocol-layers">A nearby GPU needs four protocol layers</a></li>
+                            <li><a href="#the-useful-analogy-is-not-cloud-gaming">The useful analogy is not cloud gaming</a></li>
+                            <li><a href="#what-we-learned-at-the-boundary">What we learned at the boundary</a></li>
+                            <li><a href="#what-we-are-not-claiming">What we are not claiming</a></li>
+                            <li><a href="#why-this-matters-for-personal-ai">Why this matters for personal AI</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+
+                <section class="article-tldr" aria-labelledby="tldr">
+                    <h2 class="article-tldr-title" id="tldr">TL;DR</h2>
+                    <ul>
+                        <li>A nearby GPU feels local only if the wireless link carries the right things. Making it as fast as PCIe is the wrong target.</li>
+                        <li>What made the GPU feel local was never just moving bytes. PCIe hid thousands of small interactions between software and hardware. On a motherboard that chatter is cheap; over Wi-Fi it becomes the workload.</li>
+                        <li>Generic RPC preserves the API shape but destroys the latency model. If every driver call becomes a wireless round trip, a fast GPU nearby can feel slower than a weak GPU inside the machine.</li>
+                        <li>So WiCi keeps the local-GPU contract while shrinking what actually crosses the link: cache stable facts, deduplicate repeated payloads, compress or stream large transfers, pipeline independent work, keep expensive state resident, and preserve true dependencies exactly.</li>
+                    </ul>
+                </section>
+
+                <div class="claim">The GPU can leave the device only if the device still feels like the computer in charge.</div>
+
+                <h2 id="the-gpu-has-to-leave-the-experience-cannot">The GPU has to leave, the experience cannot</h2>
+                <p>A phone, tablet, headset, or small robot owns the live inputs: camera, microphone, touch, display, documents, notifications, identity, location, and sensor state. These are not peripherals around the workload. They are often the workload's source of truth. If an assistant is watching a screen, guiding a camera, responding to voice, editing video, or acting through a robot, the interaction loop begins and ends on the mobile device.</p>
+                <p>The compute that loop needs cannot live there. A flagship accelerator is built around hundreds of watts, dedicated cooling, and high-bandwidth memory &mdash; the wrong physical envelope for a device you hold in your hand. Cloud computing resolves that mismatch by moving the whole workload away, which works for batch and high-latency jobs but is a poor fit when the mobile device is not just a terminal but the host of the user's world. A nearby GPU box is the middle point: close enough to keep the interaction local, large enough to carry serious compute, and sharable enough to justify the hardware.</p>
+                <p>We covered why that shift is physically forced &mdash; the power, weight, and cooling budget a flagship GPU demands &mdash; in <a href="/article/gpu-cant-fit-in-your-pocket">Move the GPU Out. Keep It Local.</a> This post is about what happens once it does. The accelerator moves off the device, but the experience cannot follow it. The phone should never feel like it is calling a server; the app should never feel ported to a special endpoint. That is the challenge this post is about, and it is a protocol challenge before it is a hardware one. The question is precise: what must actually cross the link?</p>
+
+                <h2 id="the-misleading-answer-is-just-call-an-api">The misleading answer is "just call an API"</h2>
+                <p>The obvious solution is to expose a high-level endpoint on the box: chat, image generation, transcription, embedding, or another task-specific route. This is a good product seam. It lets apps that already speak OpenAI-compatible or Ollama-compatible APIs use the box with little friction. WiCi uses that seam where it fits.</p>
+                <p>But it is not enough to make the GPU feel local.</p>
+                <p>Existing GPU software is not organized around a single remote endpoint. AI runtimes use CUDA, tensor libraries, memory allocators, graph capture, and model-specific kernels. Graphics applications use Vulkan, Direct3D, swapchains, fences, descriptor sets, and presentation paths. Video tools use encoders and frame buffers. Creative applications, game engines, robotics stacks, and local agents all assume the accelerator appears through the normal device stack.</p>
+                <p>If every app must be rewritten against a WiCi-specific API, the nearby GPU becomes another cloud service with a shorter cable. It may be useful, but it does not preserve locality. The stronger goal is compatibility: unmodified or minimally changed software should continue to see a GPU-shaped system.</p>
+                <p>That goal pushes the protocol down a layer. The question becomes: can a wireless link carry the job that PCIe used to perform?</p>
+
+                <h2 id="pcie-is-not-just-bandwidth">PCIe is not just bandwidth</h2>
+                <p>It is tempting to compare links by peak throughput. PCIe 5.0 operates at 32.0 GT/s per lane; an x16 link is roughly 64 GB/s in each direction. Wi-Fi is a shared packet network whose real application throughput depends on spectrum, channel width, interference, distance, retries, access point quality, and other clients.</p>
+                <p>The bandwidth gap matters. But bandwidth is not the deepest problem. The deeper problem is latency and dependency structure. A local driver interface is fine-grained because the bus is assumed to be near. Programs query device attributes, allocate memory, copy buffers, launch kernels, wait on fences, check status, create objects, bind memory, and read results. On PCIe, many of these calls are cheap enough to hide under compute. Across Wi-Fi, each one can become a round trip.</p>
+
+                <figure class="figure">
+                    <h3>Figure 1 - The interconnect downgrade</h3>
+                    <p>Making applications behave as if the GPU is local means Wi-Fi has to carry traffic written for PCIe. The log-scale gap is the point: microseconds against milliseconds.</p>
+                    <div class="link-matrix" role="img" aria-label="2 by 2 chart comparing PCIe and Wi-Fi bandwidth and latency">
+                        <div class="matrix-corner"></div>
+                        <div class="matrix-head">PCIe<br>inside device</div>
+                        <div class="matrix-head">Wi-Fi<br>nearby box</div>
+                        <div class="matrix-axis">Bandwidth</div>
+                        <div class="matrix-cell fast"><b>~512 Gb/s</b><span>PCIe 5.0 x16 raw bandwidth per direction.</span></div>
+                        <div class="matrix-cell slow"><b>~1 Gb/s</b><span>Practical gigabit-class wireless link.</span></div>
+                        <div class="matrix-axis">Base RTT</div>
+                        <div class="matrix-cell fast"><b>sub-&micro;s</b><span>Device-fabric scale.</span></div>
+                        <div class="matrix-cell slow"><b>~1.5 ms</b><span>Measured Wi-Fi 6 base RTT, rising under contention.</span></div>
+                    </div>
+                </figure>
+
+                <p>The cost is not one big tensor crossing a slower link. The cost is query, wait; create, wait; copy, wait; submit, wait; present, wait; read status, wait. At that boundary, latency is no longer around the workload. It becomes part of the workload.</p>
+                <p>This is measurable, and the size of it surprised us. Running the trivial <code>nvidia-smi</code> status command locally finishes in 51 milliseconds. Hijacking the same command at the kernel driver and forwarding each call to a GPU one Wi-Fi hop away made it <strong>51&times; slower</strong>, because that one command turns into nearly <strong>800 round trips</strong>. A real workload is worse: a single image-understanding inference (a Qwen-VL-8B model, ~180 output tokens) issues roughly <strong>20,000</strong> user-mode driver calls. Naively remoted, those calls alone stretch a sub-two-second job past <strong>20&times;</strong> its local time.</p>
+                <p>This is why a naive remote driver can lose even when the GPU is much faster than the local machine. The accelerator may finish the compute quickly, but the application is stalled by serialized network dependencies. A powerful GPU on the other side of a bad protocol behaves like a fast engine attached to a gearbox made of stop signs &mdash; and the stop signs dominate: at the median, a single remote function call takes <strong>483&times;</strong> longer than the same call executed locally (97&times; even at the 90th percentile). The base round-trip time of the wireless link, not bandwidth, is what sets that gap.</p>
+
+                <h2 id="generic-rpc-is-the-wrong-layer">Generic RPC is the wrong layer</h2>
+                <p>The first implementation mistake is to treat every driver call as a generic function call: serialize the name, serialize the arguments, send over TCP, execute remotely, and return the result. This is easy to reason about and hard to make fast. It preserves correctness by making every call synchronous. It also preserves the worst possible latency model.</p>
+                <p>The protocol only starts to improve when it understands the semantics of the GPU API. Not all calls are equal.</p>
+                <p>The time to remote a job has a simple shape. If a task takes <em>T<sub>local</sub></em> on the GPU itself, doing it over Wi-Fi costs <em>T<sub>WiCi</sub></em> = <em>T<sub>local</sub></em> + <em>N</em>&middot;RTT + <em>D</em>/Rate: the compute, plus one round trip for every one of the <em>N</em> driver calls that has to block, plus the time to move <em>D</em> bytes at the link rate. Bandwidth lives in the last term; the middle term is the one that explodes. The crossover is just algebra: a fast remote GPU loses to a weak local one whenever <em>N</em>&middot;RTT grows larger than the local compute it was supposed to save. At <em>N</em> = 20,000 calls and a 1.5&nbsp;ms RTT, that middle term alone is 30 seconds &mdash; for a job that runs locally in under two. So the protocol's real job is to shrink <em>N</em>.</p>
+
+                <figure class="figure">
+                    <h3>Figure 2 - When does the nearby GPU lose?</h3>
+                    <p>Two devices race the same job: a weak GPU already inside the machine, and a much faster GPU one Wi-Fi hop away. Drag the sliders &mdash; how many small calls the job makes, how long each one waits on the link, and how much faster the nearby GPU computes. Watch the fast remote GPU lose the moment those waits pile up.</p>
+                    <div class="sim-controls" aria-label="Round trip simulator controls">
+                        <div class="control">
+                            <label for="callsRange">Calls the job makes <output id="callsOut">20,000</output></label>
+                            <input id="callsRange" type="range" min="788" max="20000" step="100" value="20000">
+                        </div>
+                        <div class="control">
+                            <label for="rttRange">Wait per call over Wi-Fi <output id="rttOut">1.5 ms</output></label>
+                            <input id="rttRange" type="range" min="0.2" max="5" step="0.1" value="1.5">
+                        </div>
+                        <div class="control">
+                            <label for="speedupRange">How much faster the nearby GPU computes <output id="speedupOut">10&times;</output></label>
+                            <input id="speedupRange" type="range" min="1" max="50" step="1" value="10">
+                        </div>
+                    </div>
+                    <div class="plot-shell">
+                        <div id="roundtrip-plot" class="plot" role="img" aria-label="Interactive bar chart comparing time to finish on a weak local GPU versus a fast nearby GPU as call count and per-call wait change"></div>
+                        <div class="plot-fallback" id="roundtrip-fallback"><b>Fallback:</b> the fast nearby GPU finishes its compute quickly, but pays one network wait per call. Enough small calls, and a weak GPU inside the machine finishes the whole job first.</div>
+                    </div>
+                </figure>
+
+                <p>So the real problem is one of judgment, not speed: tell apart the round trips that are genuine dependencies from the ones that are not, preserve the first exactly, and spare the second &mdash; all without asking the application to change. Most of the chatter turns out to be the second kind. A great deal of it is repeated, predictable, or waiting on no one; only a thin slice is a true dependency where the next step genuinely needs the last one's result. Get that judgment wrong on the thin slice and the answer is not merely slow, it is incorrect. Get it right and most of the link goes quiet.</p>
+
+                <figure class="figure">
+                    <h3>Figure 3 - Only the thin slice has to block</h3>
+                    <p>Take the image-inference workload above: roughly 20,000 driver calls, but only a thin slice are true dependencies the next step actually waits on. When the protocol caches the stable facts, deduplicates repeated payloads, and sends work nobody waits on asynchronously, <em>N</em> &mdash; the calls that must still block on a round trip &mdash; collapses, and the round-trip tax (<em>N</em> &times; 1.5&nbsp;ms) collapses with it.</p>
+                    <div class="nbar" role="img" aria-label="Bar chart comparing 20,000 blocking calls under a naive remote driver against about 2,000 under WiCi">
+                        <div class="nbar-row">
+                            <div class="nbar-label">Naive remote driver</div>
+                            <div class="nbar-track"><div class="nbar-fill naive" style="width: 100%;">20,000 calls block · ~30 s tax</div></div>
+                        </div>
+                        <div class="nbar-row">
+                            <div class="nbar-label">WiCi: only true dependencies block</div>
+                            <div class="nbar-track"><div class="nbar-fill wici" style="width: 10%;">~2,000 · ~3 s</div></div>
+                        </div>
+                    </div>
+                </figure>
+
+                <h2 id="why-prior-gpu-remoting-does-not-transfer">Why prior GPU remoting does not transfer</h2>
+                <p>Remoting a GPU API is not a new idea. rCUDA, sCUDA, ZLUDA, and KRYPTON all intercept at the CUDA or kernel-driver level and ship calls to another machine; GaiaGPU, qCUDA, and vCUDA virtualize GPUs to share or cap them among tenants. The interception point WiCi uses is borrowed from this line of work.</p>
+                <p>What does not transfer is the assumption underneath it. Those systems were built for the datacenter: a stable, high-bandwidth, wired interconnect at microsecond latency, where leaving a call synchronous costs almost nothing. The nearby-GPU regime is the opposite &mdash; Wi-Fi delivers millisecond RTTs against PCIe's microseconds, around 1&nbsp;Gbps against tens of Gbps, and adds stochastic jitter from contention and retries. Run an unmodified datacenter remoting stack over that link and it degrades exactly as the round-trip math predicts, because it has no machinery to hide latency it was never designed to face. The hard part is not where you intercept the GPU; it is the latency-hiding you add on top, so that interception point can survive a wireless link.</p>
+
+                <h2 id="a-nearby-gpu-needs-four-protocol-layers">A nearby GPU needs four protocol layers</h2>
+                <p>The public mental model is "GPU over Wi-Fi." The systems model is more specific. To make the nearby GPU feel local, WiCi needs four layers working together.</p>
+
+                <h3>1. Compatibility layer</h3>
+                <p>The application should see the interface it already expects: a GPU adapter, a CUDA-like compute path, a Vulkan or graphics path, an encoder path, or a familiar model endpoint. This does not mean every API must be complete on day one. It means the protocol starts from the app's existing contract rather than inventing a new one and asking the ecosystem to port upward.</p>
+
+                <h3>2. Semantic transport layer</h3>
+                <p>The transport should know when it is carrying a query, a command, a memory update, a synchronization point, or a present operation. That knowledge lets it choose between synchronous calls, asynchronous commands, pushed results, cached replies, compressed payloads, and local status resolution.</p>
+
+                <h3>3. Residency layer</h3>
+                <p>PCIe-attached GPUs are usually owned by one host. A nearby GPU box is naturally shared: a phone may run an agent, a laptop may render, a local memory service may keep embeddings or model weights warm, and a background app may ask for short bursts.</p>
+                <p>The protocol therefore needs a memory system, not just a wire format. Large allocations should stay logically stable. Model weights and other expensive state should remain resident when possible. When memory pressure forces eviction, the system should evict and restore state without invalidating the handles and pointers already embedded in work.</p>
+
+                <h3>4. Network-control layer</h3>
+                <p>Wi-Fi is not a backplane. It is shared, bursty, and environmental. A protocol that works only on average latency will stutter on tail latency. That pushes WiCi toward controlling more of the local path: discovery, pairing, access point placement, link selection, queueing, and eventually hardware co-design.</p>
+
+                <h2 id="the-useful-analogy-is-not-cloud-gaming">The useful analogy is not cloud gaming</h2>
+                <p>Cloud gaming renders the whole application remotely and streams video back. That is a strong architecture for some games. It is the wrong analogy for general nearby GPU use.</p>
+                <p>In many WiCi workloads, the mobile device remains the host of the experience. It may own the camera frame before inference, the touch event before rendering, the file being edited before encoding, or the robot state before the next action. Streaming a remote desktop back to the device is too blunt. It moves the application away from the place where the user's state lives.</p>
+                <p>WiCi is closer to moving the device boundary than moving the application. The application should remain attached to the user's device while selected GPU work executes nearby. That distinction is why the protocol cares about driver semantics, object handles, memory state, fences, dirty ranges, and pushed frames. These are the details cloud streaming usually hides by relocating the whole session.</p>
+
+                <h2 id="what-we-learned-at-the-boundary">What we learned at the boundary</h2>
+                <p><strong>Compatibility has to be won below the app.</strong> A high-level API is valuable, but it cannot carry the whole ecosystem. The apps that make local GPUs valuable are often the least likely to rewrite themselves for a new endpoint: renderers, editors, runtimes, game engines, robotics libraries, and model stacks.</p>
+                <p><strong>The enemy is serialized waiting.</strong> Bandwidth improvements help large transfers, but the sharpest wins come from removing unnecessary synchronization: cache invariant queries, push timeline updates, send independent work asynchronously, track dirty memory rather than copying everything, and return frames or results on streams that do not block command submission.</p>
+                <p><strong>Residency is a first-class protocol concern.</strong> A nearby GPU box serves bursts from multiple devices and applications. If every burst reloads the world, the user feels the box as remote. If the system keeps the right state warm, the same physical link feels much closer. Scheduling and memory management are part of the protocol, not implementation details underneath it.</p>
+                <p>These lessons are not specific to one graphics API or one model runtime. They apply whenever software built for a local device fabric is moved onto a network.</p>
+
+                <h2 id="what-we-are-not-claiming">What we are not claiming</h2>
+                <p>We are not claiming Wi-Fi becomes PCIe. It does not. PCIe is a high-speed, low-latency device interconnect. Wi-Fi is a shared wireless packet network.</p>
+                <p>We are not claiming every GPU workload should be remote. Some workloads are too latency-sensitive, too bandwidth-heavy, too synchronized, or too dependent on unsupported driver features. Workloads dominated by large uploads and tight result readbacks, in particular, leave the protocol little to save &mdash; the data and the unavoidable dependencies swamp it. The protocol should expose those limits rather than hide them.</p>
+                <p>We are not claiming average latency is enough. Interactive systems fail at the tail. A convincing WiCi system has to measure jitter, contention, cold starts, multi-client interference, and state restoration, not just a happy-path demo.</p>
+                <p>We are not claiming a single abstraction wins. Model APIs, app-side SDKs, driver-level remoting, local execution, and box-hosted services all have roles. The research question is how to route work to the lowest layer that preserves both compatibility and performance.</p>
+
+                <h2 id="why-this-matters-for-personal-ai">Why this matters for personal AI</h2>
+                <p>Personal AI is not just a chatbot that follows you around. It is a stack of live loops: voice, vision, memory, action, and adaptation. These loops are naturally mobile because the user's world is mobile. They are also increasingly GPU-heavy. That tension is the reason WiCi exists.</p>
+                <p>If the GPU must stay in a box, the box has to disappear from the experience. The phone should not feel like it is calling a server. The app should not feel ported to a special endpoint. The user should not think about where the model, renderer, encoder, or memory engine lives. The protocol should make the nearby accelerator look like part of the local machine.</p>
+                <p>That is the standard PCIe quietly set inside the workstation. WiCi's protocol work asks how much of that standard can be preserved after the wire becomes wireless.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/keep-the-bytes-by-the-gpu"><figure><img src="/images/research/thumbnails/keep-the-bytes-by-the-gpu.webp" alt="" loading="lazy" decoding="async"></figure><strong>Bridge the bandwidth gap with a huge SSD cache</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/gpu-cant-fit-in-your-pocket"><figure><img src="/images/research/thumbnails/gpu-cant-fit-in-your-pocket.webp" alt="" loading="lazy" decoding="async"></figure><strong>Move the GPU Out. Keep It Local.</strong><time datetime="2026-08">August 2026</time></a></li>
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+
+    

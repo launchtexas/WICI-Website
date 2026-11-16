@@ -1,0 +1,112 @@
+
+
+        <section class="sol-banner">
+            <picture class="sol-banner-media">
+                <source media="(max-width: 720px)" srcset="/images/solutions/laptop-armchair-banner-phone-720.webp 720w, /images/solutions/laptop-armchair-banner-phone-1440.webp 1440w" sizes="100vw" width="1440" height="2560">
+                <img src="/images/solutions/laptop-armchair-banner-1600.webp" srcset="/images/solutions/laptop-armchair-banner-1600.webp 1600w, /images/solutions/laptop-armchair-banner-3200.webp 3200w" sizes="100vw" width="3200" height="1066" alt="A man in a purple sweatshirt working on a thin laptop in an armchair against a wood-panelled wall." fetchpriority="high">
+            </picture>
+            <div class="sol-banner-copy">
+                <span class="sol-banner-kicker">Solutions · Local AI</span>
+                <h1 class="sol-banner-title">Trillion-parameter models, <br>on hardware you own.</h1>
+            </div>
+        </section>
+
+        <section class="hero hero--page hero--after-banner hero--sol">
+            <div class="container">
+                <p class="hero-lede">
+                    Run large open models on the devices you already have. Attach WiCi One as a virtual GPU driver, build on the WiCi SDK, or call its API endpoint. Private and real-time, over Wi&#8209;Fi.
+                </p>
+            </div>
+        </section>
+
+        <section class="section sol-solution" id="solution">
+            <div class="container">
+                <header class="sol-head">
+                    <span class="section-kicker">The solution</span>
+                    <h2 class="section-title">One GPU, <em>three ways in.</em></h2>
+                    <p class="section-subtitle">WiCi One holds the GPU, the memory, and the SSD tier that streams weights larger than VRAM. Your laptop reaches it over Wi&#8209;Fi through the WiCi Protocol, which presents it as a local GPU: Ollama, LM Studio, and PyTorch see a standard device, and agents call a standard endpoint.</p>
+                </header>
+
+                <figure class="sol-film" data-film data-full-av1="../cdn.wici.ai/video/demo-models-full-av1.mp4" data-full-h264="../cdn.wici.ai/video/demo-models-full-h264.mp4">
+                    <video muted loop playsinline preload="metadata" poster="/images/product/use-case-builders-1800.webp" aria-label="A trillion-parameter model answering on a thin laptop, served by WiCi One.">
+                        <source src="/cdn.wici.ai/video/demo-models-teaser-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                        <source src="/cdn.wici.ai/video/demo-models-teaser-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+                    </video>
+                    <button type="button" class="sol-film-full">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5.5v13l10-6.5z" fill="currentColor"/></svg>
+                        <span>Play the full film</span>
+                    </button>
+                </figure>
+                <p class="sol-film-caption">The developer demo from the WiCi One page: a trillion-parameter model answering on a thin laptop, with WiCi One as its GPU over home Wi&#8209;Fi. Ten-second teaser; the full film has sound.</p>
+
+                <div class="sol-grid">
+                    <div>
+                        <div class="sol-bench-wrap">
+                            <table class="sol-bench">
+                                <caption class="sr-only">Local model throughput on WiCi One</caption>
+                                <thead>
+                                    <tr><th scope="col">Model</th><th scope="col">5060 Ti edition</th><th scope="col">5090 edition</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><th scope="row">Kimi K3 <small>2.8T params</small></th><td><strong>2.5</strong><span>tok/s</span></td><td><strong>5</strong><span>tok/s</span></td></tr>
+                                    <tr><th scope="row">DeepSeek V4.1 Flash <small>748B params</small></th><td><strong>8</strong><span>tok/s</span></td><td><strong>20</strong><span>tok/s</span></td></tr>
+                                    <tr><th scope="row">Gemma 4 <small>26B params</small></th><td><strong>140</strong><span>tok/s</span></td><td><strong>500+</strong><span>tok/s</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="sol-bench-note">From the <a href="/wici-one#models">WiCi One benchmarks</a>. Models larger than VRAM stream from the SSD tier.</p>
+                    </div>
+                    <a class="sol-product" href="/wici-one">
+                        <div class="sol-product-media">
+                            <img src="/images/product/hero-device-ledge.webp" alt="The WiCi One device on its lavender stage." loading="lazy">
+                        </div>
+                        <div class="sol-product-body">
+                            <img class="sol-product-logo" src="/images/common/logo-lockup.svg" alt="WiCi">
+                            <span class="sol-product-title">WiCi One</span>
+                            <p>A desktop-class GPU on a shelf, reached over Wi&#8209;Fi. Two editions, from $3,499.</p>
+                            <span class="sol-product-link">See WiCi One <span aria-hidden="true">→</span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="sol-more">
+                    <div class="sol-links">
+                        <p class="sol-links-title">Technology</p>
+                            <ul>
+                                <li><a href="/wici-infer#engine"><span class="sol-links-name">InferSSD</span><span class="sol-links-desc">The open-source engine that streams expert weights from SSD.</span></a></li>
+                            <li><a href="/technology#capacity"><span class="sol-links-name">Run bigger models</span><span class="sol-links-desc">How the SSD tier streams models that outgrow VRAM.</span></a></li>
+                                <li><a href="/technology#latency"><span class="sol-links-name">Designed for network latency</span><span class="sol-links-desc">Why the round trip, not bandwidth, is the constraint, and how the protocol hides it.</span></a></li>
+                            </ul>
+                    </div>
+                    <div class="sol-links">
+                        <p class="sol-links-title">From the blog</p>
+                            <ul>
+                                <li><a href="/article/running-800b-models-with-inferssd"><span class="sol-links-name">Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</span><span class="sol-links-desc">Measured on Apple Silicon and NVIDIA systems, with a guide to running locally.</span></a></li>
+                            <li><a href="/article/ssd-is-the-new-vram"><span class="sol-links-name">The SSD Is the New VRAM</span><span class="sol-links-desc">The only consumer-priced tier that holds frontier-size open weights.</span></a></li>
+                                <li><a href="/article/gpu-never-learned-to-share"><span class="sol-links-name">The GPU Never Learned to Share</span><span class="sol-links-desc">One machine, many GPU tenants: VRAM needs a scheduler.</span></a></li>
+                                <li><a href="/article/general-and-the-particular"><span class="sol-links-name">The General and the Particular</span><span class="sol-links-desc">Interaction, memory, and adaptation belong close to the user.</span></a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA band — reuses the dark .section--untethered styles from home.css -->
+        <section class="section section--untethered" id="cta">
+            <div class="container container--narrow untethered-inner">
+                <h2 class="section-title">Your models.<br><em>Your hardware.</em></h2>
+                <p class="untethered-lede">Buy a WiCi One, or apply for early access to the SDK and API.</p>
+                <div class="sol-cta-row">
+                    <a class="cta cta--primary sol-cta-btn" href="/shop/wici-one">
+                        <span>Buy WiCi One</span>
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                    <a class="cta cta--ghost sol-cta-btn sol-cta-btn--ghost" href="/developers#access">
+                        <span>Developer access</span>
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    

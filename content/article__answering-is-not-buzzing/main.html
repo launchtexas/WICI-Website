@@ -1,0 +1,180 @@
+
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/answering-is-not-buzzing.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-09-18">September 18, 2026</time></p>
+                <h1 class="article-title">Answering Is Not <em>Buzzing.</em></h1>
+                <p class="article-subtitle">OpenAI just released GPT Live, but we can do better.</p>
+            </div>
+        </header>
+
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">Conversational speed is not commit-time latency</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#conversational-speed-is-not-commit-time-latency">Conversational speed is not commit-time latency</a></li>
+                        <li><a href="#why-local-makes-this-easier">Why local makes this easier</a></li>
+                        <li><a href="#what-has-to-be-true-for-early-answers">What has to be true for early answers</a></li>
+                        <li><a href="#how-the-online-loop-works">How the online loop works</a></li>
+                        <li><a href="#separate-what-is-the-answer-from-is-it-time">Separate “what is the answer?” from “is it time?”</a></li>
+                        <li><a href="#timing-not-just-accuracy">Timing, not just accuracy</a></li>
+                        <li><a href="#the-remaining-bottleneck-is-still-audio">The remaining bottleneck is still audio</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/answering-is-not-buzzing.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li title="Member of Technical Staff (Intern)">Yuheng Feng</li>
+                        <li title="Member of Technical Staff (Intern)">Jiayang Xu</li>
+                        <li title="Co-Founder">Yibin Shen</li>
+                        <li title="Co-Founder">Zili Meng</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#conversational-speed-is-not-commit-time-latency">Conversational speed is not commit-time latency</a></li>
+                            <li><a href="#why-local-makes-this-easier">Why local makes this easier</a></li>
+                            <li><a href="#what-has-to-be-true-for-early-answers">What has to be true for early answers</a></li>
+                            <li><a href="#how-the-online-loop-works">How the online loop works</a></li>
+                            <li><a href="#separate-what-is-the-answer-from-is-it-time">Separate “what is the answer?” from “is it time?”</a></li>
+                            <li><a href="#timing-not-just-accuracy">Timing, not just accuracy</a></li>
+                            <li><a href="#the-remaining-bottleneck-is-still-audio">The remaining bottleneck is still audio</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+
+                <p>OpenAI just released GPT Live, but we can do better.</p>
+
+                <p>We ran the same spoken trivia against WiCi hold-to-talk Q&amp;A and ChatGPT Live. The clip is short: local answers mid-question while Live is still listening.</p>
+
+                <figure class="figure">
+                    <h3>Demo &mdash; same question, different commit time</h3>
+                    <p>WiCi vs ChatGPT Live side by side. Local commits early; Live is still in the listening state.</p>
+                    <div class="video-embed">
+                        <video controls playsinline preload="metadata" poster="/images/media/video-fullduplex-poster.jpg" aria-label="A full-duplex voice assistant on WiCi One answering spoken quiz questions, side by side with ChatGPT's voice mode.">
+                            <source src="/cdn.wici.ai/video/demo-fullduplex-full-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                            <source src="/cdn.wici.ai/video/demo-fullduplex-full-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+                        </video>
+                    </div>
+                </figure>
+
+                <h2 id="conversational-speed-is-not-commit-time-latency">Conversational speed is not commit-time latency</h2>
+                <p class="article-note">Interruptible chat still waits. Mid-question answers do not.</p>
+
+                <p>GPT Live is built for snappy dialogue: interruptible, smooth, “fast” in the chat sense. The demo still shows a gap that product copy does not name: <strong>when does the system decide it already knows enough to speak?</strong> One stack prints an answer while the other is still in a listening state on the same audio. That is not a model-quality contest; it is a race on the full audio path.</p>
+
+                <p>A typical voice pipeline is a relay: stream audio → ASR → wait for silence or end of turn → run the model → speak. Each hop looks fine alone. Stacked end-to-end, especially with cloud round-trips, the user feels the pause after they stop talking, or watches the remote UI sit in “listening” while a local system has already committed. Interruptible chat helps the conversation feel alive; it does not by itself give you mid-question answers.</p>
+
+                <p>Quiz-style buzzing makes that gap measurable. You are rewarded for answering before the question ends and punished if you are wrong. So the real product problem is three jobs at once: hear early, form an answer on a partial transcript, and only then decide that speaking is worth the risk. Knowing the answer is not the same as knowing when to speak. Latency lives in that gap.</p>
+
+                <div class="claim">The bottleneck is not “a smarter LLM.” It is an online loop that can think while the question is still being spoken, safely.</div>
+
+                <h2 id="why-local-makes-this-easier">Why local makes this easier</h2>
+                <p class="article-note">This is the claim. Design details follow.</p>
+
+                <p>Voice latency is a stack: ASR, answerer, and the decision to speak. Cloud Live still pays RTT on every hop and tends to wait for enough of a turn before committing. Move the race to a nearby GPU and three things change at once:</p>
+                <ul>
+                    <li><strong>No cloud round-trip</strong> between mic chunks, model, and buzz: the path is short enough to think while the question is still being spoken.</li>
+                    <li><strong>Audio stays on-device.</strong> Privacy is a product property, not an afterthought bolted onto a remote session.</li>
+                    <li><strong>You can afford online policies.</strong> Stream ASR, re-predict every few hundred milliseconds, and run a cheap gate on every candidate, all without shipping that loop through the public internet.</li>
+                </ul>
+                <p>GPT Live proves the market wants conversational speed. Local compute is how you turn “interruptible chat” into “answer before they finish asking.” We can push the demo further (faster ASR, safer early buzzes); the reason it works at all is that the stack is local.</p>
+
+                <h2 id="what-has-to-be-true-for-early-answers">What has to be true for early answers</h2>
+                <p>Reducing audio latency is three jobs: hear early, answer early, speak only when stable. The ceiling is simple: does the model ever become correct before the question ends?</p>
+                <p>On 1024 QANTA prefixes, answerability rises from ~81% at 4B to ~96% around 27–31B, and larger models get there earlier. If the model never knows mid-question, no gate invents an early right answer. Pick a model that can know early; then teach the system when to spend that knowledge.</p>
+
+                <figure class="figure">
+                    <h3>Figure 1 &mdash; When the question already contains the answer</h3>
+                    <p>Cumulative correct by question position <code>c</code>. Gemini is an information upper-bound proxy; the dashed line is a human timing reference.</p>
+                    <div id="answerabilityCurve" class="curve-chart" role="img" aria-label="QANTA cumulative correct curves for several models and a human buzz reference"></div>
+                </figure>
+
+                <h2 id="how-the-online-loop-works">How the online loop works</h2>
+                <p>Hold to listen: ASR streams (~500&nbsp;ms chunks). After enough prefix, the answerer predicts a short canonical answer. A separate <strong>BuzzGate</strong> scores only online-visible features (repetition, length, copy-from-transcript, dangling ASR, latencies; never gold or the future) and fires when score + repetition clear the bar.</p>
+
+                <figure class="figure">
+                    <h3>Figure 2 &mdash; Online path that cuts the wait</h3>
+                    <p>Think while audio is still arriving. No “wait until they stop talking” barrier before the model starts.</p>
+                    <div class="step-stack" role="img" aria-label="Hold, ASR, predict, BuzzGate, speak">
+                        <div class="step">
+                            <span class="step-name">Hold to listen<span class="step-note">Audio is live while the question is still being spoken.</span></span>
+                            <span class="bar-track"><span class="step-fill" style="width: 18%"></span></span>
+                            <span class="bar-value">open</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-name">ASR updates<span class="step-note">Streaming transcript, roughly every 500ms.</span></span>
+                            <span class="bar-track"><span class="step-fill" style="width: 36%"></span></span>
+                            <span class="bar-value">500ms</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-name">Predict early<span class="step-note">Short canonical answer from partial text.</span></span>
+                            <span class="bar-track"><span class="step-fill" style="width: 68%"></span></span>
+                            <span class="bar-value">answer</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-name">BuzzGate<span class="step-note">Speak only when score + repetition clear the bar.</span></span>
+                            <span class="bar-track"><span class="step-fill warn" style="width: 90%"></span></span>
+                            <span class="bar-value">buzz</span>
+                        </div>
+                    </div>
+                </figure>
+
+                <h2 id="separate-what-is-the-answer-from-is-it-time">Separate “what is the answer?” from “is it time?”</h2>
+                <p>Do not ask one LLM to both answer and decide when to WAIT. That entangles accuracy and risk. Hand rules are brittle. We keep the answerer on the entity and train a small HGB BuzzGate on the timing side: strong repeated answers fire immediately; weaker ones need more evidence.</p>
+
+                <figure class="figure">
+                    <h3>Figure 3 &mdash; Three ways to decide when to speak</h3>
+                    <div class="gate-matrix">
+                        <div class="gate-head">Policy</div>
+                        <div class="gate-head">Latency tradeoff</div>
+                        <div class="gate-cell"><b>LLM self-judge</b><span>One model both answers and waits.</span></div>
+                        <div class="gate-cell"><b>Simple, entangled.</b><span>Hard to make faster without also making wronger.</span></div>
+                        <div class="gate-cell"><b>Rule gate</b><span>Fixed length / repeat thresholds.</span></div>
+                        <div class="gate-cell"><b>Predictable, brittle.</b><span>Too late on easy clues or too early on hard ones.</span></div>
+                        <div class="gate-cell"><b>HGB BuzzGate</b><span>Score + repetition on online features.</span></div>
+                        <div class="gate-cell"><b>Fast when safe.</b><span>High-score repeats fire now; weak answers wait.</span></div>
+                    </div>
+                </figure>
+
+                <h2 id="timing-not-just-accuracy">Timing, not just accuracy</h2>
+                <p>On 1024 clean-text QANTA questions with the synced gate over greedy Qwen3.6 27B:</p>
+
+                <figure class="figure">
+                    <h3>Figure 4 &mdash; Gate scorecard</h3>
+                    <div class="metric-grid" role="img" aria-label="QANTA BuzzGate scorecard">
+                        <div class="metric"><b>69.9%</b><span>Correct answers (716 / 1024).</span></div>
+                        <div class="metric"><b>65.2%</b><span>Correct <em>before</em> the question ends.</span></div>
+                        <div class="metric"><b>0.516</b><span>Median buzz position <code>c</code> (human ref ~0.63).</span></div>
+                    </div>
+                </figure>
+
+                <p>Median buzz around halfway through the question. The product claim is not a human quiz leaderboard. It is that <strong>answer generation and speak-timing can be split, and the timing layer can fire mid-sentence</strong>.</p>
+
+                <h2 id="the-remaining-bottleneck-is-still-audio">The remaining bottleneck is still audio</h2>
+                <p>In the live path, ASR (~500&nbsp;ms cadence) and the answerer (~140&nbsp;ms) dominate; the gate is essentially free (~0.02&nbsp;ms). Wrong early answers usually come from ASR (entity drops, year confusions), not from a slow gate. Speeding audio models means better streaming ASR and tighter local answerer kernels, with a gate that refuses flaky transcripts.</p>
+
+                <p>Answering is model capability. Buzzing is systems work. Local is what makes both cheap enough to run in the open.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/intro-thinkless"><figure><img src="/images/research/thumbnails/intro-thinkless.webp" alt="" loading="lazy" decoding="async"></figure><strong>Thinkless: Unconditional Surrender in Thinking</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                        <li><a href="/article/keep-the-bytes-by-the-gpu"><figure><img src="/images/research/thumbnails/keep-the-bytes-by-the-gpu.webp" alt="" loading="lazy" decoding="async"></figure><strong>Bridge the bandwidth gap with a huge SSD cache</strong><time datetime="2026-09">September 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+    
+    

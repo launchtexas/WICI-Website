@@ -1,0 +1,133 @@
+
+
+    <script src="/js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/articles.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script>
+        // Figure 2 — interactive round-trip race. A weak GPU inside the machine
+        // finishes the job in LOCAL_WEAK_S; the fast nearby GPU computes that job
+        // "speedup" times quicker, but pays one round trip per blocking call.
+        (function () {
+            var plotConfig = {
+                responsive: true,
+                displaylogo: false,
+                modeBarButtonsToRemove: ["lasso2d", "select2d"]
+            };
+
+            var el = document.getElementById("roundtrip-plot");
+            var fallback = document.getElementById("roundtrip-fallback");
+            if (!el) return;
+
+            var calls = document.getElementById("callsRange");
+            var rtt = document.getElementById("rttRange");
+            var speedup = document.getElementById("speedupRange");
+            var callsOut = document.getElementById("callsOut");
+            var rttOut = document.getElementById("rttOut");
+            var speedupOut = document.getElementById("speedupOut");
+
+            var LOCAL_WEAK_S = 2.0; // weak local device baseline (seconds)
+
+            function isMobileViewport() { return window.innerWidth <= 620; }
+
+            function commonFont() {
+                return {
+                    family: "Google Sans Flex, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+                    color: "#1d1d1f"
+                };
+            }
+
+            function values() {
+                var c = Number(calls.value);
+                var ms = Number(rtt.value);
+                var ratio = Number(speedup.value);
+                var remoteCompute = LOCAL_WEAK_S / ratio;
+                var roundTripTax = c * ms / 1000;
+                return {
+                    local: LOCAL_WEAK_S,
+                    remote: remoteCompute + roundTripTax,
+                    compute: remoteCompute,
+                    tax: roundTripTax
+                };
+            }
+
+            function updateOutputs() {
+                callsOut.textContent = Number(calls.value).toLocaleString("en-US");
+                rttOut.textContent = Number(rtt.value).toFixed(1) + " ms";
+                speedupOut.textContent = Number(speedup.value) + "×";
+            }
+
+            function fmt(s) { return s < 10 ? s.toFixed(2) + " s" : s.toFixed(1) + " s"; }
+
+            function trace(v) {
+                var remoteWins = v.remote < v.local;
+                var labels = isMobileViewport()
+                    ? ["Weak GPU<br>in the machine", "Fast GPU<br>over Wi-Fi"]
+                    : ["Weak GPU inside the machine", "Fast GPU one Wi-Fi hop away"];
+                return [{
+                    type: "bar",
+                    x: labels,
+                    y: [v.local, v.remote],
+                    text: [fmt(v.local), fmt(v.remote)],
+                    textposition: "outside",
+                    marker: {
+                        color: [
+                            remoteWins ? "#d85f36" : "#686bc0",
+                            remoteWins ? "#686bc0" : "#d85f36"
+                        ]
+                    },
+                    customdata: [
+                        "Finishes the whole job locally",
+                        "Compute " + fmt(v.compute) + " + round-trip tax " + fmt(v.tax)
+                    ],
+                    hovertemplate: "<b>%{x}</b><br>%{customdata}<br>Total: %{y:.2f} s<extra></extra>"
+                }];
+            }
+
+            function layout(v) {
+                var remoteWins = v.remote < v.local;
+                return {
+                    margin: { l: 64, r: 24, t: 44, b: isMobileViewport() ? 58 : 64 },
+                    paper_bgcolor: "#ffffff",
+                    plot_bgcolor: "#ffffff",
+                    font: commonFont(),
+                    yaxis: { title: { text: "Time to finish, seconds" }, rangemode: "tozero", gridcolor: "#e5eaf1" },
+                    xaxis: { tickangle: 0 },
+                    showlegend: false,
+                    annotations: [{
+                        x: 0.5, xref: "paper", y: 1.0, yref: "paper", yanchor: "bottom",
+                        showarrow: false,
+                        font: { size: 14, color: remoteWins ? "#686bc0" : "#d85f36" },
+                        text: remoteWins
+                            ? "The nearby GPU wins &mdash; the link is quiet enough."
+                            : "The weak local GPU wins &mdash; the round trips sank the fast one."
+                    }]
+                };
+            }
+
+            function showFallback() {
+                el.style.display = "none";
+                if (fallback) fallback.style.display = "block";
+            }
+
+            function draw() {
+                updateOutputs();
+                if (!window.Plotly) { showFallback(); return; }
+                var v = values();
+                Plotly.newPlot(el, trace(v), layout(v), plotConfig).catch(showFallback);
+            }
+
+            function update() {
+                updateOutputs();
+                if (!window.Plotly) return;
+                var v = values();
+                Plotly.react(el, trace(v), layout(v), plotConfig);
+            }
+
+            draw();
+            [calls, rtt, speedup].forEach(function (input) {
+                input.addEventListener("input", update);
+            });
+        })();
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>

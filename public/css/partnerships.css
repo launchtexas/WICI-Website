@@ -1,0 +1,1027 @@
+/* ============================
+   Partnerships (partnerships/creators.html)
+   Loaded on top of common.css. The creator program's landing page, after
+   the designer's "v2" mock (Oct 23, 2026): a hero with the exploded render
+   on a lavender blob and two sticker tags, the Blender demo (the shared
+   inline film), the confirmed apps in one readable row, the deal as two
+   cards on the navy band, five steps on a dashed line, and a centred close
+   (the cheat sheet's sticker cards on the lavender ground came out on Oct
+   27, 2026, with the product intro added under the hero). The
+   site's tokens throughout, plus the one amber the homepage's hero also
+   uses (--cp-amber: there is no amber token). No italics anywhere: the
+   mock's italic words are set upright in a second colour.
+   ============================ */
+
+.cp-page {
+    --cp-amber: #f5b400;   /* the one raw colour: there is no amber token (home.css uses the same) */
+    --cp-shadow: 6px 7px 0 var(--ink);
+}
+
+/* No italics on this page, whatever the element. */
+.cp-page em,
+.cp-page i {
+    font-style: normal;
+}
+
+/* ---- Section heads span the content width. ---- */
+.cp-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 48px;
+    align-items: end;
+    margin-bottom: 48px;
+}
+
+.cp-head-main .section-kicker {
+    display: block;
+    margin-bottom: 18px;
+}
+
+.cp-title {
+    margin: 0;
+}
+
+/* Titles in one colour: the mock's second-colour words read as a second
+   voice, except the receipt's "What we ask.",
+   in the accent; "describe it." carries the hero's stroke in
+   the accent instead. */
+.cp-title em,
+.cp-close-title em {
+    color: inherit;
+}
+
+.cp-head-sub {
+    margin: 0 0 0.35em;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+/* ---- Hero ---- */
+.cp-hero {
+    padding: 56px 0 64px;
+}
+
+.cp-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 13fr) minmax(0, 11fr);
+    column-gap: 48px;
+    align-items: center;
+}
+
+.cp-hero-copy {
+    max-width: 640px;
+}
+
+/* The three chips: a sticker on a hairline, an amber one, a violet one. */
+.cp-chips {
+    list-style: none;
+    margin: 0 0 36px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cp-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    border-radius: 19px;
+    background: var(--bg);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    box-shadow: 4px 5px 0 var(--ink);
+    transform: rotate(-2deg);
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+/* Match the photo label's outlined paper sticker throughout this page. */
+.cp-page .cta {
+    border: 2px solid var(--ink);
+    border-radius: 19px;
+    background: var(--cp-button-bg, var(--cp-amber));
+    color: var(--cp-button-ink, var(--ink));
+    box-shadow: 4px 5px 0 var(--ink);
+    transform: rotate(-2deg);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.cp-page .cta:hover {
+    background: var(--cp-button-bg, var(--cp-amber));
+    box-shadow: 6px 7px 0 var(--ink);
+    transform: translate(-2px, -2px) rotate(-2deg);
+}
+
+.cp-page .cta--primary {
+    --cp-button-bg: var(--accent);
+    --cp-button-ink: var(--bg);
+}
+
+.cp-page .cta:active {
+    box-shadow: 1px 1px 0 var(--ink);
+    transform: translate(3px, 4px) rotate(-2deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cp-page .cta {
+        transition: none;
+    }
+}
+
+.cp-chip--amber {
+    color: var(--ink);
+    background: var(--cp-amber);
+}
+
+.cp-chip--violet {
+    color: var(--bg);
+    background: var(--accent);
+}
+
+.cp-hero-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-hero-sub);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+}
+
+.cp-hero-lede {
+    max-width: 54ch;
+    margin: 30px 0 0;
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    color: var(--ink-soft);
+}
+
+/* The art: the render over a lavender blob, tilted a little, with the
+   two tags pinned to its corners. The stage is wider than its column so
+   the render reads at size; it overflows into the margin, never the
+   screen's edge. */
+.cp-hero-art {
+    margin: 0;
+    min-width: 0;
+}
+
+.cp-tag {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 10px 16px 11px;
+    border-radius: 19px;
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    box-shadow: 4px 5px 0 var(--ink);
+    font-size: var(--fs-body-s);
+    line-height: 1.25;
+    color: var(--ink-mute);
+    white-space: nowrap;
+}
+
+.cp-tag strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* The sofa photo in the art's place, plain rounded corners, one tag pinned to its lower left. The
+   render on the blob with its two spec tags (.cp-hero-stage, .cp-tag--gpu,
+   .cp-tag--nvme) stood here until then. */
+.cp-hero-art--photo {
+    position: relative;
+}
+
+.cp-hero-art--photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+}
+
+.cp-tag--photo {
+    left: 20px;
+    bottom: 20px;
+    transform: rotate(-2deg);
+}
+
+/* ---- The product: what WiCi One is ----
+   Under the hero's points:
+   the head,
+   the homepage's lead paragraph beside the desk photo (the old homepage's
+   editing scene, plain rounded corners like the film's, no sticker frame),
+   and four plain points in a row on hairlines, in the steps' type. On
+   white. */
+.cp-product {
+    padding: 24px 0 96px;
+}
+
+/* The copy beside the photo, as the homepage sets its copy beside the
+   render; the points under both on hairlines. */
+.cp-product-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: 64px;
+    align-items: center;
+    margin-bottom: 48px;
+}
+
+.cp-product-lede {
+    margin: 0;
+    max-width: 30em;
+    font-size: var(--fs-lead);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.cp-product-lede strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* The player in the photo's place: the shared inline film, 16:9, the desk
+   photo as its poster. */
+.cp-product-film {
+    width: 100%;
+    border-radius: var(--radius);
+}
+
+/* Media coverage under the product's photo: the homepage's press
+   row (.nl-logos in css/home.css) with this page's names, five cells on
+   hairlines, the mark over its line, each a link to the piece. */
+.cp-press-label {
+    margin: 48px 0 16px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.cp-press {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+}
+
+.cp-press li {
+    min-width: 0;
+    background: var(--bg);
+}
+
+.cp-press-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    min-height: 200px;
+    padding: 28px 24px 30px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: background 0.2s var(--ease);
+}
+
+.cp-press-card:hover {
+    background: var(--bg-soft);
+}
+
+.cp-press-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.cp-press-mark {
+    display: flex;
+    align-items: center;
+    height: 32px;
+}
+
+.cp-press-mark img {
+    display: block;
+    height: var(--h, 16px);
+    width: auto;
+    opacity: 0.9;
+}
+
+.cp-press [data-outlet="pcmag"] img { --h: 28px; }
+.cp-press [data-outlet="engadget"] img { --h: 16px; }
+.cp-press [data-outlet="techradar"] img { --h: 18px; }
+.cp-press [data-outlet="tomshardware"] img { --h: 14px; }
+.cp-press [data-outlet="gizmodo"] img { --h: 16px; }
+
+.cp-press-quote {
+    margin: 0;
+}
+
+.cp-press-quote p {
+    margin: 0;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+    text-wrap: pretty;
+}
+
+/* ---- Compatibility: the apps running so far on one sticker card across
+   the width, on the navy band, the kicker in
+   amber, the title in white. The card's rules (.cp-card) are under Getting
+   it right below. ---- */
+.cp-facts {
+    padding: 96px 0 104px;
+    background: var(--bg-dark);
+}
+
+.cp-facts .section-kicker {
+    color: var(--cp-amber);
+}
+
+.cp-facts .cp-title {
+    color: var(--bg);
+}
+
+.cp-facts .cp-head-sub {
+    color: rgba(var(--bg-rgb), 0.78);
+}
+
+/* On the navy the cards' hard shadow is in ink at 90%, so it still reads. */
+.cp-facts .cp-card {
+    box-shadow: 6px 7px 0 rgba(var(--ink-rgb), 0.9);
+}
+
+.cp-facts-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+/* The apps: a group to a row, its label at the left and the apps beside
+   it, each with its mark. */
+.cp-apps-groups {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cp-apps-group {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    column-gap: 10px;
+    align-items: start;
+    padding: 14px 0 16px;
+    border-bottom: 1px solid var(--line);
+}
+
+.cp-apps-group:first-child {
+    padding-top: 2px;
+}
+
+.cp-apps-group:last-child {
+    border-bottom: 0;
+}
+
+.cp-apps-group-label {
+    padding-top: 7px;
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--accent-bright);
+}
+
+.cp-apps-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 22px;
+    row-gap: 10px;
+    min-width: 0;
+}
+
+.cp-apps-list li {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.cp-apps-list img {
+    width: 32px;
+    height: 32px;
+    border-radius: 13px;
+    background: var(--bg-soft);
+}
+
+/* Workflow note with an info icon and a readable line length. */
+.cp-apps-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 22px;   /* over the list since later on Oct 27, 2026; under it before */
+    padding: 16px 20px;
+    border-radius: 19px;
+    background: rgba(245, 180, 0, 0.16);   /* --cp-amber at 16% */
+}
+
+.cp-apps-note-icon {
+    flex: 0 0 20px;
+    margin-top: 1px;
+    color: var(--ink-soft);
+}
+
+.cp-apps-note p {
+    min-width: 0;
+    max-width: 72ch;
+    margin: 0;
+    font-size: var(--fs-body-s);
+    line-height: 1.45;
+    color: var(--ink);
+}
+
+.cp-apps-note strong {
+    font-weight: 700;
+}
+
+/* ---- The sticker card. Its text is one step under the page's body size. ---- */
+.cp-card {
+    padding: 24px 28px 26px;
+    border-radius: 29px;
+    background: var(--bg-card);
+    border: 2px solid var(--ink);
+    box-shadow: var(--cp-shadow);
+}
+
+.cp-card-label {
+    margin: 0 0 16px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.cp-deck {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+}
+
+.cp-deck-ch {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: grid;
+    gap: 6px;
+    justify-items: start;
+    text-align: left;
+    transition: scale 0.25s var(--ease);
+}
+
+.cp-deck-ch img {
+    display: block;
+    width: 220px;
+    height: 124px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 2px solid var(--bg);
+    box-shadow: 0 6px 18px rgba(var(--ink-rgb), 0.18);
+    outline: 2px solid transparent;
+    outline-offset: 1px;
+    transition: outline-color 0.3s;
+}
+
+.cp-deck-ch span {
+    font: 600 var(--fs-body-s) / 1.2 var(--font-sans);
+    letter-spacing: var(--ls-title);
+    color: var(--ink-mute);
+    transition: color 0.25s;
+    padding-left: 4px;
+}
+
+.cp-deck-ch:hover,
+.cp-deck-ch:focus-visible {
+    scale: 1.03;
+}
+
+.cp-deck-ch:hover span,
+.cp-deck-ch:focus-visible span,
+.cp-deck-ch.is-playing span {
+    color: var(--ink);
+}
+
+.cp-deck-ch:focus-visible {
+    outline: none;
+}
+
+.cp-deck-ch:focus-visible img,
+.cp-deck-ch.is-playing img {
+    outline-color: var(--accent);
+}
+
+.cp-deck-ch.is-playing::after {
+    content: "";
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%; corner-shape: round;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px var(--bg);
+}
+
+/* The cards in a row under the copy. */
+.cp-deck--row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.cp-deck--row .cp-deck-ch {
+    flex: 0 0 auto;
+}
+
+.cp-deck--row .cp-deck-ch img {
+    width: 136px;
+    height: 77px;
+}
+
+/* ---- The four points under the hero's grid: on hairlines, in the
+   steps' type. ---- */
+.cp-hero .cp-product-points {
+    margin-top: 64px;
+}
+
+.cp-product-points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 32px;
+}
+
+.cp-product-point {
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+.cp-product-point-title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.cp-product-point p {
+    margin: 12px 0 0;
+    font-size: var(--fs-body-s);
+    line-height: 1.5;
+    color: var(--ink-soft);
+}
+
+/* ---- The process: three steps across (five until Oct 27, 2026), on a
+   dashed line, on the lavender ground ---- */
+.cp-steps {
+    padding: 96px 0 104px;
+    background: var(--accent-soft);
+}
+
+/* The program details sit with the process, replacing the separate receipt. */
+.cp-steps .cp-collaboration-intro {
+    max-width: 65ch;
+    margin: -16px 0 40px;
+}
+
+.cp-step-list {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 32px;
+}
+
+/* The dashed wave behind the numbers: drawn from the first circle's
+   centre to the last's (two column pitches wide), through each centre,
+   with a bump between. */
+.cp-step-line {
+    position: absolute;
+    left: 23px;
+    top: 0;
+    width: calc((100% + 32px) * 2 / 3);
+    height: 48px;
+    color: var(--ink-soft);
+    pointer-events: none;
+}
+
+.cp-step {
+    position: relative;
+}
+
+/* On narrow screens the steps stack and the wave runs down the left,
+   drawn step to step: from each circle's centre to the next (the step's
+   height plus the gap), a repeating S curve, dashed. */
+.cp-step::before {
+    content: none;
+    position: absolute;
+    left: 15px;
+    top: 23px;
+    width: 16px;
+    height: calc(100% + var(--cp-step-gap, 40px));
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='80' viewBox='0 0 16 80'%3E%3Cpath d='M8 0 C 14 20, 2 60, 8 80' fill='none' stroke='%233a3a3c' stroke-width='2' stroke-dasharray='7 7'/%3E%3C/svg%3E") 0 0 / 16px 80px repeat-y;
+    pointer-events: none;
+}
+
+.cp-step-num {
+    position: relative;
+    z-index: 1;
+}
+
+.cp-step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%; corner-shape: round;
+    border: 2px solid var(--ink);
+    background: var(--bg);
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+}
+
+.cp-step-num--amber {
+    background: var(--cp-amber);
+}
+
+.cp-step-num--violet {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.cp-step-title {
+    margin: 24px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.cp-step p {
+    margin: 12px 0 0;
+    font-size: var(--fs-body-s);
+    line-height: 1.5;
+    color: var(--ink-soft);
+}
+
+/* ---- Close: centred, on white ---- */
+.cp-close {
+    padding: 112px 0 120px;
+}
+
+.cp-close-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.cp-close-marks {
+    list-style: none;
+    margin: 0 0 36px;
+    padding: 0;
+    display: flex;
+    gap: 14px;
+}
+
+.cp-close-marks img {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+    background: var(--bg-soft);
+}
+
+/* Two balanced lines, one step under the statement size so the sentence is not broken
+   three ways. */
+.cp-close-title {
+    max-width: 26ch;
+    margin: 0;
+    text-wrap: balance;
+    font-family: var(--font-display);
+    font-size: var(--fs-h2-sub);
+    font-weight: 500;
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+}
+
+.cp-close-lede {
+    max-width: 46ch;
+    margin: 28px 0 0;
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    color: var(--ink-soft);
+}
+
+/* Faith's sketched portrait over the line that introduces her (later on
+   Oct 27, 2026): a 128px circle on a hairline, tilted a touch like the
+   page's stickers. */
+.cp-close-faith {
+    display: block;
+    width: 128px;
+    height: 128px;
+    margin: 36px 0 0;
+    border-radius: 50%; corner-shape: round;
+    border: 2px solid var(--ink);
+    box-shadow: 3px 4px 0 var(--ink);
+    transform: rotate(-3deg);
+    background: var(--bg);
+}
+
+.cp-close-lede--faith {
+    margin-top: 18px;
+}
+
+.cp-close-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 36px;
+}
+
+/* ---- Narrower screens ---- */
+@media (max-width: 1100px) {
+    .cp-step-list {
+        column-gap: 20px;
+    }
+
+    .cp-step-line {
+        width: calc((100% + 20px) * 2 / 3);
+    }
+}
+
+@media (max-width: 960px) {
+    .cp-head {
+        grid-template-columns: 1fr;
+        row-gap: 18px;
+        align-items: start;
+    }
+
+    .cp-head-sub {
+        margin-bottom: 0;
+    }
+
+    .cp-hero-grid {
+        grid-template-columns: 1fr;
+        row-gap: 40px;
+    }
+
+    .cp-hero-art {
+        max-width: 640px;
+    }
+
+    /* The steps one under the other, the wave running down the left. */
+    .cp-step-list {
+        --cp-step-gap: 40px;
+        grid-template-columns: 1fr;
+        gap: var(--cp-step-gap);
+    }
+
+    .cp-step-line {
+        display: none;
+    }
+
+    .cp-step:not(:last-child)::before {
+        content: "";
+    }
+
+    /* The circle at the left, the title and the sentence beside it, so
+       the wave runs clear of the text. */
+    .cp-step {
+        display: grid;
+        grid-template-columns: 46px minmax(0, 1fr);
+        column-gap: 18px;
+    }
+
+    .cp-step-num {
+        grid-row: 1 / span 2;
+    }
+
+    .cp-step-title {
+        margin-top: 10px;
+    }
+
+    .cp-step p {
+        grid-column: 2;
+    }
+
+    /* The cards in a strip under the player. */
+        .cp-deck {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        max-width: 100%;
+        padding: 4px 2px 8px;
+        scroll-snap-type: x proximity;
+        touch-action: pan-x pan-y;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
+
+    .cp-deck-ch {
+        flex: 0 0 180px;
+        scroll-snap-align: start;
+    }
+
+    .cp-deck-ch img {
+        width: 180px;
+        height: 101px;
+    }
+
+    /* The copy over the photo, the points two by two. */
+    .cp-product-grid {
+        grid-template-columns: 1fr;
+        row-gap: 28px;
+        margin-bottom: 40px;
+    }
+
+    .cp-product-lede {
+        max-width: 36em;
+    }
+
+    .cp-press {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cp-press-card {
+        min-height: 0;
+    }
+
+    /* The copy, then the player, then the cards as a swipeable strip
+: the copy wrapper
+       dissolves so its lede and the deck order around the player. */
+    .cp-product-copy {
+        display: contents;
+    }
+
+    .cp-product-lede {
+        order: 1;
+    }
+
+    .cp-product-film {
+        order: 2;
+    }
+
+    .cp-deck--row {
+        order: 3;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        max-width: 100%;
+        margin-top: 0;
+        padding: 4px 2px 8px;
+        scroll-snap-type: x proximity;
+        touch-action: pan-x pan-y;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
+
+    .cp-deck--row .cp-deck-ch {
+        flex: 0 0 180px;
+        scroll-snap-align: start;
+    }
+
+    .cp-deck--row .cp-deck-ch img {
+        width: 180px;
+        height: 101px;
+    }
+
+    .cp-product-points {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 24px;
+    }
+
+}
+
+@media (max-width: 720px) {
+    .cp-hero {
+        padding: 40px 0 48px;
+    }
+
+    .cp-hero-title {
+        font-size: clamp(40px, 11vw, 52px);
+    }
+
+    .cp-tag {
+        padding: 8px 12px 9px;
+        font-size: var(--fs-caption);
+    }
+
+    .cp-tag--photo {
+        left: 12px;
+        bottom: 12px;
+    }
+
+        .cp-product {
+        padding: 0 0 64px;
+    }
+
+    /* The photo at its own shape. */
+    .cp-product-grid {
+        margin-bottom: 32px;
+    }
+
+    /* The group label over its apps. */
+    .cp-apps-group {
+        grid-template-columns: 1fr;
+        row-gap: 10px;
+    }
+
+    .cp-apps-group-label {
+        padding-top: 0;
+    }
+
+    .cp-facts-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .cp-apps-note {
+        padding: 16px 18px;
+    }
+
+        .cp-card {
+        padding: 22px 20px 24px;
+        box-shadow: 4px 5px 0 var(--ink);
+    }
+
+    .cp-press {
+        grid-template-columns: 1fr;
+    }
+
+    .cp-press-card {
+        padding: 22px 20px 24px;
+    }
+
+    .cp-hero .cp-product-points {
+        margin-top: 44px;
+    }
+
+    .cp-product-points {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .cp-deal,
+    .cp-steps,
+    .cp-facts {
+        padding: 64px 0;
+    }
+
+    .cp-step-list {
+        --cp-step-gap: 32px;
+    }
+
+    .cp-close {
+        padding: 72px 0 80px;
+    }
+
+    .cp-close-title {
+        font-size: clamp(32px, 9vw, 40px);
+    }
+
+    .cp-close-ctas .cta {
+        width: 100%;
+        justify-content: center;
+    }
+}

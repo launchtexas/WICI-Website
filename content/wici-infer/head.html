@@ -1,0 +1,182 @@
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiCi Infer: Run large local LLMs on your computer</title>
+    <meta name="description" content="Download local LLMs like DeepSeek V4.1 and Qwen3.6 and run them on your own computer, up to 17x faster than llama.cpp. Free desktop app, no login.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wici.ai/wici-infer">
+    <meta property="og:title" content="WiCi Infer: Run large local LLMs on your computer">
+    <meta property="og:description" content="Download local LLMs like DeepSeek V4.1 and Qwen3.6 and run them on your own computer, up to 17x faster than llama.cpp. Free desktop app, no login.">
+    <meta property="og:image" content="https://wici.ai/images/infer/og-infer-1200x630.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="A person working on a laptop at a wooden desk.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WiCi Infer: Run large local LLMs on your computer">
+    <meta name="twitter:description" content="Download local LLMs like DeepSeek V4.1 and Qwen3.6 and run them on your own computer, up to 17x faster than llama.cpp. Free desktop app, no login.">
+    <!-- Describes the app to search engines: what it is, where it runs, that it is free. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "WiCi Infer",
+        "url": "https://wici.ai/wici-infer",
+        "description": "WiCi Infer is a free desktop app that downloads open large language models and runs them locally, including 800B-class mixture-of-experts models, powered by the open-source InferSSD inference engine.",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "Local LLM app",
+        "operatingSystem": "macOS (Apple Silicon), Windows (x64)",
+        "downloadUrl": [
+            "https://appapi.wici.ai/versioning/wici-infer/redirect/macos-latest",
+            "https://appapi.wici.ai/versioning/wici-infer/redirect/windows-latest"
+        ],
+        "isAccessibleForFree": true,
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "image": "https://wici.ai/images/infer/app-icon-glass-480.webp",
+        "keywords": "local LLM, run LLM locally, local LLM app, local AI app, DeepSeek, Qwen, Ollama alternative, LM Studio alternative, llama.cpp alternative, local coding model, OpenAI-compatible local API, InferSSD",
+        "featureList": [
+            "Download and run open LLMs locally",
+            "Run 800B-class mixture-of-experts models without extra compression",
+            "Up to 17x the decode throughput of llama.cpp in published benchmarks",
+            "OpenAI-compatible local API for Claude Code, OpenCode and other tools",
+            "Free, no subscription, no login"
+        ],
+        "publisher": {
+            "@type": "Organization",
+            "name": "WiCi",
+            "url": "https://wici.ai"
+        }
+    }
+    </script>
+    <meta name="theme-color" content="#000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://webapi.wici.ai" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,100..1000&display=swap">
+    <script>document.documentElement.classList.add('infer-nav-scroll');
+        /* A campaign arrival (any utm_* on the URL: the emails, the ads) that names #get-started starts at the top of the page instead: the anchor is dropped here, before the browser or js/common.js scrolls to it. The page's own Download links and links without utm_* still jump there. */
+        try { if (window.location.hash === '#get-started' && /[?&]utm_[a-z]+=/.test(window.location.search)) window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search); } catch (error) { /* the anchor stays */ }
+        /* Phones and tablets cannot install a desktop app: there the download buttons open a dialog with "email me the link" (js/infer.js). */
+        if (/Android|iPhone|iPod|iPad/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) document.documentElement.classList.add('infer-mobile');
+        /* The download buttons name the visitor's system (macos or windows); on anything else they read "Download" and open the menu (css/infer.css, js/infer.js). */
+        document.documentElement.dataset.inferOs = document.documentElement.classList.contains('infer-mobile') ? 'unknown' : /Windows/i.test(navigator.userAgent) ? 'windows' : /Macintosh|Mac OS X/i.test(navigator.userAgent) ? 'macos' : 'unknown';</script>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/inferssd.css">
+    <link rel="stylesheet" href="/css/infer.css">
+    <link rel="icon" type="image/png" href="/images/common/favicon.png">
+    <link rel="apple-touch-icon" href="/images/common/apple-touch-icon.png">
+    <script src="/js/tracking.js"></script>
+    <style id="download-engine-styles">
+        /* The Linux row in the download menus links to the engine on GitHub. */
+        .infer-download-menu a.infer-download-engine { background: none; }
+        .infer-download-menu a.infer-download-engine:hover { background: rgba(var(--ink-rgb), .04); color: var(--ink); }
+        .infer-download-engine small { color: var(--ink-mute); font-size: var(--fs-caption); }
+        .infer-download-engine > span[aria-hidden] { color: var(--ink-mute); }
+        /* Platform marks: monochrome, level with the first line of each row. */
+        .infer-download-menu .infer-os-mark { flex: none; width: 18px; height: 18px; margin-right: -4px; align-self: flex-start; margin-top: calc((1lh - 18px) / 2); color: var(--ink); }
+        .infer-download-menu .infer-os-mark + span { flex: 1; }
+        .infer-download-menu { width: 380px; }
+        .infer-download-menu button:disabled .infer-os-mark { color: var(--ink-mute); }
+        .infer-download-engine small { flex-shrink: 1; text-align: right; }
+        .infer-download-engine > span[aria-hidden] { margin-left: -6px; }
+    </style>
+    <style id="supported-models-styles">
+        /* Keep the model catalogue isolated from concurrent section work. */
+        #supported-models { padding-block: 64px 0; background: var(--bg); color: var(--ink); }
+        #supported-models > .ssd-wrap { max-width: 1080px; padding-inline: 28px; }
+        #supported-models .im-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+        #supported-models h2 { font-family: var(--font-display); font-size: var(--fs-lead); line-height: var(--lh-title); letter-spacing: var(--ls-title); font-weight: 500; color: var(--ink); }
+        #supported-models .im-heading p { font-size: var(--fs-body-s); line-height: var(--lh-body); color: var(--ink-mute); }
+        #supported-models .im-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 32px 24px; }
+        #supported-models .im-card { min-width: 0; }
+        #supported-models .im-model { display: flex; align-items: center; gap: 10px; min-height: 36px; }
+        #supported-models .im-logo { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+        #supported-models h3 { font-family: var(--font-display); font-size: var(--fs-body); font-weight: 600; line-height: var(--lh-title); letter-spacing: var(--ls-title); color: var(--ink); }
+        #supported-models .im-parameters { margin-top: 4px; font-size: var(--fs-micro); line-height: var(--lh-body); color: var(--ink-mute); }
+        #supported-models .im-use { margin-top: 12px; font-size: var(--fs-caption); line-height: var(--lh-body); color: var(--ink-soft); }
+        #supported-models .im-specs { display: grid; gap: 4px; margin: 12px 0 10px; padding: 10px 12px; border-radius: 10px; background: var(--bg-soft); }
+        #supported-models .im-specs > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 16px; }
+        #supported-models .im-specs dt { font-size: var(--fs-micro); line-height: var(--lh-body); color: var(--ink-mute); }
+        #supported-models .im-specs dd { margin: 0; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; font-size: var(--fs-caption); font-weight: 500; line-height: var(--lh-body); color: var(--ink); }
+        #supported-models .im-computer { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 6px; font-size: var(--fs-micro); line-height: var(--lh-body); color: var(--ink-soft); }
+        #supported-models .im-computer span { color: var(--ink-mute); }
+        @media (max-width: 720px) {
+            #supported-models { padding-block: 48px 0; }
+            #supported-models > .ssd-wrap { padding-inline: 20px; }
+            #supported-models .im-heading { align-items: flex-start; margin-bottom: 24px; }
+        }
+    </style>
+    <style id="infer-faq-styles">
+        /* Questions about the app, on the white ground of the download block. */
+        .infer-faq { padding-block: 64px 32px; background: var(--bg); color: var(--ink); }
+        .infer-faq > .ssd-wrap { max-width: 1080px; padding-inline: 28px; }
+        .infer-faq h2 { margin-bottom: 24px; font-family: var(--font-display); font-size: var(--fs-lead); line-height: var(--lh-title); letter-spacing: var(--ls-title); font-weight: 500; color: var(--ink); }
+        .infer-faq-list { border-top: 1px solid var(--line); }
+        .infer-faq-item { border-bottom: 1px solid var(--line); }
+        .infer-faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 0; cursor: pointer; list-style: none; }
+        .infer-faq-item summary::-webkit-details-marker { display: none; }
+        .infer-faq-item summary::after { content: ''; flex: none; width: 7px; height: 7px; margin-right: 4px; border-right: 1.5px solid var(--ink-mute); border-bottom: 1.5px solid var(--ink-mute); transform: translateY(-2px) rotate(45deg); transition: transform .2s var(--ease); }
+        .infer-faq-item[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+        .infer-faq-item h3 { font-family: var(--font-sans); font-size: var(--fs-body); font-weight: 500; line-height: var(--lh-body); color: var(--ink); }
+        .infer-faq-item summary:hover h3 { color: var(--accent-bright); }
+        .infer-faq-item p { max-width: 72ch; padding-bottom: 20px; font-size: var(--fs-body-s); line-height: var(--lh-body); color: var(--ink-soft); }
+        @media (max-width: 720px) {
+            .infer-faq { padding-block: 48px 24px; }
+            .infer-faq > .ssd-wrap { padding-inline: 20px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .infer-faq-item summary::after { transition: none; } }
+    </style>
+    <style id="infer-mobile-nav-fix">
+        /* The open drawer must override the page-specific sticky #nav rule. */
+        #nav.is-menu-open { position: fixed; top: 0; left: 0; right: 0; }
+        /* Over the hero photo the header is light glass, lightest at the top of the page. */
+        #nav::before { transition: opacity .3s var(--ease), background-color .4s var(--ease); }
+        html.infer-nav-scroll #nav:not(.is-past-hero):not(.is-menu-open)::before { background: rgba(var(--ink-rgb), .12); backdrop-filter: blur(10px) brightness(.72); -webkit-backdrop-filter: blur(10px) brightness(.72); }
+        html.infer-nav-scroll #nav:not(.is-past-hero):not(.is-scrolled):not(.is-menu-open)::before { background: rgba(var(--ink-rgb), 0); backdrop-filter: blur(10px) brightness(.86); -webkit-backdrop-filter: blur(10px) brightness(.86); }
+        @media (max-width: 720px) {
+            #nav { --infer-nav-surface: rgb(var(--ink-rgb)); transition: opacity .18s ease, transform .28s var(--ease), visibility 0s, background-color .4s var(--ease); }
+            #nav::before { background: rgba(var(--ink-rgb), .72); transition: opacity .3s var(--ease), background-color .4s var(--ease); }
+            #nav.is-menu-open, #nav.is-menu-open::before { background: var(--infer-nav-surface); }
+            #nav.is-menu-open::before { backdrop-filter: none; -webkit-backdrop-filter: none; }
+            #nav .nav-mobile { background: var(--infer-nav-surface); transition: opacity .4s var(--ease), transform .4s var(--ease), visibility 0s linear .4s; }
+            #nav .nav-mobile.is-open { transition: opacity .4s var(--ease), transform .4s var(--ease); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #nav, #nav::before, #nav .nav-mobile, #nav .nav-mobile.is-open { transition: none; }
+        }
+    </style>
+    <style id="infer-footnote-styles">
+        .infer-hero-content { container-type: inline-size; min-width: 0; }
+        .infer-hero-name { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .infer-hero-name img { flex: none; width: 1.6em; height: 1.6em; }
+        .infer-model-symbol:has(img) { background: var(--bg); }
+        .infer-model-symbol img { width: 22px; height: 22px; object-fit: contain; }
+        .infer-hero #infer-title { font-size: min(calc(var(--fs-hero-sub) * .75), 6.6cqi); }
+        #infer-title > span { display: block; white-space: nowrap; }
+        @media (max-width: 720px) {
+            .infer-hero #infer-title { font-size: calc(var(--fs-h3-lg) * 4 / 3); line-height: var(--lh-title); letter-spacing: var(--ls-title); }
+            #infer-title > span { white-space: normal; text-wrap: balance; }
+            #infer-title .infer-hero-speed { display: block; margin-top: .2em; white-space: nowrap; }
+            #infer-title .infer-footnote-ref { font-size: var(--fs-caption); }
+            .infer-hero-content > p { font-size: var(--fs-body); }
+        }
+        .infer-footnote-ref { font-size: var(--fs-lead); line-height: 0; margin-left: 2px; }
+        .infer-footnote-ref a { color: inherit; padding: 0 1px; }
+        .infer-footnote-ref a:hover { text-decoration: underline; }
+        .infer-page-footnotes { padding: 40px 0 28px; border-top: 1px solid var(--line); background: var(--bg); }
+        .infer-page-footnotes ol { margin: 0; padding-left: 1.4em; max-width: 90ch; font-size: var(--fs-caption); line-height: var(--lh-body); color: var(--ink-mute); }
+        .infer-page-footnotes li::marker { content: "†  "; }
+        .infer-page-footnotes li:target { color: var(--ink); }
+        .infer-page-footnotes a { text-decoration: underline; text-underline-offset: 3px; }
+    </style>
+    <style id="infer-community-cta-styles">
+        /* "Join community" beside the hero's download button: the Discord server, a white-outline pill on the hero. */
+        .infer-hero .ssd-actions .infer-community-cta { min-height: 48px; gap: 10px; padding-inline: 22px; border-color: rgba(var(--bg-rgb), .78); color: var(--bg); background: transparent; }
+        .infer-hero .ssd-actions .infer-community-cta:hover { color: var(--bg); background: rgba(var(--bg-rgb), .12); }
+        .infer-hero .ssd-actions .infer-community-cta svg { flex: none; width: 20px; height: 20px; }
+        .infer-hero .ssd-actions .infer-community-cta:hover svg { transform: none; }
+    </style>
+    <link rel="canonical" href="/wici-infer">

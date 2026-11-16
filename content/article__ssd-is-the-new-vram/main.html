@@ -1,0 +1,177 @@
+
+
+        <!-- Article header -->
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/ssd-is-the-new-vram.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-09-15">September 15, 2026</time></p>
+                <h1 class="article-title">The SSD Is the New <em>VRAM.</em></h1>
+                <p class="article-subtitle">When the model goes into every office and home, VRAM and RAM are not the scarce resource &mdash; affordability is. The only tier that still has room at consumer prices is the SSD.</p>
+            </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">TL;DR</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#tldr">TL;DR</a></li>
+                        <li><a href="#outgrowing">Outgrowing the box</a></li>
+                        <li><a href="#moe">MoE architecture makes it thinkable</a></li>
+                        <li><a href="#offloading">Why naive offloading doesn't get you there</a></li>
+                        <li><a href="#hard">Why this is hard</a></li>
+                        <li><a href="#wici">Why this matters for WiCi</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/ssd-is-the-new-vram.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li title="Member of Technical Staff (Intern)">Fangzhou Liang</li>
+                        <li title="Co-Founder">Yibin Shen</li>
+                        <li title="Co-Founder">Zili Meng</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#tldr">TL;DR</a></li>
+                            <li><a href="#outgrowing">Outgrowing the box</a></li>
+                            <li><a href="#moe">MoE architecture makes it thinkable</a></li>
+                            <li><a href="#offloading">Why naive offloading doesn't get you there</a></li>
+                            <li><a href="#hard">Why this is hard</a></li>
+                            <li><a href="#wici">Why this matters for WiCi</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+
+                <section class="article-tldr" aria-labelledby="tldr">
+                    <h2 class="article-tldr-title" id="tldr">TL;DR</h2>
+                    <ul>
+                    <li>Frontier open-weight models have crossed a second ceiling. <a href="https://huggingface.co/zai-org/GLM-5.2">GLM-5.2</a> and <a href="https://simonwillison.net/2026/apr/24/deepseek-v4/">DeepSeek-V4-Pro</a> aren't just too big for a GPU's VRAM &mdash; they're too big for a consumer motherboard's max 256&nbsp;GB of RAM either. The only tier left with room is the SSD.</li>
+                    <li>That is an <em>end user</em> constraint, not a datacenter one. Clusters can keep buying VRAM and RAM; households cannot. If end devices want to use GPU locally, the only easy way to hold terabyte-class open weights with a few hundred dollars is to put them on NVMe and stream from disk.</li>
+                    <li>This isn't a one-time jump. Both open-sourced and closed frontier flagships are roughly doubling every 12 months. Now the latest Fable 5 is estimated to have 10T parameters already.</li>
+                    <li>SSD is not that bad. PCIe&nbsp;5.0 NVMe SSD can read at up to <a href="https://www.newegg.com/insider/pcie-5-0-nvme-ssd-buying-guide-2026-is-it-worth-the-upgrade/">~14.9&nbsp;GB/s</a>, already comparable with the low-end DDR4 RAM. MoE sparsity means you only need the active experts per token &mdash; so interactive rates are thinkable.</li>
+                    <li>Getting there in practice is the open problem we have been optimizing for. Naive offloading using SGLang or vLLM or kTrasnformer results in 0.01 tok/s. The battlefield is prediction, alignment, and the path from disk to VRAM.</li>
+                </ul>
+                </section>
+
+                <div class="claim">In the datacenter, VRAM and RAM are a budget line. In every end device, they are a dead end. The only consumer tier with room for a frontier-size open model is the SSD &mdash; then the only question left is whether streaming it can feel fast.</div>
+
+                <h2 id="outgrowing">Outgrowing the box</h2>
+                <p class="article-note">The model outgrew the chip, then it outgrew the box.</p>
+                <p>The first ceiling was VRAM, and the industry has spent two years building around it: quantize the weights, offload the layers that don't fit, keep the hot ones resident, spill the rest to system RAM. That playbook assumed the fallback tier had room. For a while it did &mdash; when models are 70B or 120B, they still fit, compressed, inside a workstation with a 128 GB of RAM on Mac Studio.</p>
+                <p>Yet, the growing model size breaks that assumption. <a href="https://huggingface.co/zai-org/GLM-5.2">GLM-5.2</a>, released in June 2026, is a 753B MoE model that ships at 1.51&nbsp;TB; even the aggressively quantized 4-bit community builds still run <a href="https://huggingface.co/mlx-community/GLM-5.2-4bit">425&nbsp;GB</a>. Even before you count the room a KV cache needs at its 1 Million context window, both are the actual state of the art in open weights right now, not a hypothetical scaling projection.
+                This isn't a one-off jump; it's a trend of the scaling law. <a href="https://www.colincornaby.me/2026/04/anthropics-mythos-implies-llm-scaling-has-hit-a-wall/">Mythos's leaked ~10T</a> indicates a line of SOTA models doubling roughly every 12 months.</p>
+
+                <figure class="figure">
+                <h3>Figure 1 &mdash; Model size's growth</h3>
+                    <p>Log-scale parameter counts, split into the closed frontier (racing for raw capability) and the open-weight models people actually run locally (racing for deployability). Both trends are fitted and extrapolated to 2028.</p>
+                    <div class="plot-shell">
+                        <div id="param-trend-plot" class="param-trend-plot" role="img" aria-label="Log-scale scatter plot of parameter counts split into two tracks: closed frontier models from GPT-3 through the leaked Mythos estimate, doubling roughly every 12 months, and open-weight models from Llama 3.1 405B through GLM-5.2 and DeepSeek-V4-Pro, doubling roughly every 18 months, both fitted with exponential trend lines extrapolated to 2028"></div>
+                        <div id="param-trend-fallback" class="plot-fallback"><b>Closed frontier</b> (~12-month doubling): GPT-3 (2020, 175B) &middot; GPT-4, leaked est. (2023, 1.8T) &middot; Grok 3, est. (2025, 3T) &middot; GPT-4.5, est. (2025, 6T) &middot; Mythos, leaked est. (2026, 10T). <b>Open-weight</b> (~18-month doubling): Llama 3.1 405B (2024, 405B) &middot; DeepSeek-V3 (2024, 671B) &middot; Kimi K2 (2025, 1T) &middot; GLM-5.2 (2026, 753B) &middot; DeepSeek-V4-Pro (2026, 1.6T).</div>
+                    </div>
+                </figure>
+
+
+                <p>None of that is a crisis in a datacenter. Clusters can keep buying HBM, channels, and nodes; the hard constraints there are power, cooling, and fleet economics, not whether a terabyte of weights can sit next to one GPU. It is a crisis when the model goes into every office and every home. A household cannot casually hang a multi-GPU memory node under the desk. What it <em>can</em> buy with a few hundred dollars is multi-terabyte NVMe &mdash; room for frontier-size open weights without five figures of RAM. For one person, one machine, private data, and the best open model available, the only easy capacity path left is to put the model on the SSD and stream it.</p>
+
+                <figure class="figure">
+                    <h3>Figure 2 &mdash; The price of VRAM, RAM, and SSD</h3>
+                    <p>An RTX&nbsp;5090's 32&nbsp;GB of VRAM and a maxed-out desktop's 256&nbsp;GB of RAM are both smaller than a single frontier open-weight model. A multi-terabyte NVMe drive is not &mdash; and it costs two orders of magnitude less per gigabyte to get there.</p>
+                    <div class="link-matrix" role="img" aria-label="Comparison of VRAM, DDR5 RAM, and NVMe SSD across capacity, bandwidth, and cost per gigabyte">
+                        <div class="matrix-corner"></div>
+                        <div class="matrix-head">VRAM<br>(RTX 5090)</div>
+                        <div class="matrix-head">DDR5 RAM<br>(4-DIMM desktop)</div>
+                        <div class="matrix-head">NVMe SSD<br>(PCIe 5.0)</div>
+                        <div class="matrix-axis">Capacity</div>
+                        <div class="matrix-cell"><b>32 GB</b><span><a href="https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/">GDDR7</a>, fixed at purchase.</span></div>
+                        <div class="matrix-cell"><b>~256 GB</b><span>Four 64 GB UDIMMs, the consumer ceiling.</span></div>
+                        <div class="matrix-cell"><b>Multiple TB</b><span>One drive; more with extra M.2 slots.</span></div>
+                        <div class="matrix-axis">Bandwidth</div>
+                        <div class="matrix-cell"><b>~1.8 TB/s</b><span><a href="https://www.techpowerup.com/gpu-specs/geforce-rtx-5090.c4216">512-bit GDDR7 bus</a>.</span></div>
+                        <div class="matrix-cell"><b>~38&ndash;70 GB/s</b><span>DDR5-8400, theoretical.</span></div>
+                        <div class="matrix-cell"><b>~14 GB/s</b><span><a href="https://www.newegg.com/insider/pcie-5-0-nvme-ssd-buying-guide-2026-is-it-worth-the-upgrade/">Rated sequential peak</a>, x4 lanes.</span></div>
+                        <div class="matrix-axis">Cost / GB</div>
+                        <div class="matrix-cell"><b>Highest</b><span>Bundled with the card.</span></div>
+                        <div class="matrix-cell"><b>~$11&ndash;15</b></div>
+                        <div class="matrix-cell"><b>~$0.10&ndash;0.20</b></div>
+                    </div>
+                </figure>
+
+                <p>Going from RAM to SSD costs you roughly a half of bandwidth, but buys you two orders of magnitude of capacity, at a much lower price. 
+                That is the home arithmetic in one table: VRAM and RAM lost the capacity race to model size at prices people can actually pay; the SSD is the first tier in years to win it. Capacity, then, is not the open problem. Streaming from disk is how a household holds a terabyte-class open model. The question the rest of this post is about is speed &mdash; whether that one order of magnitude of lost bandwidth is something interactive inference can actually afford.</p>
+
+                <h2 id="moe">MoE architecture makes it thinkable</h2>
+                <p>Mixture-of-experts models make that speed question answerable, because they don't touch most of themselves on any given token. GLM-5.2 activates roughly 40B of its 753B parameters per token; DeepSeek-V4-Pro activates roughly 49B of 1.6T. If a system could somehow read only the active experts off the SSD and nothing else, the amount of data it has to move per token &mdash; not per request, per <em>token</em> &mdash; is a small, bounded number, not the full weight file.</p>
+                <p>That gives a simple, honest model for what's achievable, in the same spirit as any back-of-envelope bandwidth estimate: if a token generation step is bound by how many bytes have to come off the SSD, and everything else &mdash; compute, transport to the GPU &mdash; is hidden behind that fetch, then tokens per second is roughly the SSD's bandwidth divided by the bytes it actually has to fetch for that token. This is a model of the ceiling, not a benchmark result; real systems layer prefetching, caching, and compute on top, and can do meaningfully better or worse depending on how well those layers work.</p>
+
+                <div class="article-table-wrap">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Bytes fetched from SSD per token</th>
+                                <th scope="col">Tokens/sec at 14 GB/s</th>
+                                <th scope="col">Where that lands</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">2 GB</th>
+                                <td>~7 tok/s</td>
+                                <td>Below the comfortable zone; watching words appear.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">1 GB</th>
+                                <td>~14 tok/s</td>
+                                <td>Usable, but the model writes slower than you read.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">0.5 GB</th>
+                                <td>~28 tok/s</td>
+                                <td>The <a href="https://www.qwe.edu.pl/tutorial/how-fast-is-n-tokens-per-second-really/">"comfortable" band</a> most people describe as fast enough.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>At 4-bit precision, GLM-5.2's 40B active parameters are themselves about 20&nbsp;GB &mdash; two orders of magnitude past even the pessimistic row in that table. The arithmetic only closes if most of what a token needs is already sitting somewhere faster than the SSD, and only the genuinely new, genuinely cold fraction of the active experts has to be fetched fresh. That fraction, not the SSD's rated bandwidth, is the number the rest of this post is actually about.</p>
+
+                <h2 id="offloading">Why naive offloading doesn't get you there</h2>
+                <p>The gap between "14 GB/s, rated" and "14 GB/s, realized" is not a rounding error. One widely cited real-world report has a 671B-parameter model, offloaded via <code>mmap</code> onto a PCIe&nbsp;5.0 NVMe drive on an otherwise capable rig, measuring <a href="https://huggingface.co/unsloth/DeepSeek-R1-GGUF/discussions/13">2&ndash;5 GB/s realized read bandwidth during inference</a> &mdash; a third to a third of the drive's rated peak &mdash; and producing on the order of <strong>2 tokens per second</strong>. That's not the comfortable zone. It's not even the frustrating-but-usable zone. It's the "watching the typewriter" zone, on hardware whose spec sheet promised something else entirely.</p>
+                <p>The cause is familiar to anyone who has read the sibling post on this blog about <a href="/article/gpu-never-learned-to-share">why a GPU scheduler has to move bytes at line rate, not just move them at all</a>: an SSD only approaches its rated sequential bandwidth with large, aligned, deeply queued reads. <code>mmap</code>-based paging does the opposite by default &mdash; expert weight accesses during decode are scattered and unpredictable, so each cold page triggers its own small, synchronous fault. A drive rated for 14 GB/s under ideal access patterns delivers a fraction of that under the access pattern naive offloading actually generates, and the resulting jitter shows up directly as stalled token generation.</p>
+                <p>So the promise in the arithmetic above is real, but it is a ceiling, not a default. Reaching it is systems work, not a firmware update &mdash; and it is the half of the story we have been optimizing for. Fitting the model is the SSD's job. Feeling fast is the I/O path's.</p>
+
+                <h2 id="hard">Why this is hard</h2>
+                <p>Granting that SSD bandwidth is the resource to spend once capacity is solved, turning that budget into tokens per second breaks into four distinct difficulties.</p>
+
+                <p><strong>Reads have to be large, aligned, and queued to mean anything.</strong> An expert's weights are one allocation among thousands scattered across a multi-hundred-gigabyte file. A naive fetch-as-you-discover-you-need-it pattern turns every expert load into a small, isolated I/O request &mdash; the same "moving memory at line rate is a different problem from moving it at all" problem <a href="/article/gpu-never-learned-to-share">this blog has written about for GPU memory</a>, one tier further down the hierarchy.</p>
+                <p><strong>You don't know which experts you need until the gate decides.</strong> A model's router picks its active experts as part of the forward pass itself, so there is no way to know with certainty what to prefetch before that computation happens. Recent research attacks this directly &mdash; <a href="https://arxiv.org/abs/2511.14102">MoE-SpeQ</a> uses a small on-device draft model to predict the next several tokens' worth of expert activations and prefetch ahead of the real gate, reporting mispredictions in roughly 9% of cases; <a href="https://arxiv.org/html/2511.10054">BuddyMoE</a> pairs prediction with a fallback "buddy" expert so a miss degrades gracefully instead of stalling the pipeline outright. Neither claims to solve prediction outright &mdash; they manage the cost of being wrong.</p>
+                <p><strong>The default path from disk to VRAM has too many stops.</strong> Without intervention, bytes travel SSD &rarr; OS page cache &rarr; a CPU-owned copy &rarr; PCIe &rarr; GPU memory, with a CPU-mediated copy at the middle step. <a href="https://developer.nvidia.com/blog/gpudirect-storage/">GPUDirect Storage</a> exists precisely to cut that CPU bounce buffer out with a direct DMA path from NVMe to GPU memory &mdash; but it was built for datacenter accelerators behind PCIe switches engineered for peer-to-peer transfer, and how completely that support reaches a consumer RTX card on a consumer motherboard is still an open, unresolved question, not a settled fact.</p>
+                <p><strong>The drive has to sustain it, and it might not be the only tenant.</strong> Early PCIe&nbsp;5.0 drives were known to throttle under sustained heavy load; by 2026 that's largely engineered around, but it's a real constraint under continuous inference, not a one-time benchmark run. And if the box serving the model is shared &mdash; more than one loop or agent drawing on the same GPU, the exact scenario <a href="/article/gpu-never-learned-to-share">this blog has argued VRAM scheduling now has to handle</a> &mdash; the SSD becomes a second contended, schedulable resource sitting right next to it, not a private disk any one tenant can assume is theirs alone.</p>
+
+                <h2 id="wici">Why this matters for WiCi</h2>
+                <p>We've written before about treating VRAM as a resource that has to be actively scheduled among tenants (<a href="/article/gpu-never-learned-to-share">The GPU Never Learned to Share</a>) and about treating the link to a nearby GPU as something whose latency has to be hidden by design, not assumed away (<a href="/article/nearby-gpu-feel-local">Making a Nearby GPU Feel Local</a>). SSD-backed inference is the same problem shape, one layer further down the memory hierarchy: a third resource, alongside VRAM and the wireless link, that has to be scheduled and prefetched rather than mounted and forgotten.</p>
+                <p>The product bet is the home case, not the rack case. A shared nearby-GPU box with real storage attached can hold open-weight frontier models that will never fit in a household VRAM or RAM budget, for a few hundred dollars of flash instead of five figures of memory. Capacity is the reason the SSD has to be the answer; speed is the reason the I/O path has to be engineered. Whether that shows up as "the best open model, near your own devices" or as a spinner is exactly the optimization problem above &mdash; and the one we have been working on.</p>
+                <p>That work is now <a href="/wici-infer">InferSSD</a>, an open-source engine that keeps expert weights on SSD and streams the working set to the GPU. <a href="/article/running-800b-models-with-inferssd">Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</a> reports its measured results on Apple Silicon and NVIDIA systems.</p>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                        <li><a href="/article/gpu-never-learned-to-share"><figure><img src="/images/research/thumbnails/gpu-never-learned-to-share.webp" alt="" loading="lazy" decoding="async"></figure><strong>The GPU Never Learned to Share</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/sglang-ssd-expert-pack"><figure><img src="/images/research/thumbnails/sglang-ssd-expert-pack.webp" alt="" loading="lazy" decoding="async"></figure><strong>WiCi x SGLang: Running Trillion Parameter LLMs on Consumer Hardware with SSD Expert Pack</strong><time datetime="2026-08">August 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+
+    

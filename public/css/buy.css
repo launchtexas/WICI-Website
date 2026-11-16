@@ -1,0 +1,898 @@
+/* =========================================
+   WiCi One — Buy page (shop/wici-one.html, at wici.ai/shop/wici-one)
+   Loaded on top of common.css. In the manner of Apple's Buy iPhone
+   pages: a hero with the price, a sticky product/price bar under the
+   site nav, a sticky image gallery on the left beside the configurator
+   steps on the right (bordered option cards, the selected one outlined
+   in the accent), and a closing summary with the Continue link into
+   Shopify checkout. The two help cards under the Edition step open
+   in-page sheets (Benchmarks, and Tech specs + Compare: native <dialog>s
+   at the end of <body>, their figures styled by css/specs.css). See
+   js/buy.js for the selection sync, gallery, and sheets.
+   ========================================= */
+
+.page--buy {
+    background: var(--bg);
+}
+
+/* ---- Hero ---- */
+.buy-hero {
+    padding: 56px 0 28px;
+}
+
+.buy-hero-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+}
+
+.buy-kicker {
+    display: block;
+    margin-bottom: 8px;
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    color: var(--accent-bright);
+}
+
+.buy-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-hero-sub);
+    font-weight: 500;
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+}
+
+.buy-avail {
+    margin: 16px 0 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink);
+}
+
+.buy-hero-price {
+    margin: 4px 0 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink);
+}
+
+/* Launch week (js/common.js shows it), under the starting price. */
+.buy-hero-launch {
+    margin: 4px 0 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--accent-bright);
+}
+
+.buy-hero-launch strong { font-weight: 600; }
+
+/* The full price struck through beside the offer price. */
+.buy-hero-was,
+.buy-price-was {
+    margin-right: 0.1em;
+    color: var(--ink-mute);
+    font-weight: 400;
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+}
+
+.buy-hero-was[hidden],
+.buy-price-was[hidden] { display: none; }
+
+.buy-hero-price strong,
+.buy-bar-price strong {
+    font-weight: 600;
+}
+
+/* ---- Sticky product bar (under the 64px site nav) ---- */
+.buy-bar {
+    position: sticky;
+    top: 64px;
+    z-index: 40;
+    background: rgba(var(--bg-rgb), 0.86);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    backdrop-filter: saturate(180%) blur(16px);
+    border-bottom: 1px solid var(--line);
+}
+
+.buy-bar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    min-height: 56px;
+    /* The nav row's measure (common.css .nav-inner), Oct 27, 2026. */
+    width: calc(100% - 48px);
+    max-width: 1360px;
+    padding-inline: 64px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.buy-bar-name {
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: var(--ls-title);
+}
+
+.buy-bar-edition {
+    margin-left: 8px;
+    font-size: var(--fs-body-s);
+    font-weight: 400;
+    color: var(--ink-mute);
+}
+
+.buy-bar-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: var(--fs-body-s);
+    line-height: 1.3;
+    color: var(--ink);
+    text-align: right;
+}
+
+.buy-bar-ship {
+    font-size: var(--fs-micro);
+    color: var(--ink-mute);
+}
+
+/* "$600 off at checkout" under the price when a known discount code is
+   in hand (js/buy.js); it takes the ship line's place, on phones too. */
+.buy-bar-discount {
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    color: var(--accent-bright);
+}
+
+/* ---- Gallery + steps ---- */
+.buy-layout {
+    padding: 36px 0 24px;
+}
+
+.buy-layout-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: start;
+}
+
+.buy-gallery {
+    position: sticky;
+    top: 160px; /* site nav + product bar + 24px of air */
+}
+
+.buy-stage {
+    position: relative;
+    border-radius: 38px;
+    background: var(--bg-soft);
+    overflow: hidden;
+}
+
+.buy-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+}
+
+.buy-track::-webkit-scrollbar {
+    display: none;
+}
+
+.buy-track:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.buy-slide {
+    flex: 0 0 100%;
+    margin: 0;
+    aspect-ratio: 4 / 3; /* the media-kit renders are 16:9 on white */
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: grid;
+    place-items: center;
+    padding: 3%;
+    box-sizing: border-box;
+}
+
+.buy-slide img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    /* The renders carry their own white ground; multiply sinks it into
+       the stage's grey so no rectangle edge shows. */
+    mix-blend-mode: multiply;
+}
+
+/* The film slide: its frames are composited on the stage's grey, so it
+   runs edge to edge with no padding and no blend. */
+.buy-slide--film {
+    padding: 0;
+}
+
+.buy-slide--film video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.buy-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; corner-shape: round;
+    border: 0;
+    background: rgba(var(--bg-rgb), 0.9);
+    color: var(--ink);
+    box-shadow: 0 2px 10px rgba(var(--ink-rgb), 0.12);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.buy-arrow:hover {
+    background: var(--bg-card);
+    transform: translateY(-50%) scale(1.04);
+}
+
+.buy-arrow--prev { left: 16px; }
+.buy-arrow--next { right: 16px; }
+
+/* js/buy.js hides the arrow that has nowhere to go; the rule above sets
+   display, which would otherwise override the attribute. */
+.buy-arrow[hidden] {
+    display: none;
+}
+
+.buy-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Segmented bars, one per slide: each is a button that jumps to its slide
+   (the 20px-tall button is the tap target, the 4px bar is drawn inside it),
+   and the current slide's bar is solid. */
+.buy-dot {
+    position: relative;
+    width: 28px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.buy-dot::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 8px;
+    height: 4px;
+    border-radius: 2px; corner-shape: round;
+    background: rgba(var(--ink-rgb), 0.18);
+    transition: background 0.2s var(--ease);
+}
+
+.buy-dot:hover::after {
+    background: rgba(var(--ink-rgb), 0.3);
+}
+
+.buy-dot.is-active::after {
+    background: var(--ink);
+}
+
+.buy-dot:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ---- Steps ---- */
+.buy-steps {
+    display: grid;
+    gap: 56px;
+    padding-top: 8px;
+}
+
+.buy-step {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.buy-step-title {
+    display: block;
+    margin: 0 0 22px;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-h3-lg);
+    font-weight: 400;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--ink-mute);
+}
+
+.buy-step-title strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.buy-options {
+    display: grid;
+    gap: 14px;
+}
+
+.buy-option {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+    border-radius: 22px;
+    background: var(--bg-card);
+    box-shadow: inset 0 0 0 1px var(--line);
+    cursor: pointer;
+    transition: box-shadow 0.15s var(--ease);
+}
+
+.buy-option:hover {
+    box-shadow: inset 0 0 0 1px var(--ink-mute);
+}
+
+.buy-option.is-selected {
+    box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.buy-option:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.buy-option-main {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.buy-option-name {
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: var(--ls-title);
+}
+
+.buy-option-sub {
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.buy-option-price {
+    flex: 0 0 auto;
+    font-size: var(--fs-caption);
+    color: var(--ink-mute);
+    text-align: right;
+}
+
+.buy-option-price strong {
+    display: block;
+    font-size: var(--fs-body);
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* Help card (Apple's tinted tip beside a step) */
+.buy-help {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+    margin-top: 14px;
+    padding: 16px 18px;
+    border: 0;
+    border-radius: 22px;
+    background: var(--bg-soft);
+    color: var(--ink);
+    font-family: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s var(--ease);
+}
+
+.buy-help:hover {
+    background: var(--bg-tint);
+}
+
+.buy-help + .buy-help {
+    margin-top: 10px;
+}
+
+.buy-help-text {
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+.buy-help-text strong {
+    display: block;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.buy-help svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    color: var(--ink-mute);
+}
+
+/* Comparison table */
+.buy-compare-wrap {
+    border-radius: 22px;
+    box-shadow: inset 0 0 0 1px var(--line);
+    overflow: hidden;
+}
+
+.buy-compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-body-s);
+    color: var(--ink);
+}
+
+.buy-compare th,
+.buy-compare td {
+    padding: 12px 16px;
+    text-align: left;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+}
+
+.buy-compare thead th {
+    border-top: 0;
+    padding-top: 14px;
+    padding-bottom: 10px;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.buy-compare tbody th {
+    font-weight: 500;
+    width: 40%;
+}
+
+.buy-compare tbody th small {
+    display: block;
+    font-size: var(--fs-micro);
+    font-weight: 400;
+    color: var(--ink-mute);
+}
+
+.buy-compare td {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.buy-compare [data-edition].is-selected {
+    background: var(--accent-soft);
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.buy-compare thead th[data-edition].is-selected {
+    color: var(--accent-bright);
+}
+
+.buy-fine {
+    margin: 12px 0 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+/* Inline text button that opens a sheet, styled as the link it replaced */
+.buy-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--accent-bright);
+    cursor: pointer;
+}
+
+.buy-link:hover {
+    text-decoration: underline;
+}
+
+/* ---- Sheets ----
+   Apple's Buy-page overlays: a rounded white sheet over a dimmed page,
+   the figure scrolling inside it under a fixed close button. Phones get
+   a bottom sheet the full width of the screen. `has-sheet` on <html>
+   (js/buy.js) freezes the page behind it. */
+.buy-sheet {
+    width: min(1040px, calc(100% - 32px));
+    max-height: min(88vh, 940px);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 38px;
+    background: var(--bg);
+    color: var(--ink);
+    box-shadow: 0 40px 100px rgba(var(--ink-rgb), 0.28);
+    overflow: hidden;
+}
+
+.buy-sheet[open] {
+    display: flex;
+    flex-direction: column;
+    animation: buy-sheet-in 0.35s var(--ease);
+}
+
+.buy-sheet::backdrop {
+    background: rgba(var(--ink-rgb), 0.42);
+}
+
+@keyframes buy-sheet-in {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .buy-sheet[open] { animation: none; }
+}
+
+html.has-sheet {
+    overflow: hidden;
+}
+
+.buy-sheet-inner {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 44px 48px 48px;
+}
+
+.buy-sheet-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%; corner-shape: round;
+    background: var(--bg-soft);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.2s var(--ease);
+}
+
+.buy-sheet-close:hover {
+    background: var(--bg-tint);
+}
+
+.buy-sheet-head {
+    margin: 0 0 32px;
+    padding-right: 48px;
+}
+
+.buy-sheet-kicker {
+    display: block;
+    margin-bottom: 8px;
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    color: var(--accent-bright);
+}
+
+.buy-sheet-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h2-sub);
+    font-weight: 500;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--ink);
+}
+
+.buy-sheet-lede {
+    max-width: 60ch;
+    margin: 10px 0 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+}
+
+/* A second figure further down the same sheet (the Tech specs sheet
+   closes with the Compare table): hairline, then a smaller header. */
+.buy-sheet-section {
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+}
+
+.buy-sheet-head--section {
+    padding-right: 0;
+}
+
+.buy-sheet-title--section {
+    font-size: var(--fs-h2-sub);
+}
+
+/* The figures sit on the sheet's white rather than the product page's
+   tinted band: the benchmark table takes the sheet's full width, the
+   compare footnotes are plain superscripts (the notes are right below),
+   and the spec grid and notes drop the section-level top margins. */
+.buy-sheet .models-table-wrap {
+    max-width: none;
+}
+
+.buy-sheet .vs-fn {
+    color: var(--accent-bright);
+}
+
+.buy-sheet .specs-compare-notes {
+    margin-top: 28px;
+}
+
+.buy-sheet .specs-grid {
+    margin-top: 0;
+}
+
+/* ---- Summary ---- */
+.buy-summary {
+    padding: 72px 0 120px;
+}
+
+.buy-summary-title {
+    margin: 0 0 24px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-h3-lg);
+    font-weight: 400;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    color: var(--ink-mute);
+}
+
+.buy-summary-title strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.buy-summary-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    padding: 32px 36px;
+    border-radius: 32px;
+    background: var(--bg-soft);
+}
+
+.buy-summary-line {
+    margin: 0;
+    font-size: var(--fs-body);
+    color: var(--ink-soft);
+}
+
+.buy-summary-price {
+    margin: 6px 0 0;
+    font-size: var(--fs-lead);
+    color: var(--ink);
+}
+
+.buy-summary-price strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+/* The discount line, there only for a visitor who came with a code. */
+.buy-summary-discount {
+    margin: 8px 0 0;
+    font-size: var(--fs-body-s);
+    line-height: var(--lh-body);
+    color: var(--accent-bright);
+}
+
+.buy-summary-discount[hidden] {
+    display: none;
+}
+
+.buy-summary-discount strong {
+    font-weight: 600;
+}
+
+.buy-summary-ship {
+    margin: 8px 0 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+}
+
+.buy-summary-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    flex: 0 0 auto;
+}
+
+.buy-continue {
+    background: var(--accent);
+    min-width: 200px;
+    justify-content: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.buy-continue:hover {
+    background: var(--accent-hover);
+}
+
+.buy-summary-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+    white-space: nowrap;
+}
+
+.buy-summary-note svg {
+    flex: 0 0 auto;
+}
+
+/* Under it, the three purchase policies (shop/policies), one link each. */
+.buy-summary-policies {
+    margin: -4px 0 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--ink-mute);
+    white-space: nowrap;
+}
+
+.buy-summary-policies a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--ink-rgb), 0.3);
+    text-underline-offset: 3px;
+    transition: color 0.2s var(--ease), text-decoration-color 0.2s var(--ease);
+}
+
+.buy-summary-policies a:hover {
+    color: var(--ink);
+    text-decoration-color: currentColor;
+}
+
+/* ---- Tablet / phone ---- */
+@media (max-width: 960px) {
+    .buy-layout-inner {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+    .buy-gallery {
+        position: static;
+    }
+}
+
+@media (max-width: 720px) {
+    .buy-hero {
+        padding: 36px 0 20px;
+    }
+    .buy-hero-inner {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .buy-sheet {
+        /* A floating card with a gutter on every side rather than an
+           edge-to-edge bottom sheet. `max-width: none` lifts the UA
+           stylesheet's cap on <dialog>, which would otherwise pin it
+           to the left edge. */
+        width: calc(100% - 24px);
+        max-width: none;
+        max-height: calc(100dvh - 48px);
+        margin: auto;
+        border-radius: 35px;
+    }
+    .buy-sheet-inner {
+        padding: 40px 20px 32px;
+    }
+    .buy-sheet-head {
+        margin-bottom: 26px;
+    }
+    /* The compare table's pinned row labels sit on the sheet's white */
+    .buy-sheet .vs-table thead th:first-child,
+    .buy-sheet .vs-table tbody th {
+        background: var(--bg);
+    }
+    /* The sheet is 24px narrower than the page, so its columns are
+       trimmed to keep the third one peeking in on a 375px phone. */
+    .buy-sheet .vs-table thead th:first-child,
+    .buy-sheet .vs-table tbody th {
+        width: 108px;
+        min-width: 108px;
+    }
+    .buy-sheet .vs-table td {
+        min-width: 98px;
+    }
+    .buy-sheet .vs-table th.is-wici,
+    .buy-sheet .vs-table td.is-wici {
+        min-width: 126px;
+    }
+    .buy-bar-inner {
+        width: 100%;
+        padding-inline: 20px;
+    }
+    .buy-bar {
+        top: 56px; /* phone nav height */
+    }
+    .buy-bar-edition {
+        display: none;
+    }
+    .buy-bar-ship {
+        display: none;
+    }
+    .buy-steps {
+        gap: 44px;
+    }
+    .buy-option {
+        padding: 16px 18px;
+    }
+    .buy-arrow {
+        display: none;
+    }
+    .buy-summary {
+        padding: 48px 0 88px;
+    }
+    .buy-summary-card {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 24px 22px;
+        gap: 22px;
+    }
+    .buy-summary-actions {
+        align-items: stretch;
+    }
+    .buy-continue {
+        width: 100%;
+    }
+}

@@ -1,0 +1,326 @@
+
+
+        <!-- Hero — the question, then the three places inference can run.
+             Evidence throughout the page is from SemiAnalysis, "A Brain
+             Too Big to Carry — On-Device vs Datacenter Inference"
+             (Sept 14, 2026), cited in #sources. -->
+        <section class="sol-banner">
+            <picture class="sol-banner-media">
+                <source media="(max-width: 720px)" srcset="/images/solutions/robot-arm-bench-banner-phone-720.webp 720w, /images/solutions/robot-arm-bench-banner-phone-1440.webp 1440w" sizes="100vw" width="1440" height="2560">
+                <img src="/images/solutions/robot-arm-bench-banner-1600.webp" srcset="/images/solutions/robot-arm-bench-banner-1600.webp 1600w, /images/solutions/robot-arm-bench-banner-3200.webp 3200w" sizes="100vw" width="3200" height="1066" alt="An engineer holding a teach pendant at a workbench beside a white robot arm." fetchpriority="high">
+            </picture>
+            <div class="sol-banner-copy">
+                <span class="sol-banner-kicker">Solutions · Robotics</span>
+                <h1 class="sol-banner-title">Run robot inference <br>on site.</h1>
+            </div>
+        </section>
+
+        <section class="hero hero--page hero--after-banner hero--pi">
+            <div class="container">
+                <p class="hero-lede">
+                    Robot foundation models have outgrown on-robot processors. Cloud inference depends on wireless and internet connections that cannot guarantee latency. WiCi provides a third option: a shared GPU on the premises, one wireless hop from every robot.
+                </p>
+
+                <ol class="pi-places" aria-label="Three places robot inference can run">
+                    <li class="pi-place">
+                        <svg class="pi-place-glyph" viewBox="0 0 90 90" fill="currentColor" aria-hidden="true"><path d="M64.7578 9L61.7578 12H54C52.344 12 51 13.344 51 15V18H29.4492C28.2099 14.5115 24.9139 12 21 12C16.029 12 12 16.029 12 21C12 25.138 14.8064 28.5848 18.6094 29.6367L31.6934 55.8105C34.8464 53.1885 38.6724 51.5639 42.7734 51.1289L29.3555 24.293C29.3929 24.1982 29.415 24.0964 29.4492 24H51V27C51 28.656 52.344 30 54 30H61.7578L64.7578 33H78V27H67.2422L63 22.7578V19.2422L67.2422 15H78V9H64.7578ZM21 18C22.5976 18 23.8746 19.2608 23.9648 20.8359C23.9586 20.9472 23.9586 21.0587 23.9648 21.1699C23.8717 22.7423 22.5956 24 21 24C19.344 24 18 22.656 18 21C18 19.344 19.344 18 21 18ZM45 57C40.11 57 35.8063 59.376 33.0703 63H18C14.685 63 12 65.685 12 69V78H78V69C78 65.685 75.315 63 72 63H56.9297C54.1907 59.376 49.89 57 45 57ZM45 66C46.656 66 48 67.344 48 69C48 70.656 46.656 72 45 72C43.344 72 42 70.656 42 69C42 67.344 43.344 66 45 66Z"/></svg>
+                        <span class="pi-place-name">On the robot</span>
+                        <span class="pi-place-verdict">Limited compute.</span>
+                        <span class="pi-place-desc">A 40 to 130&nbsp;W processor with one tenth of the performance of a datacenter GPU, utilized a fraction of the day.</span>
+                    </li>
+                    <li class="pi-place">
+                        <svg class="pi-place-glyph" viewBox="0 0 90 90" fill="currentColor" aria-hidden="true"><path d="M54 15C49.5771 15.0041 45.2413 16.2304 41.4714 18.5434C37.7015 20.8565 34.6441 24.1663 32.6367 28.1074C30.8467 27.3786 28.9327 27.0026 27 27C23.3711 27.0045 19.8668 28.3245 17.1367 30.7152C14.4066 33.1059 12.6357 36.4054 12.1523 40.002C8.61003 41.2187 5.53552 43.5102 3.35721 46.5571C1.17891 49.604 0.00533017 53.2545 0 57C0 61.7739 1.89642 66.3523 5.27208 69.7279C8.64773 73.1036 13.2261 75 18 75H72C76.7739 75 81.3523 73.1036 84.7279 69.7279C88.1036 66.3523 90 61.7739 90 57C89.9946 53.2726 88.8321 49.6389 86.6732 46.6004C84.5143 43.5619 81.4653 41.2686 77.9473 40.0371C77.9723 39.6918 77.9899 39.346 78 39C78 32.6348 75.4714 26.5303 70.9706 22.0294C66.4697 17.5286 60.3652 15 54 15Z"/></svg>
+                        <span class="pi-place-name">In the cloud</span>
+                        <span class="pi-place-verdict">Unreliable latency. Continuous cost.</span>
+                        <span class="pi-place-desc">Access to the largest models, but every decision depends on Wi&#8209;Fi, access-point handoffs, and shared internet links, and the bill accrues for every hour of use.</span>
+                    </li>
+                    <li class="pi-place is-wici">
+                        <img class="pi-place-glyph pi-place-glyph--logo" src="/images/common/logo-lockup-white.svg" alt="WiCi">
+                        <span class="pi-place-name">On site</span>
+                        <span class="pi-place-verdict">Datacenter-class compute, one hop away.</span>
+                        <span class="pi-place-desc">One GPU on the premises, shared by laptops, local AI models, and robots over a dedicated wireless link.</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 01 · The problem: limited on the robot, unreliable in the cloud -->
+        <section class="section section--tint pi-section" id="problem">
+            <div class="container">
+                <header class="pi-section-head">
+                    <span class="section-kicker">01 · The problem</span>
+                    <h2 class="section-title">Limited on the robot.<br><em>Unreliable in the cloud.</em></h2>
+                    <p class="section-subtitle">Larger models generalize to more tasks. On-robot processors cannot run them, and datacenter GPUs are only reachable over a network.<sup class="pi-fn"><a href="#sources" aria-label="Source note">1</a></sup></p>
+                </header>
+
+                <figure class="pi-budget" aria-label="A planning model's 200 ms latency budget compared with network round trips">
+                    <figcaption class="pi-budget-title">A planning model gets 200&nbsp;ms per decision. Every network delay comes out of it.</figcaption>
+                    <ol class="pi-bars">
+                        <li class="pi-bar pi-bar--budget" style="--w: 100%;">
+                            <span class="pi-bar-label">Latency budget per decision</span>
+                            <span class="pi-bar-track"><span class="pi-bar-fill"></span></span>
+                            <span class="pi-bar-val">200&nbsp;ms</span>
+                        </li>
+                        <li class="pi-bar pi-bar--wici" style="--w: 0.75%;">
+                            <span class="pi-bar-label">On-site wireless link <img class="pi-bar-logo" src="/images/common/logo-lockup.svg" alt="WiCi"></span>
+                            <span class="pi-bar-track"><span class="pi-bar-fill"></span></span>
+                            <span class="pi-bar-val">~1.5&nbsp;ms</span>
+                        </li>
+                        <li class="pi-bar" style="--w: 25%;">
+                            <span class="pi-bar-label">Typical round trip to a cloud datacenter</span>
+                            <span class="pi-bar-track"><span class="pi-bar-fill"></span></span>
+                            <span class="pi-bar-val">50&nbsp;ms+</span>
+                        </li>
+                        <li class="pi-bar pi-bar--over" style="--w: 100%;">
+                            <span class="pi-bar-label">Tail stall on the internet path</span>
+                            <span class="pi-bar-track"><span class="pi-bar-fill"></span></span>
+                            <span class="pi-bar-val">1&nbsp;s+ <small>5&times; the budget, off the chart</small></span>
+                        </li>
+                    </ol>
+                    <div class="pi-bar-axis" aria-hidden="true">
+                        <span></span>
+                        <span class="pi-bar-ticks"><span>0</span><span>50</span><span>100</span><span>150</span><span>200&nbsp;ms</span></span>
+                        <span></span>
+                    </div>
+                    <p class="pi-budget-note">Local link: WiCi's measured base round trip on Wi&#8209;Fi&nbsp;6. Cloud round trip: a typical value. Tail stall: the one-second spikes reported from field deployments.<sup class="pi-fn"><a href="#sources" aria-label="Source note">1</a></sup></p>
+                </figure>
+
+                <div class="pi-ledger" role="group" aria-label="On-robot processors versus cloud inference">
+                    <div class="pi-ledger-col">
+                        <span class="pi-ledger-name">On the robot <small>current on-robot processors</small></span>
+                        <span class="pi-ledger-line"><strong>1/10<small>Compute</small></strong><span>the compute of a datacenter GPU, 1/30 the memory bandwidth</span></span>
+                        <span class="pi-ledger-line"><strong>130&nbsp;W<small>Power</small></strong><span>power budget, from a ~2&nbsp;kWh battery. A datacenter GPU draws 1.2 to 1.4&nbsp;kW</span></span>
+                        <span class="pi-ledger-line"><strong>Too small<small>Models</small></strong><span>π0.7, DreamZero, and the Atlas planning model already run off-robot</span></span>
+                        <span class="pi-ledger-line"><strong>4&ndash;8%<small>Utilization</small></strong><span>of the day in use for home robots; 40% in the leading factory deployment</span></span>
+                        <span class="pi-ledger-line"><strong>~4 yr<small>Lifespan</small></strong><span>service life under vibration, shock, and drops</span></span>
+                        <span class="pi-ledger-verdict">fixed capacity, purchased for every robot</span>
+                    </div>
+                    <div class="pi-ledger-col">
+                        <span class="pi-ledger-name">In the cloud <small>datacenter GPUs over a network</small></span>
+                        <span class="pi-ledger-line"><strong>1&nbsp;s<small>Tail latency</small></strong><span>a single delay of this size halts a robot mid-task. Tail latency matters, not the average</span></span>
+                        <span class="pi-ledger-line"><strong>100&nbsp;ms+<small>Handoffs</small></strong><span>link interruption on every access-point handoff, up to several seconds</span></span>
+                        <span class="pi-ledger-line"><strong>2 days<small>Home Wi&#8209;Fi</small></strong><span>of in-home testing before one home-robot company abandoned cloud inference</span></span>
+                        <span class="pi-ledger-line"><strong>Uplink<small>Traffic</small></strong><span>Wi&#8209;Fi is designed for downlink; a moving robot uploads a continuous video stream</span></span>
+                        <span class="pi-ledger-line"><strong>Off site<small>Data</small></strong><span>video of the home or factory leaves the premises</span></span>
+                        <span class="pi-ledger-verdict">full model capacity, dependent on network availability</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 02 · The economics: the robot shares the GPU already on site,
+             so no additional GPU is purchased for it -->
+        <section class="section pi-section" id="economics">
+            <div class="container">
+                <header class="pi-section-head">
+                    <span class="section-kicker">02 · The economics</span>
+                    <h2 class="section-title">One GPU.<br><em>Every workload.</em></h2>
+                    <p class="section-subtitle">The on-site GPU already serves laptops, local AI models, and rendering. The robot shares it. No additional GPU is purchased for the robot.</p>
+                </header>
+
+                <div class="pi-share">
+                    <figure class="pi-share-fig" aria-label="Laptops, local AI models, rendering, and robots sharing one on-site GPU">
+                        <ul class="pi-share-work">
+                            <li>Laptop and desktop apps</li>
+                            <li>Local AI models</li>
+                            <li>Rendering</li>
+                            <li class="is-robot">Robot inference</li>
+                        </ul>
+                        <span class="pi-share-link" aria-hidden="true"></span>
+                        <div class="pi-share-gpu">
+                            <img src="/images/common/logo-lockup.svg" alt="WiCi">
+                            <span>One GPU on site</span>
+                        </div>
+                        <figcaption>Every workload in the building runs on the same GPU over the same link. The robot is one more client.</figcaption>
+                    </figure>
+
+                    <div class="pi-share-points">
+                        <div class="pi-stat">
+                            <span class="pi-stat-num">0</span>
+                            <span class="pi-stat-label">additional GPUs. The robot uses the GPU already serving the other devices on site.</span>
+                        </div>
+                        <div class="pi-stat">
+                            <span class="pi-stat-num">4&ndash;8%</span>
+                            <span class="pi-stat-label">of the day a home robot's on-robot processor is in use.<sup class="pi-fn"><a href="#sources" aria-label="Source note">1</a></sup> The remaining capacity is purchased and idle.</span>
+                        </div>
+                        <div class="pi-stat">
+                            <span class="pi-stat-num">1&times;</span>
+                            <span class="pi-stat-label">purchase. Cloud GPU cost increases with every hour of use. An owned GPU is paid for once and shared by every device.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The answer: on-site GPU inference (the page's centerpiece, on
+             the dark navy-to-violet band; the CTA row closes it) -->
+        <section class="section pi-section pi-section--answer" id="on-site">
+            <div class="container">
+                <header class="pi-section-head">
+                    <span class="section-kicker">The WiCi approach</span>
+                    <h2 class="section-title">On-site GPU inference<br><em>for robots.</em></h2>
+                    <p class="section-subtitle">A shared GPU on the premises, one wireless hop from every robot, over a link designed for robot traffic.</p>
+                </header>
+
+                <div class="pi-prose pi-prose--dark">
+                    <p>
+                        Datacenter GPUs provide capacity. On-robot processors provide deterministic latency and keep data local. <strong>An on-site GPU provides both</strong>: a full-size GPU, shared with every device in the building, with <strong>no handoffs, no shared internet links, and no internet in the control loop</strong>. Data stays on the premises. <strong>Worst-case latency is one wireless hop.</strong>
+                    </p>
+                    <p>
+                        WiCi delivers this as one system. WiCi One is the on-premises GPU. The <a href="/technology">Overview</a> presents it to the robot as a local GPU over standard Wi&#8209;Fi, at a measured ~1.5&nbsp;ms base round trip. The WiCi Wireless Chip is the robot-side radio, so both ends of the link run on one schedule.
+                    </p>
+                </div>
+
+                <div class="pi-compare-wrap">
+                    <table class="pi-compare">
+                        <caption class="sr-only">Where inference runs: on site with WiCi, on the robot, or in the cloud</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col" class="is-wici">On site <img class="pi-compare-logo" src="/images/common/logo-lockup.svg" alt="WiCi"></th>
+                                <th scope="col">On the robot</th>
+                                <th scope="col">In the cloud</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Model capacity</th>
+                                <td class="is-wici">Full-size GPU</td>
+                                <td>40 to 130&nbsp;W processor</td>
+                                <td>Large, but costly</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Round-trip latency</th>
+                                <td class="is-wici">One hop, ~1.5&nbsp;ms base on Wi&#8209;Fi&nbsp;6</td>
+                                <td>None</td>
+                                <td>10 to 50&nbsp;ms typical, up to seconds</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Latency variation</th>
+                                <td class="is-wici">Low: scheduled link, no handoffs</td>
+                                <td>None</td>
+                                <td>High: handoffs, shared links, contention</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Internet dependency</th>
+                                <td class="is-wici">None</td>
+                                <td>None</td>
+                                <td>Required</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Data location</th>
+                                <td class="is-wici">On the premises</td>
+                                <td>On the robot</td>
+                                <td>Off site</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Shared with other workloads</th>
+                                <td class="is-wici">Yes: laptops, local AI models, robots</td>
+                                <td>No, dedicated to one robot</td>
+                                <td>Yes, with other tenants</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Power and cooling</th>
+                                <td class="is-wici">Wall outlet on site</td>
+                                <td>Robot battery</td>
+                                <td>Remote datacenter</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Safety control loops</th>
+                                <td class="is-wici">On the robot</td>
+                                <td>On the robot</td>
+                                <td>Fallback stop only; the full loop depends on the link</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pi-needs-wrap">
+                    <aside class="pi-team">
+                        <img class="pi-team-logo" src="/images/common/logo-lockup-white.svg" alt="WiCi">
+                        <span class="pi-team-kicker">The WiCi team</span>
+                        <h3 class="pi-team-title">Built by the researchers behind latency-guaranteed Wi&#8209;Fi.</h3>
+                        <ul class="pi-team-facts">
+                            <li><strong>10 years</strong> of research in real-time wireless networking and machine-learning systems</li>
+                            <li><strong>First</strong> latency-guaranteed Wi&#8209;Fi-compatible router</li>
+                            <li><strong>10+</strong> paper awards from ACM and IEEE (SIGCOMM, NSDI, OSDI, ASPLOS, SIGMOD)</li>
+                        </ul>
+                        <a class="latest-head-link pi-team-link" href="/about">
+                            <span>About the team</span>
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </aside>
+
+                    <div class="pi-needs-body">
+                        <h3 class="pi-needs-title">Requirements for a robot wireless link</h3>
+                        <p class="pi-needs-lede">Reliable off-robot inference requires the access point and the robot radio to be designed together.<sup class="pi-fn"><a href="#sources" aria-label="Source note">1</a></sup> The WiCi stack is designed to these four requirements.</p>
+                        <ul class="pi-needs">
+                            <li><strong>Scheduled, uplink-first access.</strong> Each robot is assigned a fixed transmission slot instead of contending for the channel, and the link is designed for the upstream video traffic that standard Wi&#8209;Fi is not.</li>
+                            <li><strong>Common time base.</strong> Frames are captured and transmitted on one clock, so the GPU processes them on arrival without queuing.</li>
+                            <li><strong>No handoffs, clear spectrum.</strong> One site, one GPU, one hop, on wide uncongested channels with data duplicated across links, so nothing is handed off or retransmitted.</li>
+                            <li><strong>No site modifications.</strong> The GPU includes its own link. Existing Wi&#8209;Fi and customer networks are unchanged.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pi-land">
+                    <article class="pi-land-card">
+                        <span class="pi-land-kicker">Home</span>
+                        <h3 class="pi-land-title">One GPU for every robot and device in the home.</h3>
+                        <p>Home robot manufacturers moved inference back on-robot because residential Wi&#8209;Fi is unreliable. WiCi One includes its own link, installs on a shelf, and serves vacuum, laundry, and assistant robots from the same GPU that serves the household's laptops, phones, and local AI models.</p>
+                        <a class="latest-head-link" href="/wici-one">
+                            <span>See WiCi One</span>
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </article>
+                    <article class="pi-land-card">
+                        <span class="pi-land-kicker">Warehouse</span>
+                        <h3 class="pi-land-title">Add compute without site modifications.</h3>
+                        <p>Warehouse robots keep inference on-robot to avoid changes to customer networks, at the cost of smaller models and an underutilized processor in every unit. An on-site GPU with its own link runs the larger model for the robot alongside the site's other GPU workloads, and leaves the site network unchanged.</p>
+                        <a class="latest-head-link" href="/developers">
+                            <span>Build on WiCi</span>
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </article>
+                    <article class="pi-land-card">
+                        <span class="pi-land-kicker">Factory</span>
+                        <h3 class="pi-land-title">Keep the planning model on the premises.</h3>
+                        <p>Leading factory robots already run the planning model off-robot through a cloud service. Running it on site limits the round trip to one hop, keeps plant video on the premises, and meets the requirements of customers that cannot transfer data off site.</p>
+                        <a class="latest-head-link" href="/about#contact">
+                            <span>Contact us</span>
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </article>
+                </div>
+
+                <div class="pi-cta-inner" id="access">
+                    <h3 class="pi-cta-title">Deploy on-site inference.</h3>
+                    <p class="pi-cta-lede">Developing a robot? Apply for early SDK access, or reserve a WiCi One for home use.</p>
+                    <div class="pi-cta-row">
+                        <a class="cta cta--primary pi-cta-btn" href="/developers#access">
+                            <span>Request developer access</span>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                        <a class="cta cta--ghost pi-cta-btn pi-cta-btn--ghost" href="/shop/wici-one">
+                            <span>Buy WiCi One</span>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sources -->
+        <section class="section pi-sources" id="sources">
+            <div class="container">
+                <h2 class="pi-sources-title">Sources</h2>
+                <p>
+                    <sup class="pi-fn pi-fn--static">1</sup> The Jetson Thor comparison, the latency budgets, the link requirements, the model sizes, the utilization figures, and the deployment accounts are from the public part of SemiAnalysis, <a href="https://newsletter.semianalysis.com/p/a-brain-too-big-to-carry-on-device" target="_blank" rel="noopener">A Brain Too Big to Carry — On-Device vs Datacenter Inference</a> (Ivan Chiam, Gianluca, Zane Fong, and others; September 14, 2026). The full report is for SemiAnalysis subscribers. The conclusions about on-site inference are WiCi's.
+                </p>
+                <p>
+                    The ~1.5&nbsp;ms Wi&#8209;Fi&nbsp;6 base round-trip time is WiCi's own measurement, documented on the <a href="/technology#latency">Technology</a> page and in <a href="/article/nearby-gpu-feel-local">Making a Nearby GPU Feel Local</a>. Company and product names belong to their owners; none of them endorses WiCi.
+                </p>
+            </div>
+        </section>
+
+    

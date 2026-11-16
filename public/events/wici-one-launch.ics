@@ -1,0 +1,17 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//WiCi//WiCi One launch//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:wici-one-launch-2026@wici.ai
+DTSTAMP:20260918T000000Z
+DTSTART:20261005T120000Z
+DTEND:20261005T220000Z
+RRULE:FREQ=DAILY;COUNT=2
+SUMMARY:WiCi One product launch
+LOCATION:The Brownstone Social\, 109 W 25th St\, New York\, NY 10001
+DESCRIPTION:First public demos of WiCi One\, a wireless local AI GPU. Drop in 8 AM to 6 PM\, or reserve a 30-minute slot. October 5 is reserved for media. Details and RSVP: https://wici.ai/events/wici-one-launch
+URL:https://wici.ai/events/wici-one-launch
+END:VEVENT
+END:VCALENDAR

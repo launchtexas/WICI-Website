@@ -1,0 +1,84 @@
+
+
+    <!-- The tech explainer over the page (Oct 30, 2026): a native <dialog>
+         opened by the Big Idea's "See how it works" button (initFilmSheet in
+         js/product.js). The same film as the Developer Experience section's
+         .dx-film, under the site's own controls (window.WiCiFilm); it starts
+         with sound on open, pauses on close. The close square, a click on the
+         backdrop and Escape close it. Styles: product.css "Film sheet". -->
+    <dialog class="film-sheet" id="explainerSheet" data-lenis-prevent aria-label="How WiCi One works: the tech explainer">
+        <button type="button" class="film-sheet-close" aria-label="Close">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <figure class="film film-sheet-film">
+            <video playsinline preload="none" poster="/images/product/film-explainer-poster.webp" aria-label="The WiCi One tech explainer: how an application reaches the GPU through the Driver, the SDK, or the API, with voice-over and captions">
+                <source src="/cdn.wici.ai/video/film-explainer-full-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+                <source src="/cdn.wici.ai/video/film-explainer-full-h264.mp4" type='video/mp4; codecs="avc1.640028"'>
+            </video>
+        </figure>
+    </dialog>
+
+    <!-- Signup pop-up (Oct 2, 2026): the page's one unprompted ask, a native
+         <dialog> opened once per page view by initSignupPop in js/product.js,
+         20 seconds after load or when the Benchmarks band (#models) scrolls
+         into view, whichever comes first, but never on a visit that came
+         from one of our emails (utm_medium=email). Nothing is stored, so a
+         reload shows it again. It asks for the newsletter and, since Oct 3,
+         names the signup discount, without a figure, as form
+         popup-cta.
+         A verified signup swaps the form for
+         the confirmation in place, then the card closes itself; there is no
+         note follow-up here (data-no-followup). The render is the hero's,
+         already in the cache. Styles: product.css "Signup pop-up". -->
+    <dialog class="signup-pop" id="signupPop" data-lenis-prevent aria-labelledby="signupPopTitle">
+        <button type="button" class="signup-pop-close" data-pop-close aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <div class="signup-pop-stage" aria-hidden="true">
+            <img src="/images/product/hero-device-ledge.webp" width="4096" height="2387" alt="" loading="lazy" decoding="async">
+        </div>
+        <div class="signup-pop-views">
+            <div class="signup-pop-view signup-pop-ask">
+                <span class="signup-pop-kicker">Newsletter</span>
+                <h2 class="signup-pop-title" id="signupPopTitle" tabindex="-1">Get WiCi One updates.</h2>
+                <p class="signup-pop-text">A signup discount on WiCi One, plus benchmarks, demos, and product news by email.</p>
+                <form class="nl-form" data-form-name="popup-cta" data-list="newsletter" data-no-followup>
+                    <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none;">
+                    <div class="nl-row">
+                        <input type="email" name="email" placeholder="you@domain.com" autocomplete="email" aria-label="Email" required>
+                        <button type="submit" class="cta cta--primary">
+                            <span>Sign Up</span>
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="signup-notice">By signing up, you agree to receive WiCi product and marketing emails. Unsubscribe anytime. <a href="/privacy">Privacy</a>.</p>
+                </form>
+                <button type="button" class="signup-pop-skip" data-pop-close>Not now</button>
+            </div>
+            <div class="signup-pop-view signup-pop-done">
+                <span class="signup-pop-check" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 16 16" fill="none"><path d="m3.5 8.5 3 3 6-7" pathLength="1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <h2 class="signup-pop-title" tabindex="-1">You're on the list.</h2>
+                <p class="signup-pop-text">We'll email you your signup discount.</p>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- The pop-up's way back: closed without a signup, it leaves this pill
+         at the bottom centre, in the floating CTA's dress and place (that
+         one retires once the pop-up has opened), and a click opens the
+         pop-up again. Gone for good after a signup. -->
+    <button type="button" class="float-cta signup-pop-launch" id="signupPopLaunch" aria-haspopup="dialog" aria-controls="signupPop">
+        <span>Get WiCi One updates</span>
+        <span class="float-cta-dot" aria-hidden="true"></span>
+    </button>
+
+    <script src="/js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/signup.js"></script>
+    <script src="/js/specs.js"></script>
+    <script src="/js/product.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>

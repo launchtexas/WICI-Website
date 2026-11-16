@@ -1,0 +1,25 @@
+
+    <script src="/js/vendor/lenis-1.3.27.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/articles.js"></script>
+    <script src="/js/inferssd.js"></script>
+    <script>
+        /* The WiCi Infer bar: closed for the browser session by its button, away while the footer is in view. */
+        (function () {
+            var bar = document.getElementById('infApp');
+            if (!bar) return;
+            var KEY = 'wici-inf-app-closed';
+            try { if (sessionStorage.getItem(KEY)) { bar.remove(); return; } } catch (e) {}
+            bar.querySelector('.inf-app-close').addEventListener('click', function () {
+                try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+                bar.remove();
+            });
+            var footer = document.querySelector('.footer');
+            if (footer && 'IntersectionObserver' in window) {
+                new IntersectionObserver(function (entries) {
+                    bar.classList.toggle('is-away', entries[0].isIntersecting);
+                }).observe(footer);
+            }
+        }());
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"42d92745108e4c41b4dea1a7f5977142","r":1,"spa":2}' crossorigin="anonymous"></script>

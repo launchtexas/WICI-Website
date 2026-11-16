@@ -1,0 +1,281 @@
+
+        <section class="section dev-hero">
+            <div class="container container--wide dev-hero-inner">
+                <div class="dev-hero-copy">
+                    <span class="section-kicker">WiCi for Developers</span>
+                    <h1 class="dev-hero-title">Build local AI<br>into your applications.</h1>
+                </div>
+                <div class="dev-hero-aside">
+                    <p class="dev-hero-lede">Give any device access to nearby GPU compute. Keep the APIs, languages, and workflows you already use.</p>
+                    <a href="https://developer.wici.ai/" class="dev-inline-link">Read the documentation and quickstart <span aria-hidden="true">→</span></a>
+                </div>
+                <figure class="dev-hero-figure">
+                    <img src="/images/developers/desk-device-front-1300.webp" srcset="/images/developers/desk-device-front-1300.webp 1300w, /images/developers/desk-device-front-2600.webp 2600w" sizes="(min-width: 1320px) 1264px, calc(100vw - 56px)" width="1300" height="561" alt="WiCi One on a walnut desk in afternoon light, between a camera and a monitor running a photo editor." fetchpriority="high">
+                </figure>
+            </div>
+        </section>
+
+        <section class="section dev-benefits" id="local">
+            <div class="container">
+                <header class="dev-section-head">
+                    <span class="section-kicker">Local compute</span>
+                    <h2 class="section-title">Why build on<br><em>local compute.</em></h2>
+                    <p class="section-subtitle">Your app stays on the device. The compute moves nearby.</p>
+                </header>
+
+                <div class="dev-benefit-grid">
+                    <article class="dev-benefit-card">
+                        <span class="dev-benefit-mark" aria-hidden="true">01</span>
+                        <h3>Lower latency.</h3>
+                        <p>Requests stay on your local network instead of crossing the public internet, so responses stream back sooner.</p>
+                    </article>
+                    <article class="dev-benefit-card">
+                        <span class="dev-benefit-mark" aria-hidden="true">02</span>
+                        <h3>Private by design.</h3>
+                        <p>Audio, frames, prompts, and context stay on your local network.</p>
+                    </article>
+                    <article class="dev-benefit-card">
+                        <span class="dev-benefit-mark" aria-hidden="true">03</span>
+                        <h3>No cloud dependency.</h3>
+                        <p>Applications keep working even when the internet connection does not.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section dev-layer" id="layer">
+            <div class="container dev-layer-grid">
+                <div class="dev-layer-copy">
+                    <span class="section-kicker">The abstraction layer</span>
+                    <h2 class="section-title">One GPU.<br><em>Every device.</em></h2>
+                    <p class="section-subtitle">WiCi One sits on your network as a shared compute layer. Your laptop, phone, camera, or robot can use it without carrying the GPU inside.</p>
+                    <a href="/technology" class="dev-inline-link">Explore the WiCi Protocol <span aria-hidden="true">→</span></a>
+                </div>
+
+                <div class="dev-layer-flow" role="img" aria-label="Applications connect through the WiCi layer to one shared local GPU">
+                    <div class="dev-flow-row">
+                        <span>Voice agent</span>
+                        <span>Copilot</span>
+                        <span>Robot</span>
+                    </div>
+                    <div class="dev-flow-line" aria-hidden="true"></div>
+                    <div class="dev-flow-layer">WiCi</div>
+                    <div class="dev-flow-line" aria-hidden="true"></div>
+                    <div class="dev-flow-gpu">
+                        <strong>Local GPU compute</strong>
+                        <span>Shared across your network</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section dev-experience" id="docs">
+            <div class="container container--wide">
+                <header class="dev-section-head dev-section-head--center">
+                    <span class="section-kicker">Developer experience</span>
+                    <h2 class="section-title">Use the tools<br><em>you already know.</em></h2>
+                    <p class="section-subtitle">Driver, SDK, and API are three independent ways to use the same local GPU.</p>
+                </header>
+
+                <div class="dev-mode-intro">
+                    <h3>Three independent integration paths.</h3>
+                    <p>Choose the one that fits your application. Each works on its own.</p>
+                </div>
+
+                <div class="dev-modes" role="tablist" aria-label="Choose a WiCi integration mode">
+                    <div class="dev-mode">
+                        <button type="button" class="dev-path" role="tab" id="dev-mode-driver" aria-selected="true" aria-controls="dev-code-driver" data-code-mode="driver">
+                            <span class="dev-path-label">Driver</span>
+                            <span class="dev-path-visual" aria-hidden="true">
+                                <b>GPU app</b><i></i><b class="is-interface">Virtual GPU</b><i></i><b class="is-gpu">WiCi One</b>
+                            </span>
+                            <strong class="dev-path-title">Use it as a virtual GPU.</strong>
+                            <span class="dev-path-copy">WiCi One appears in supported software as an attached virtual GPU.</span>
+                            <span class="dev-path-example-label">Best developer path for</span>
+                            <span class="dev-path-examples" role="list" aria-label="Example Driver workloads">
+                                <span role="listitem">CUDA apps</span><span role="listitem">Renderers</span><span role="listitem">Video editors</span>
+                            </span>
+                            <code>wici gpu attach</code>
+                        </button>
+                        <section class="dev-code-example" role="tabpanel" id="dev-code-driver" aria-labelledby="dev-mode-driver" data-code-panel="driver">
+                        <header>
+                            <div><span>Driver</span><h3>Attach a virtual GPU.</h3></div>
+                            <p>WiCi One appears as <code>wici.gpu</code>.</p>
+                        </header>
+                        <pre><code><span class="dev-code-muted">$</span> wici gpu attach
+<span class="dev-code-string">✓ Virtual GPU attached as wici.gpu</span></code></pre>
+                        <div class="dev-device-info" role="img" aria-label="System device information showing WiCi Virtual GPU connected through wici.gpu">
+                            <div class="dev-device-info-bar">
+                                <span>Graphics Device</span>
+                                <b><i aria-hidden="true"></i> Connected</b>
+                            </div>
+                            <div class="dev-device-info-body">
+                                <span class="dev-device-info-icon" aria-hidden="true">GPU</span>
+                                <div class="dev-device-info-name">
+                                    <strong>WiCi Virtual GPU</strong>
+                                    <span>Available to supported GPU applications</span>
+                                </div>
+                                <dl>
+                                    <div><dt>Device</dt><dd>wici.gpu</dd></div>
+                                    <div><dt>Host</dt><dd>wici-one.local</dd></div>
+                                    <div><dt>Interface</dt><dd>WiCi Driver</dd></div>
+                                </dl>
+                            </div>
+                        </div>
+                        </section>
+                    </div>
+
+                    <div class="dev-mode">
+                        <button type="button" class="dev-path" role="tab" id="dev-mode-sdk" aria-selected="false" aria-controls="dev-code-sdk" data-code-mode="sdk" tabindex="-1">
+                            <span class="dev-path-label">SDK</span>
+                            <span class="dev-path-visual" aria-hidden="true">
+                                <b>ML framework</b><i></i><b class="is-interface">wici.gpu</b><i></i><b class="is-gpu">WiCi One</b>
+                            </span>
+                            <strong class="dev-path-title">Use your ML framework.</strong>
+                            <span class="dev-path-copy">Add <code>wici.gpu</code> to frameworks such as PyTorch and run existing workloads on WiCi One.</span>
+                            <span class="dev-path-example-label">Best developer path for</span>
+                            <span class="dev-path-examples" role="list" aria-label="Example SDK workloads">
+                                <span role="listitem">PyTorch</span><span role="listitem">vLLM</span><span role="listitem">JAX</span>
+                            </span>
+                            <code>model.to(wici.gpu)</code>
+                        </button>
+                        <section class="dev-code-example" role="tabpanel" id="dev-code-sdk" aria-labelledby="dev-mode-sdk" data-code-panel="sdk" hidden>
+                        <header>
+                            <div><span>SDK</span><h3>Run PyTorch on <code>wici.gpu</code>.</h3></div>
+                            <p>Move the model and input tensor to the same device.</p>
+                        </header>
+                        <pre><code><span class="dev-code-keyword">import</span> <span class="dev-code-module">torch</span>
+<span class="dev-code-keyword">import</span> <span class="dev-code-module">wici</span>
+<span class="dev-code-keyword">from</span> <span class="dev-code-module">torchvision.models</span> <span class="dev-code-keyword">import</span> <span class="dev-code-function">resnet50</span>, <span class="dev-code-type">ResNet50_Weights</span>
+
+weights = <span class="dev-code-type">ResNet50_Weights</span>.DEFAULT
+model = <span class="dev-code-function">resnet50</span>(weights=weights).<span class="dev-code-function">eval</span>().<span class="dev-code-function">to</span>(<span class="dev-code-device">wici.gpu</span>)
+
+preprocess = weights.<span class="dev-code-function">transforms</span>()
+batch = <span class="dev-code-function">preprocess</span>(image).<span class="dev-code-function">unsqueeze</span>(0).<span class="dev-code-function">to</span>(<span class="dev-code-device">wici.gpu</span>)
+
+<span class="dev-code-keyword">with</span> <span class="dev-code-module">torch</span>.<span class="dev-code-function">inference_mode</span>():
+    prediction = model(batch)</code></pre>
+                        </section>
+                    </div>
+
+                    <div class="dev-mode">
+                        <button type="button" class="dev-path" role="tab" id="dev-mode-api" aria-selected="false" aria-controls="dev-code-api" data-code-mode="api" tabindex="-1">
+                            <span class="dev-path-label">API</span>
+                            <span class="dev-path-visual" aria-hidden="true">
+                                <b>AI app</b><i></i><b class="is-interface">Local API</b><i></i><b class="is-gpu">WiCi One</b>
+                            </span>
+                            <strong class="dev-path-title">Keep your existing client.</strong>
+                            <span class="dev-path-copy">Point an OpenAI-compatible client to WiCi One. Keep the rest of your app unchanged.</span>
+                            <span class="dev-path-example-label">Best developer path for</span>
+                            <span class="dev-path-examples" role="list" aria-label="Example API workloads">
+                                <span role="listitem">AI assistants</span><span role="listitem">Chat apps</span><span role="listitem">Agent apps</span>
+                            </span>
+                            <code>http://wici-one.local/v1</code>
+                        </button>
+                        <section class="dev-code-example" role="tabpanel" id="dev-code-api" aria-labelledby="dev-mode-api" data-code-panel="api" hidden>
+                        <header>
+                            <div><span>API</span><h3>Keep your existing client.</h3></div>
+                            <p>Change the endpoint. Keep the rest.</p>
+                        </header>
+                        <pre><code><span class="dev-code-keyword">from</span> <span class="dev-code-module">openai</span> <span class="dev-code-keyword">import</span> <span class="dev-code-type">OpenAI</span>
+
+client = <span class="dev-code-type">OpenAI</span>(
+    base_url=<span class="dev-code-string">"http://wici-one.local/v1"</span>
+)
+
+response = client.chat.completions.<span class="dev-code-function">create</span>(
+    model=<span class="dev-code-string">"llama-3.1-8b-instruct"</span>,
+    messages=messages
+)</code></pre>
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="section dev-deeper">
+            <div class="container">
+                <header class="dev-section-head">
+                    <span class="section-kicker">Go deeper</span>
+                    <h2 class="section-title">Technical<br><em>resources.</em></h2>
+                </header>
+                <div class="dev-deeper-grid">
+                    <a href="https://developer.wici.ai/" class="dev-deeper-card">
+                        <span>Developer Portal</span>
+                        <h3>Documentation &amp; quickstart</h3>
+                        <p>API reference, SDK guides, and step-by-step quickstarts for your first connection.</p>
+                        <b aria-hidden="true">→</b>
+                    </a>
+                    <a href="/technology" class="dev-deeper-card">
+                        <span>Technology</span>
+                        <h3>WiCi Protocol</h3>
+                        <p>Explore transport, model streaming, GPU sharing, and runtime architecture.</p>
+                        <b aria-hidden="true">→</b>
+                    </a>
+                    <a href="/research" class="dev-deeper-card">
+                        <span>Research</span>
+                        <h3>Read the work</h3>
+                        <p>See the measurements, experiments, and systems research behind WiCi.</p>
+                        <b aria-hidden="true">→</b>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section dev-faq" id="faq">
+            <div class="container container--narrow">
+                <header class="dev-section-head">
+                    <span class="section-kicker">FAQ</span>
+                    <h2 class="section-title">Questions about<br><em>building with WiCi.</em></h2>
+                </header>
+                <dl class="dev-faq-list">
+                    <div class="dev-faq-row">
+                        <dt>Do I need to rewrite my app?</dt>
+                        <dd>Often, no. Compatible clients can point to WiCi One&rsquo;s OpenAI-compatible endpoint. The SDK is optional.</dd>
+                    </div>
+                    <div class="dev-faq-row">
+                        <dt>Does WiCi replace cloud AI?</dt>
+                        <dd>No. Use WiCi for work that benefits from local latency, privacy, and control. Cloud services can still handle other tasks.</dd>
+                    </div>
+                    <div class="dev-faq-row">
+                        <dt>Does my data leave the network?</dt>
+                        <dd>No. WiCi inference keeps prompts, audio, frames, and context on your local network.</dd>
+                    </div>
+                    <div class="dev-faq-row">
+                        <dt>Which models will be supported?</dt>
+                        <dd>Preview examples include Kimi K3, DeepSeek V4.1 Flash, and Gemma 4 for language, FLUX.2 and Wan 2.2 for image and video, and Whisper for speech. Broader open-weight model support is in development. <a href="/wici-infer" class="dev-inline-link">See how InferSSD runs 800B-class models <span aria-hidden="true">→</span></a></dd>
+                    </div>
+                    <div class="dev-faq-row">
+                        <dt>When is the Developer Preview?</dt>
+                        <dd>The Developer Preview is planned for Q4 2026.</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+
+        <section class="section dev-access" id="access">
+            <div class="container container--narrow dev-access-inner">
+                <span class="section-kicker">Developer Preview · Q4 2026</span>
+                <h2 class="section-title">Build with<br><em>WiCi One.</em></h2>
+                <p>Join the preview for early access, SDK documentation, availability, and pricing.</p>
+                <!-- data-list files developer-access requests under the "inquiry" list on the
+                     waitlist service, with the About page's contact form. -->
+                <form class="dev-form" id="devForm" data-form-name="developers-access" data-list="inquiry">
+                    <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none;">
+                    <label class="dev-field">
+                        <span class="sr-only">Email</span>
+                        <input type="email" name="email" placeholder="your email" autocomplete="email" required>
+                    </label>
+                    <label class="dev-field">
+                        <span class="sr-only">What are you building?</span>
+                        <textarea name="message" rows="3" maxlength="512" placeholder="What are you building?"></textarea>
+                    </label>
+                    <button type="submit" class="dev-submit">Request developer access <span aria-hidden="true">→</span></button>
+                    <p class="signup-notice signup-notice--on-dark">By signing up, you agree to receive WiCi product and marketing emails. Unsubscribe anytime. <a href="/privacy">Privacy</a>.</p>
+                    <p class="dev-form-success" id="devFormSuccess" hidden>You&rsquo;re on the list. We&rsquo;ll share updates as the preview approaches.</p>
+                </form>
+            </div>
+        </section>
+    

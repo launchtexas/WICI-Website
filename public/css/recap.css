@@ -1,0 +1,1539 @@
+/* ============================================================
+   Launch recap (events/wici-one-launch-recap.html), Oct 7, 2026.
+   The hero and its film, the virtual launch (the venue's floor
+   plan from the "Launch event" Figma, node 1:137, with a station
+   per design), one press line, and the close. Loads on top of
+   common.css only.
+   ============================================================ */
+
+/* ---- 1. Hero ----
+   One row: the title alone at the left, the 360°
+   turntable at the right. The press follows under it. */
+.recap-hero {
+    padding: 40px 0 96px;
+    overflow-x: clip;   /* the turntable's frame overhangs its column */
+}
+
+.recap-hero-panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 48px;
+    padding: 24px 0;
+}
+
+.recap-hero-text { position: relative; }
+
+/* The eyebrow over the title. */
+.recap-hero-eyebrow {
+    display: block;
+    margin-bottom: 16px;
+    color: var(--accent-bright);
+}
+
+.recap-hero-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(44px, 5.2vw, 72px);
+    font-weight: 500;
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+    text-wrap: balance;
+}
+
+/* The event's name, then the place and dates on a line of their own,
+   smaller and in the accent. */
+.recap-hero-title > span:not(.sr-only) { display: block; }
+
+.recap-hero-when {
+    margin-top: 0.35em;
+    color: var(--accent-bright);
+    font-size: 0.56em;
+    letter-spacing: var(--ls-title);
+}
+
+.recap-hero-turn {
+    position: relative;
+    margin: 0;
+    pointer-events: none;
+}
+
+/* The device fills only the middle of the frame, so the frame is drawn
+   wider than the column and overhangs it on both sides. */
+.recap-hero-turn img,
+.recap-hero-turn canvas {
+    display: block;
+    width: 140%;
+    max-width: none;
+    height: auto;
+    margin: -8% -20%;
+}
+
+.recap-hero-turn.is-live img,
+.recap-hero-turn:not(.is-live) canvas { display: none; }
+
+/* Once every frame is in, a sideways drag turns the device; page
+   scrolling stays with the browser (pan-y). */
+.recap-hero-turn.is-ready {
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.recap-hero-turn.is-ready:active { cursor: grabbing; }
+
+.recap-hero-turn.is-ready img,
+.recap-hero-turn.is-ready canvas { pointer-events: none; }
+
+.recap-hero-turn-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px 5px 10px;
+    border-radius: 999px; corner-shape: round;
+    background: var(--bg-soft);
+    color: var(--ink-mute);
+    font-size: var(--fs-caption);
+    font-weight: 500;
+    line-height: 16px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity 0.4s var(--ease);
+}
+
+.recap-hero-turn.is-ready .recap-hero-turn-hint { opacity: 1; }
+.recap-hero-turn.is-dragged .recap-hero-turn-hint { opacity: 0; }
+
+/* The launch ticket: the product page's hero ticket while the event was
+   on ("phero-ticket" in product.css, the designer's Figma, "Website
+   Redesign", node 927:2698), kept here: a violet ticket with scooped
+   corners, tilted 3 degrees clockwise, the label, the place and the
+   dates on its main part, and on the stub the one link, down to the
+   virtual launch. Every measure is the Figma frame's (419.18 by 127.85)
+   times --u, the ticket's width over 419.18, so it scales as one piece;
+   its four layers are the designer's SVGs in images/product/. */
+.recap-ticket-wrap {
+    display: flex;
+    padding: 12px 6px;
+}
+
+.recap-ticket {
+    --w: min(320px, 100vw - 96px);
+    --u: calc(var(--w) / 419.18);
+    position: relative;
+    display: grid;
+    grid-template-columns: calc(269.43 * var(--u)) calc(149.75 * var(--u));
+    width: var(--w);
+    height: calc(127.853 * var(--u));
+    transform: rotate(3deg);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--bg);
+    text-align: left;
+}
+
+.recap-ticket::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: calc(-5.066 * var(--u));
+    left: calc(-6.54 * var(--u));
+    width: calc(432.274 * var(--u));
+    height: calc(142.606 * var(--u));
+    background:
+        url("../images/product/event-ticket-perforation.svg") calc(275.369 * var(--u)) calc(19.996 * var(--u)) / max(1px, calc(0.8425 * var(--u))) calc(97.428 * var(--u)) no-repeat,
+        url("../images/product/event-ticket-main.svg") calc(6.54 * var(--u)) calc(5.066 * var(--u)) / calc(269.512 * var(--u)) calc(127.853 * var(--u)) no-repeat,
+        url("../images/product/event-ticket-stub.svg") calc(275.97 * var(--u)) calc(5.066 * var(--u)) / calc(149.75 * var(--u)) calc(127.837 * var(--u)) no-repeat,
+        url("../images/product/event-ticket.svg") 0 0 / 100% 100% no-repeat;
+    pointer-events: none;
+}
+
+.recap-ticket-main {
+    padding: calc(18.83 * var(--u)) 0 0 calc(30.29 * var(--u));
+}
+
+.recap-ticket-kicker {
+    margin: 0;
+    font-size: clamp(calc(13.48 * var(--u)), 11px, calc(15.3 * var(--u)));
+    line-height: calc(18.535 * var(--u));
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.recap-ticket-title {
+    margin: calc(6.04 * var(--u)) 0 0;
+    font-size: calc(26.96 * var(--u));
+    line-height: calc(27.23 * var(--u));
+    white-space: nowrap;
+}
+
+.recap-ticket-title span { display: block; }
+
+/* The stub: the one link; its ::after covers the whole ticket. */
+.recap-ticket-join {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(24 * var(--u));
+    line-height: calc(22 * var(--u));
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.recap-ticket-join::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.recap-ticket-arrow {
+    display: inline-block;
+    transition: transform 0.25s var(--ease);
+}
+
+.recap-ticket-join:hover .recap-ticket-arrow { transform: translateY(3px); }
+.recap-ticket-join:focus-visible { outline: none; }
+
+.recap-ticket-join:focus-visible::after {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 10px;
+}
+
+/* ---- 2. The films ----
+   Tabs over one stage (initTabs in js/recap.js); without the script the
+   panels stack. The walkthrough's panel is the film in parts with its
+   chapter bar (initFilmParts). On the page's white, set off by space alone. */
+.recap-films-band {
+    padding: 0;
+}
+
+.recap-films {
+    display: grid;
+    gap: 20px;
+}
+
+.recap-film {
+    margin: 0;
+    border-radius: var(--radius);
+    box-shadow: 0 0 0 1px var(--line);   /* a hairline holds the pale posters' edge */
+}
+
+.recap-films [role="tabpanel"][hidden],
+.recap-film-tabs[hidden] { display: none; }
+
+/* One segmented control at every width: the
+   cells on a grey track, the picked one filled in the accent. Centred
+   and as wide as its labels on desktop, across the width on phones.
+   Since later on Oct 16, 2026, the control holds three
+   (Hero film, Zili interview, the walkthrough) and two smaller pills
+   (Moments, Behind the scenes), outlined in the hairline, in the caption
+   type, sit under the stage as a second tab list over the same panels
+   (after the control for an hour). */
+.recap-film-tabs {
+    display: flex;
+    width: fit-content;
+    margin: 0 auto;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 29px;
+    background: var(--bg-soft);
+}
+
+.recap-film-tab {
+    padding: 11px 26px;
+    border: 0;
+    border-radius: 21px;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-button);
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.recap-film-tab:hover { color: var(--accent-bright); }
+
+.recap-film-tab[aria-selected="true"] {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.recap-film-tab-short { display: none; }
+
+.recap-film-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* The walkthrough's "Coming soon" placeholder: the invitation's
+   sky, and one pill. In its lower right corner the unlock dot, 8px of
+   white at a third, for those who know of it (js/recap.js, initTabs): it
+   swaps the film in for the placeholder, and brightens under the
+   pointer. */
+.recap-film--soon {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-dark);
+}
+
+.recap-film--soon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.recap-film-soon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: max-content;
+    max-width: calc(100% - 24px);
+    padding: 13px 22px;
+    border: 1px solid rgba(var(--bg-rgb), 0.7);
+    border-radius: 999px; corner-shape: round;
+    background: rgba(var(--ink-rgb), 0.6);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    color: var(--bg);
+    font-size: var(--fs-button);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.recap-film-soon-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%; corner-shape: round;
+    background: var(--accent-on-dark);
+}
+
+.recap-film-unlock {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%; corner-shape: round;
+    background: rgba(var(--bg-rgb), 0.35);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.recap-film-unlock:hover,
+.recap-film-unlock:focus-visible {
+    background: var(--bg);
+    transform: scale(1.5);
+}
+
+.recap-film-unlock:focus-visible { outline: 2px solid var(--bg); outline-offset: 3px; }
+
+/* The walkthrough in parts: the stage, then a chapter bar like a
+   player's progress bar (after the reviewer guide's, css/reviewer-guide.css):
+   one segment per chapter, as wide as the chapter is long (--len,
+   seconds), filled in the accent as the film plays, its time and title
+   beneath; the chapter in progress marked. Under 900px a plain list. */
+.recap-film-parts {
+    display: grid;
+    gap: 12px;
+}
+
+.recap-chapters {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 4px;
+}
+
+.recap-chapters li {
+    flex: var(--len, 1) 1 0;
+    min-width: 0;
+}
+
+.recap-chapters button {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 6px 0 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink-mute);
+    font: inherit;
+    font-size: var(--fs-caption);
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+    transition: color .15s ease;
+}
+
+.recap-chapter-seg {
+    display: block;
+    position: relative;
+    height: 5px;
+    border-radius: 3px; corner-shape: round;
+    background: var(--line);
+    overflow: hidden;
+    transform-origin: center;
+    transition: transform .15s ease;
+}
+
+.recap-chapter-seg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: calc(var(--fill, 0) * 100%);
+    background: var(--accent);
+}
+
+.recap-chapters button:hover .recap-chapter-seg,
+.recap-chapters button:focus-visible .recap-chapter-seg,
+.recap-chapters button.is-current .recap-chapter-seg { transform: scaleY(1.8); }
+
+.recap-chapters button:hover,
+.recap-chapters button:focus-visible,
+.recap-chapters button.is-current { color: var(--ink); }
+
+.recap-chapters button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.recap-chapter-label {
+    display: block;
+    padding: 9px 8px 0 0;
+}
+
+.recap-chapter-time {
+    display: block;
+    margin-bottom: 1px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+.recap-chapters button.is-current .recap-chapter-time { color: var(--accent-bright); }
+
+@media (max-width: 900px) {
+    .recap-chapters { flex-direction: column; gap: 0; }
+    .recap-chapters li { flex: none; }
+    .recap-chapters button {
+        padding: 7px 10px;
+        border-radius: 13px;
+        font-size: var(--fs-body-s);
+    }
+    .recap-chapters button:hover,
+    .recap-chapters button:focus-visible,
+    .recap-chapters button.is-current { background: var(--bg-soft); }
+    .recap-chapter-seg { display: none; }
+    .recap-chapter-label { display: flex; align-items: baseline; gap: 10px; padding: 0; }
+    .recap-chapter-time { flex: none; min-width: 3.2em; margin: 0; }
+}
+
+/* ---- 3. Virtual launch ----
+   After the product page's Use Cases floor plan ("Use Cases: a floor
+   plan" in product.css): the plan on a soft panel, the stations beside
+   it as a list, one open at a time. The drawing follows its line work:
+   white floors with a faint grain, ink walls, furniture white in a grey
+   line with a hard shadow, the accent for the Wi-Fi, the picked room,
+   and the picked station's furniture; white numbered pins, the picked
+   one filled. */
+.tour {
+    padding: 64px 0 0;
+}
+
+/* The launch ticket alone, centred between the films and the plan
+   (the same space above and below it), floating gently. */
+.tour-head {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 64px;
+}
+
+.tour-head .recap-ticket-wrap {
+    animation: recap-ticket-float 3.6s ease-in-out infinite;
+}
+
+@keyframes recap-ticket-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tour-head .recap-ticket-wrap { animation: none; }
+}
+
+/* Stacked by default (the plan on its side over the list); side by
+   side once the script stands the plan upright (`tour--tall`). */
+.tour-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.tour-plan {
+    padding: 24px 28px 32px;
+    border-radius: 38px;
+    background: var(--bg-soft);
+}
+
+/* -- The rooms' names: over the plan in the wide view, bracketed at
+   its left in the upright one, as in the Figma. -- */
+.tour-zones {
+    position: relative;
+    height: 40px;
+    margin-bottom: 8px;
+}
+
+.tour-zone {
+    position: absolute;
+    left: var(--x);
+    bottom: 0;
+    transform: translateX(-50%);
+    max-width: 34%;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 999px; corner-shape: round;
+    background: transparent;
+    color: var(--ink-mute);
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    line-height: 1.3;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.25s var(--ease), color 0.25s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tour-zone:hover { color: var(--ink); }
+.tour-zone.is-active { background: var(--accent-soft); color: var(--accent-hover); }
+.tour-zone:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.tour-map {
+    position: relative;
+    aspect-ratio: 1870 / 850;
+}
+
+/* -- The drawing (plan units: the Figma's pixels) -- */
+.tour-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.plan-zone > :first-child {
+    fill: var(--bg-card);
+    transition: fill 0.3s var(--ease);
+}
+
+.plan-zone.is-active > :first-child {
+    fill: color-mix(in srgb, var(--accent) 16%, var(--bg-card));
+}
+
+.plan-texture { transition: opacity 0.3s var(--ease); }
+.plan-zone.is-active .plan-texture { opacity: 0.4; }
+
+.plan-grain {
+    stroke: rgba(var(--ink-rgb), 0.07);
+    stroke-width: 1.4;
+}
+
+.plan-grain--hatch { stroke: rgba(var(--ink-rgb), 0.12); stroke-width: 2; }
+
+.plan-closed { fill: var(--bg-neutral); }
+
+.plan-waves circle {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-dasharray: 6 14;
+    opacity: 0.08;
+    animation: plan-wave 3s ease-in-out infinite;
+}
+
+.plan-waves circle:nth-child(2) { animation-delay: 0.5s; }
+.plan-waves circle:nth-child(3) { animation-delay: 1s; }
+.plan-waves circle:nth-child(4) { animation-delay: 1.5s; }
+
+@keyframes plan-wave {
+    50% { opacity: 0.32; }
+}
+
+.plan-route {
+    fill: none;
+    stroke: rgba(var(--accent-rgb), 0.4);
+    stroke-width: 4;
+    stroke-dasharray: 1 13;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.plan-furniture {
+    fill: var(--bg-card);
+    stroke: color-mix(in srgb, var(--ink-mute) 62%, transparent);   /* the product plan's line */
+    stroke-width: 2.4;
+}
+
+.plan-furniture .plan-shade {
+    fill: color-mix(in srgb, var(--ink-mute) 62%, transparent);
+    stroke: none;
+    transform: translate(3px, 0);        /* screen-down while the plan lies on its side */
+}
+
+.tour--tall .plan-furniture .plan-shade { transform: translate(0, 3px); }
+
+.plan-screen {
+    fill: rgba(var(--ink-rgb), 0.55);
+    stroke: none;
+}
+
+.plan-pockets { fill: color-mix(in srgb, var(--ink-mute) 62%, transparent); stroke: none; }
+
+.plan-counter { fill: var(--bg-neutral); }
+
+.plan-furniture .plan-station {
+    transition: fill 0.3s var(--ease), stroke 0.3s var(--ease);
+}
+
+.plan-furniture .plan-station.is-current {
+    fill: color-mix(in srgb, var(--accent) 28%, var(--bg-card));
+    stroke: var(--accent);
+}
+
+.plan-furniture .plan-screen.plan-station.is-current { fill: var(--accent); }
+
+.plan-panels path {
+    fill: none;
+    stroke: rgba(var(--ink-rgb), 0.4);
+    stroke-width: 11;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.3s var(--ease);
+}
+
+.plan-panels .plan-station-line.is-current { stroke: var(--accent); }
+
+.plan-curtain {
+    fill: none;
+    stroke: color-mix(in srgb, var(--ink-mute) 62%, transparent);
+    stroke-width: 5;
+}
+
+.plan-cords path {
+    fill: none;
+    stroke: rgba(var(--ink-rgb), 0.55);
+    stroke-width: 5;
+    transition: stroke 0.3s var(--ease);
+}
+
+.plan-cords.is-current path { stroke: var(--accent); }
+
+/* WiCi One on its pedestal, in the accent, with its ping. */
+.plan-box {
+    fill: var(--accent);
+    stroke: var(--bg-card);
+    stroke-width: 3;
+}
+
+.plan-ping {
+    fill: var(--accent);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: plan-ping 2s ease-out infinite;
+}
+
+@keyframes plan-ping {
+    from { transform: scale(1); opacity: 0.7; }
+    to { transform: scale(6); opacity: 0; }
+}
+
+.plan-wall {
+    fill: none;
+    stroke: var(--ink);
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+}
+
+.plan-wall--outer { stroke-width: 16; }
+.plan-wall--inner { stroke-width: 9; }
+
+.plan-line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2.4;
+}
+
+.plan-labels text {
+    fill: var(--ink-mute);
+    stroke: none;
+    font-family: var(--font-sans);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    text-transform: uppercase;
+}
+
+/* Labels read upright in both views: in the wide one the plan's group
+   is turned a quarter, so each label turns back; "Entrance" turns with
+   the plan, along the wall, and Storage runs along its rooms. */
+.plan-label {
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: rotate(-90deg);
+}
+
+.plan-door {
+    fill: none;
+    stroke: var(--ink-mute);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* -- Pins and the visitor: HTML over the drawing -- */
+.tour-pins {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tour-pin {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    margin: -17px 0 0 -17px;
+    padding: 0;
+    border: 2px solid var(--ink);
+    border-radius: 50%; corner-shape: round;
+    background: var(--bg-card);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-s);
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(var(--ink-rgb), 0.18);
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1), background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tour-pin:hover { transform: scale(1.12); }
+.tour-pin:active { transform: scale(0.9); }
+.tour-pin:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.tour-pin[aria-current="step"] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.tour-pin[aria-current="step"]::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border: 2px solid var(--accent);
+    border-radius: 50%; corner-shape: round;
+    animation: tour-ring 1.6s ease-out infinite;
+}
+
+@keyframes tour-ring {
+    from { transform: scale(1); opacity: 0.6; }
+    to { transform: scale(2); opacity: 0; }
+}
+
+/* The visitor: a soft disc that walks from the door to the picked
+   station, under its pin. */
+.tour-you {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    border-radius: 50%; corner-shape: round;
+    background: rgba(var(--accent-rgb), 0.16);
+    pointer-events: none;
+    transition: left 0.7s var(--ease), top 0.7s var(--ease);
+}
+
+/* -- The list: the eight stations in full under their rooms; the one
+   in view (the one a pin scrolled to) tinted, its number filled -- */
+.tour-list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Each room's name over its stations, "Section: …", larger and centred
+. */
+.tour-group {
+    margin: 0;
+    padding: 56px 18px 18px;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+    text-align: center;
+}
+
+.tour-group:first-of-type { padding-top: 0; }
+
+.tour-item {
+    padding: 20px 18px 24px;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.08);
+    border-radius: 26px;
+    transition: background 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.tour-item.is-current,
+.tour-item.is-current + .tour-item { border-top-color: transparent; }
+
+.tour-item.is-current { background: rgba(var(--accent-rgb), 0.08); }
+
+.tour-item-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+}
+
+.tour-num {
+    flex: none;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%; corner-shape: round;
+    background: var(--bg-card);
+    color: var(--ink);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    line-height: 1;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.tour-item.is-current .tour-num {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.tour-item-title {
+    font-family: var(--font-sans);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: var(--lh-title);
+    letter-spacing: -0.01em;
+}
+
+.tour-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px 0 0 44px;
+}
+
+.tour-panel-body {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+}
+
+/* A demo station's films and design: small tabs over one stage, in the
+   film tabs' colours (initTabs in js/recap.js); each film the shared
+   inline film (common.css), the panel's width, played in place. */
+.tour-media {
+    display: grid;
+    gap: 12px;
+}
+
+.tour-media [role="tabpanel"][hidden],
+.tour-media-tabs[hidden] { display: none; }
+
+.tour-media-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tour-media-tab {
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-hover);
+    font-family: var(--font-sans);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tour-item.is-current .tour-media-tab:not([aria-selected="true"]) { background: var(--bg-card); }
+.tour-media-tab:hover { color: var(--ink); }
+
+.tour-media-tab[aria-selected="true"] {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.tour-media-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.tour-film { border-radius: 22px; }
+
+/* The designs: on a white ground, each a button into the lightbox. */
+.tour-shots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    height: 300px;
+    padding: 20px;
+    border-radius: 22px;
+    background: var(--bg-soft);
+}
+
+.tour-item.is-current .tour-shots { background: var(--bg-card); }
+
+.tour-shot {
+    flex: 0 1 auto;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tour-shot img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(var(--ink-rgb), 0.14);
+    transition: transform 0.3s var(--ease);
+}
+
+.tour-shot:hover img { transform: scale(1.02); }
+.tour-shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 10px; }
+
+/* -- The upright view (`tour--tall`, js/recap.js, from 961px): the plan
+   as drawn, door at the foot, on its panel at the left; the list beside
+   it. The rooms are bracketed at the plan's left, each name level with
+   its room. -- */
+/* The plan sticks at the left, one screen tall at most, so all of it
+   shows; the list runs down the right with the page, a picked station scrolled into view. */
+.tour--tall .tour-body {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+}
+
+.tour--tall .tour-plan {
+    position: sticky;
+    top: 88px;
+    box-sizing: border-box;
+    height: clamp(560px, calc(100vh - 112px), 920px);
+    height: clamp(560px, calc(100dvh - 112px), 920px);
+    display: grid;
+    grid-template-columns: 92px auto;
+    grid-template-rows: minmax(0, 1fr);
+    gap: 14px;
+    padding: 28px 32px 48px 20px;
+}
+
+.tour--tall .tour-zones {
+    height: auto;
+    margin: 0;
+}
+
+.tour--tall .tour-zone {
+    left: 0;
+    right: 0;
+    top: var(--t0);
+    bottom: calc(100% - var(--t1));
+    transform: none;
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 14px 0 0;
+    border-radius: 0;
+    background: none;
+    text-align: right;
+}
+
+/* The bracket: a line down the room's height with a tick at each end. */
+.tour--tall .tour-zone::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    border: 1.5px solid var(--line-strong);
+    border-left: 0;
+    transition: border-color 0.25s var(--ease);
+}
+
+.tour--tall .tour-zone.is-active { background: none; color: var(--accent-bright); }
+.tour--tall .tour-zone.is-active::before { border-color: var(--accent); }
+
+.tour--tall .tour-map {
+    height: 100%;
+    width: auto;
+    aspect-ratio: 900 / 1860;
+}
+
+.tour--tall .plan-body,
+.tour--tall .plan-label { transform: none; }
+
+.tour--tall .plan-label--turn { transform: rotate(-90deg); }
+
+.tour--tall .plan-labels text { font-size: 30px; }
+
+.tour--tall .tour-pin,
+.tour--tall .tour-you {
+    left: var(--tx);
+    top: var(--ty);
+}
+
+.tour--tall .tour-list { padding-top: 16px; }
+
+/* Room after the last station, so it too can rise to the top while the
+   plan still sticks beside it, and becomes the one in view. */
+.tour.is-live .tour-list { padding-bottom: max(48px, calc(100vh - 540px)); }
+
+/* ---- The press (in the hero, under the facts row) ----
+   Two quotes side by side, each signed with its reporter and the
+   outlet's logo, then the outlets in two labelled rows: at the launch,
+   and also covered by. Logos keep their brand colours, each at its own
+   height (keyed by data-outlet) so the wordmarks look the same size. */
+.recap-press { margin-top: 88px; }
+
+.recap-quotes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 80px;
+}
+
+.recap-quote {
+    margin: 0;
+    text-align: center;   /* centred (Oct 7, 2026) */
+}
+.recap-quote blockquote { margin: 0; }
+
+.recap-quote p {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: var(--ls-title);
+}
+
+.recap-quote figcaption {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.recap-quote-name {
+    padding-right: 16px;
+    border-right: 1px solid var(--line);
+    color: var(--ink-mute);
+    font-size: var(--fs-body);
+    font-weight: 500;
+}
+
+/* The outlet's logo, a quiet link to the story. */
+.recap-quote-source { display: inline-flex; }
+.recap-quote-source:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+
+.recap-outlets {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 48px 40px;
+    margin-top: 96px;
+}
+
+.recap-outlets-label {
+    margin: 0;
+    color: var(--ink-mute);
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+}
+
+.recap-outlets-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 56px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.recap-outlets-list li,
+.recap-outlets-list a { display: inline-flex; }
+
+.recap-outlets-list a { transition: opacity 0.2s var(--ease); }
+.recap-outlets-list a:hover { opacity: 0.7; }
+.recap-outlets-list a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+
+/* "Also covered by": each outlet over one line from its story. The
+   logos sit in a slot of one height, so the lines start level. */
+.recap-outlets-label--top {
+    align-self: start;
+    padding-top: 8px;
+}
+
+.recap-outlets-list--quotes {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px 48px;
+    align-items: start;
+}
+
+.recap-outlets-list--quotes li,
+.recap-outlets-list--quotes a {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.recap-outlets-list--quotes a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.recap-outlets-list--quotes a:hover { opacity: 1; }
+.recap-outlets-list--quotes a:hover .recap-outlet-quote { color: var(--ink); }
+
+.recap-outlet-logo {
+    display: flex;
+    align-items: center;
+    height: 30px;
+}
+
+.recap-outlet-quote {
+    color: var(--ink-soft);
+    font-size: var(--fs-body-s);
+    line-height: 1.45;
+    transition: color 0.2s var(--ease);
+}
+
+.recap-press img {
+    display: block;
+    width: auto;
+    height: var(--h, 20px);
+}
+
+.recap-press [data-outlet="gizmodo"] img { --h: 20px; }
+.recap-press [data-outlet="wired"] img { --h: 20px; }
+.recap-press [data-outlet="ieeespectrum"] img { --h: 18px; }
+.recap-press [data-outlet="pcmag"] img { --h: 30px; }          /* a square badge */
+.recap-press [data-outlet="tomshardware"] img { --h: 15px; }   /* a long wordmark */
+.recap-press [data-outlet="techradar"] img { --h: 18px; }
+.recap-press [data-outlet="engadget"] img { --h: 20px; }
+.recap-press [data-outlet="notebookcheck"] img { --h: 24px; }  /* a light wordmark */
+
+/* ---- 4. Close ---- */
+.recap-close {
+    padding: 112px 0 120px;
+}
+
+.recap-close-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 40px 48px;
+    border-radius: 38px;
+    background: var(--bg-dark);
+    color: var(--bg);
+}
+
+.recap-close-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3-lg);
+    font-weight: 600;
+    line-height: var(--lh-title);
+    letter-spacing: var(--ls-title);
+}
+
+.recap-close-card p {
+    margin: 8px 0 0;
+    color: rgba(var(--bg-rgb), 0.72);
+    font-size: var(--fs-body);
+}
+
+.recap-close-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex: none;
+}
+
+.recap-close .cta--primary {
+    background: var(--bg);
+    color: var(--ink);
+}
+
+.recap-close .cta--primary:hover {
+    background: var(--accent-bright);
+    color: var(--bg);
+}
+
+.recap-close-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent-on-dark);
+    font-size: var(--fs-button);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.recap-close-link:hover { color: var(--bg); }
+
+/* For press: three small links under the close. */
+.recap-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 28px;
+    margin-top: 20px;
+}
+
+.recap-links a {
+    color: var(--ink-mute);
+    font-size: var(--fs-body-s);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s var(--ease);
+}
+
+.recap-links a:hover { color: var(--accent-bright); }
+.recap-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* ---- Lightbox ---- */
+.recap-box {
+    width: min(1400px, calc(100vw - 48px));
+    max-width: none;
+    max-height: calc(100vh - 48px);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+}
+
+.recap-box::backdrop {
+    background: rgba(var(--ink-rgb), 0.82);
+    -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+}
+
+.recap-box-figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.recap-box-figure img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(100vh - 120px);
+    width: auto;
+    height: auto;
+    border-radius: 13px;
+}
+
+.recap-box-figure figcaption {
+    margin-top: 14px;
+    color: rgba(var(--bg-rgb), 0.8);
+    font-size: var(--fs-body-s);
+    text-align: center;
+}
+
+.recap-box-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%; corner-shape: round;
+    background: rgba(var(--bg-rgb), 0.14);
+    color: var(--bg);
+    cursor: pointer;
+}
+
+.recap-box-close:hover { background: rgba(var(--bg-rgb), 0.26); }
+.recap-box-close:focus-visible { outline: 2px solid var(--bg); outline-offset: 2px; }
+
+/* ---- Narrower screens ---- */
+/* The plan sticks under the nav while the stations scroll under it
+, wherever the screen is tall enough to
+   leave room for them. */
+@media (max-width: 960px) and (min-height: 600px) {
+    .tour.is-live .tour-plan {
+        position: sticky;
+        top: 64px;
+        z-index: 5;
+        box-shadow: 0 1px 0 rgba(var(--ink-rgb), 0.06);
+    }
+}
+
+@media (max-width: 720px) and (min-height: 600px) {
+    .tour.is-live .tour-plan { top: 56px; }
+}
+
+@media (max-width: 960px) {
+    .recap-hero-panel {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .recap-quotes { grid-template-columns: 1fr; }
+    .recap-outlets-list--quotes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .recap-close-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 720px) {
+    .recap-hero { padding: 20px 0 64px; }
+    .recap-hero-panel { padding: 8px 0; }
+    .recap-hero-title { font-size: 40px; }
+    .recap-hero-text { text-align: center; }   /* centred on phones */
+
+    /* The turntable a little smaller on phones, with more room between
+       the device and its "Drag to rotate" pill. */
+    .recap-hero-turn { padding-bottom: 20px; }
+
+    .recap-hero-turn img,
+    .recap-hero-turn canvas {
+        width: 118%;
+        margin: -6% -9%;
+    }
+    .recap-press { margin-top: 36px; }
+
+    .recap-films-band { padding: 0; }
+
+    .recap-films { gap: 12px; }
+    /* The control across the width, its three cells on one line, the
+       CEO film under its short name; the two small pills centred under
+       the stage. */
+    .recap-film-tabs {
+        width: auto;
+        margin: 0;
+        padding: 4px;
+        border-radius: 26px;
+    }
+
+    .recap-film-tab {
+        flex: 1 1 auto;
+        padding: 10px 6px;
+        border-radius: 19px;
+        font-size: var(--fs-caption);
+        line-height: 1.25;
+        text-align: center;
+    }
+
+    .recap-film-tab-long { display: none; }
+    .recap-film-tab-short { display: inline; }
+    .tour { padding-top: 40px; }
+    .tour-head { margin-bottom: 40px; }
+
+    .recap-press {
+        margin-top: 32px;
+        padding-top: 28px;
+    }
+
+    .recap-quotes { gap: 48px; }
+    .recap-quote p { font-size: 21px; }
+    .recap-quote figcaption { margin-top: 18px; }
+
+    .recap-outlets {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 64px;
+    }
+
+    .recap-outlets-list + .recap-outlets-label { margin-top: 32px; }
+
+    /* At the launch: the four logos a size down, on one line. */
+    .recap-outlets-list:not(.recap-outlets-list--quotes) {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .recap-outlets-list [data-outlet="gizmodo"] img { --h: 16px; }
+    .recap-outlets-list [data-outlet="pcmag"] img { --h: 24px; }
+    .recap-outlets-list [data-outlet="wired"] img { --h: 16px; }
+    .recap-outlets-list [data-outlet="ieeespectrum"] img { --h: 14px; }
+
+    /* Also covered by: one list, a logo at the left of each line and
+       its quote beside it, between hairlines. */
+    .recap-outlets-list--quotes {
+        grid-template-columns: 1fr;
+        gap: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .recap-outlets-list--quotes li { display: block; }
+
+    .recap-outlets-list--quotes a {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        align-items: center;
+        gap: 16px;
+        padding: 14px 0;
+        border-top: 1px solid var(--line);
+    }
+
+    .recap-outlet-logo { height: 21px; }
+
+    .recap-outlets-list--quotes [data-outlet="techradar"] img { --h: 15px; }
+    .recap-outlets-list--quotes [data-outlet="tomshardware"] img { --h: 12px; }
+    .recap-outlets-list--quotes [data-outlet="notebookcheck"] img { --h: 19px; }
+    .recap-outlets-list--quotes [data-outlet="engadget"] img { --h: 16px; }
+
+    .recap-outlet-quote { font-size: var(--fs-caption); line-height: 1.5; }
+    .recap-close { padding: 80px 0 88px; }
+
+    /* The plan bleeds to the screen's edges, so it is as large as it
+       can be; its labels drop out and the pins carry it. */
+    .tour-plan {
+        margin: 0 -20px;
+        padding: 12px 12px 12px;
+        border-radius: 0;
+    }
+
+    .tour-zones {
+        height: 36px;
+        margin-bottom: 6px;
+    }
+
+    .tour-zone {
+        padding: 4px 6px;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+    }
+
+    .tour-zone-long,
+    .plan-labels { display: none; }
+
+    .tour-pin {
+        width: 26px;
+        height: 26px;
+        margin: -13px 0 0 -13px;
+        border-width: 1.5px;
+        font-size: var(--fs-micro);
+    }
+
+    .tour-you {
+        width: 44px;
+        height: 44px;
+        margin: -22px 0 0 -22px;
+    }
+
+    .plan-wall--outer { stroke-width: 20; }
+    .plan-wall--inner { stroke-width: 12; }
+    .plan-furniture { stroke-width: 3.5; }
+
+    .tour-group { padding: 40px 14px 14px; font-size: 22px; }
+    .tour-item { padding: 16px 14px 20px; }
+    .tour-panel { padding: 10px 0 0; }
+    .tour-panel-body { font-size: var(--fs-body-s); }
+
+    .tour-shots {
+        height: 260px;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .recap-close-card { padding: 32px 24px; }
+
+    .recap-close-actions {
+        flex-wrap: wrap;
+        gap: 16px 24px;
+    }
+
+    .recap-box { width: calc(100vw - 24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .recap-ticket-arrow,
+    .tour-you,
+    .plan-zone > :first-child,
+    .tour-shot img,
+    .tour-pin { transition: none; }
+    .plan-waves circle,
+    .plan-ping,
+    .tour-pin[aria-current="step"]::after { animation: none; }
+    .plan-waves circle { opacity: 0.2; }
+    .plan-ping { opacity: 0; }
+}

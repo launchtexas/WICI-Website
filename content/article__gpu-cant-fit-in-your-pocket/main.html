@@ -1,0 +1,136 @@
+
+
+        <!-- Article header -->
+        <header class="article-header">
+            <div class="container article-header-inner article-header-inner--centred">
+                <figure class="article-thumb article-thumb--phone" aria-hidden="true"><img src="/images/research/thumbnails/gpu-cant-fit-in-your-pocket.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                <p class="article-date article-date--top"><time datetime="2026-08-10">August 2026</time></p>
+                <h1 class="article-title">Move the GPU Out. <em>Keep It Local.</em></h1>
+                <p class="article-subtitle">The mobile device is where the camera, microphone, files, display, sensors, and user interaction live. But it cannot carry the power and weight of the best GPU &mdash; so the GPU has to move out, nearby.</p>
+            </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="toc-bar" id="tocBar">
+            <div class="toc-bar-inner">
+                <button type="button" class="toc-bar-toggle" aria-expanded="false" aria-controls="tocBarList" data-sticky-bar><span class="toc-bar-t">TL;DR</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ol class="toc-bar-list" id="tocBarList" data-lenis-prevent>
+                        <li><a href="#tldr">TL;DR</a></li>
+                        <li><a href="#the-experience-starts-on-the-mobile-device">The experience starts on the mobile device</a></li>
+                        <li><a href="#the-best-gpu-cannot-fit-inside-it">The best GPU cannot fit inside it</a></li>
+                        <li><a href="#the-gpu-has-to-move-nearby">The GPU has to move nearby</a></li>
+                        <li><a href="#nearby-still-has-to-feel-local">Nearby still has to feel local</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <article class="article-content">
+            <div class="container article-layout">
+                <div class="article-side">
+                    <figure class="article-thumb" aria-hidden="true"><img src="/images/research/thumbnails/gpu-cant-fit-in-your-pocket.webp" alt="" width="1200" height="675" decoding="async"></figure>
+                    <ul class="article-authors">
+                        <li>WiCi Research</li>
+                    </ul>
+                    <div class="article-mini">
+                        <span class="article-mini-item"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.5v3l2 1.5M6.5 1.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="readTime">Reading time</span></span>
+                    </div>
+                </div>
+                <aside class="aside" aria-label="On this page">
+                    <p class="aside-label">On this page</p>
+                    <ol class="aside-list" id="contents">
+                            <li><a href="#tldr">TL;DR</a></li>
+                            <li><a href="#the-experience-starts-on-the-mobile-device">The experience starts on the mobile device</a></li>
+                            <li><a href="#the-best-gpu-cannot-fit-inside-it">The best GPU cannot fit inside it</a></li>
+                            <li><a href="#the-gpu-has-to-move-nearby">The GPU has to move nearby</a></li>
+                            <li><a href="#nearby-still-has-to-feel-local">Nearby still has to feel local</a></li>
+                    </ol>
+                </aside>
+
+                <div class="article-prose">
+
+                <section class="article-tldr" aria-labelledby="tldr">
+                    <h2 class="article-tldr-title" id="tldr">TL;DR</h2>
+                    <ul>
+                        <li>Personal AI needs real GPU headroom for interaction, memory, and adaptation &mdash; that need does not shrink; it is structural.</li>
+                        <li>The mobile device has to remain the center of the experience because the camera, microphone, files, display, sensors, and user interaction live there.</li>
+                        <li>The best GPU cannot live inside that device because its power and weight make it nearby infrastructure, not handheld hardware.</li>
+                        <li>So the GPU has to move nearby &mdash; and a nearby GPU box only works if existing applications still behave as if the GPU is local; a new remote API is not enough.</li>
+                    </ul>
+                </section>
+
+                <div class="claim">The GPU can leave the device only if the device still feels like the computer in charge.</div>
+
+                <p>We laid out the case for that GPU headroom in <a href="/article/general-and-the-particular">The General and the Particular</a>: interaction, memory, and adaptation are three GPU-accelerated loops a foundation model alone cannot cover, and each one gets better with more local compute, not less. That raises the obvious next question &mdash; if personal AI genuinely needs a powerful GPU, why not simply put one in the phone?</p>
+
+                <h2 id="the-experience-starts-on-the-mobile-device">The experience starts on the mobile device</h2>
+
+                <p>The phone, tablet, headset, or small robot is not just a screen attached to compute. It owns the camera, microphone, files, display, touch, sensors, identity, network context, and physical position of the user. For personal AI and interactive graphics, those are not peripherals. They are the workload's source of truth.</p>
+
+                <p>This is the result of a long shift in personal computing. The center of work used to be the desk: a workstation, a monitor, a keyboard, and files stored on the machine beside you. Then the workstation became portable. Then the pocket device became the camera, sensor hub, identity key, and always-present interface. Today the user-facing computer is often the device that moves with the person, not the box with the largest accelerator.</p>
+
+                <figure class="figure">
+                    <h3>Figure 1 - From desk computer to mobile computer</h3>
+                    <div class="timeline-grid" role="img" aria-label="Timeline showing computing moving from PC workstation to laptop, smartphone, and tablet">
+                        <div class="timeline-card"><span class="timeline-year">1981</span><b>PC workstation</b><span>Apps, files, and display at the desk.</span></div>
+                        <div class="timeline-card"><span class="timeline-year">1991</span><b>Laptop</b><span>The workstation becomes portable.</span></div>
+                        <div class="timeline-card"><span class="timeline-year">2007</span><b>iPhone</b><span>Camera, touch, sensors, identity.</span></div>
+                        <div class="timeline-card"><span class="timeline-year">2010</span><b>iPad</b><span>Mobile expands into a work canvas.</span></div>
+                    </div>
+                </figure>
+
+                <p>In GPU systems, the "host" is the computer that runs the application and coordinates the accelerator. It submits work, manages memory, receives results, and connects the output back to the user. In our system, that role has to remain with the mobile device, because that is where the user's world enters the system and where the result has to appear.</p>
+
+                <p>If that device becomes a thin client, the system inherits the old cloud problem in a smaller radius. A voice agent waits before responding. A camera pipeline waits before understanding the scene. A game waits before showing the next frame. A robot waits before acting. The distance may be across the room instead of across the country, but the user still experiences it as delay.</p>
+
+                <p>The target is therefore stronger than "phone calls GPU." The mobile device should still discover capability, submit work, receive frames, use local sensors, and run existing applications without a new per-app endpoint. The GPU can move, but the interaction loop must stay attached to the device in the user's hand.</p>
+
+                <h2 id="the-best-gpu-cannot-fit-inside-it">The best GPU cannot fit inside it</h2>
+
+                <p>The reason the GPU moves is physical. A top-end RTX 5090-class GPU draws 575 W, large boards can be about 358 mm long, and one retail model is listed at 6.64 lb, about 3.0 kg. That is not a mobile component. It is something that needs power delivery, cooling volume, and mechanical support.</p>
+
+                <p>For comparison, an iPhone 16 Pro Max is 227 g. The GPU board alone can weigh more than 13 of them. The point is not the exact model; it is the class of hardware. The best GPU belongs near the mobile device, not inside it.</p>
+
+                <p>Mobile GPUs exist, but they prove the same constraint. NVIDIA's RTX 5090 Laptop GPU is specified at 95-150 W of GPU subsystem power with 24 GB of GDDR7. The RTX 5090-class GPU at the top of the stack is a 575 W, 32 GB card. The laptop part becomes mobile by accepting a lower power and memory envelope; it is not the full object squeezed into a phone.</p>
+
+                <figure class="figure" id="hardware-constraint">
+                    <h3>Figure 2 - The top GPU keeps moving out of mobile range</h3>
+                    <p>Power rises along the x-axis; representative large-board weight rises on the y-axis.</p>
+                    <div class="plot-shell">
+                        <div id="gpu-trend-plot" class="gpu-trend-plot" role="img" aria-label="Scatter plot of RTX 3090, RTX 4090, and RTX 5090 power versus board weight"></div>
+                        <div id="gpu-trend-fallback" class="plot-fallback"><b>Trend:</b> RTX 3090: 350 W / 1.6 kg. RTX 4090: 450 W / 2.5 kg. RTX 5090: 575 W / 3.0 kg. Weight varies by board; these are large-card examples.</div>
+                    </div>
+                </figure>
+
+                <p>At the frontier, more capability is still bought with more power delivery, more memory, larger cooling, and heavier mechanical design. The mobile device cannot simply wait for the same GPU to become pocket-sized. The user-facing device stays mobile; the accelerator becomes infrastructure.</p>
+
+                <h2 id="the-gpu-has-to-move-nearby">The GPU has to move nearby</h2>
+
+                <p>Once the GPU cannot live inside the mobile device, the design space narrows quickly. Cloud GPUs offer scale, but they move the interaction loop across the internet and place every frame, sensor update, and user action behind a wide-area service boundary. Putting a high-end GPU into every device is physically and economically wrong. A nearby box is the remaining point: close enough for interactive use, stationary enough for wall power and cooling, and shared enough to justify the hardware.</p>
+
+                <p>This is why the nearby GPU box is not a product flourish. It is the architectural compromise forced by two facts: the user loop must stay mobile, and the frontier GPU has become stationary. The problem is that moving the GPU out of the chassis also moves the interconnect out of the chassis.</p>
+
+                <div class="claim">The architecture is forced: mobile device in charge, nearby accelerator, local feeling.</div>
+
+                <h2 id="nearby-still-has-to-feel-local">Nearby still has to feel local</h2>
+
+                <p>A nearby box that exposes only a high-level API is still a remote service. It may work for a chat endpoint, an image endpoint, or a hand-written inference path, but it does not make the mobile device GPU-local. It asks every application to learn a new compute paradigm and only supports the tasks that endpoint designers predicted.</p>
+
+                <p>The existing GPU ecosystem is not organized around any API we could invent. Steam games target Direct3D, Vulkan, and driver-visible adapters. Video tools target encoders and graphics APIs. AI runtimes target CUDA, cuDNN, tensor libraries, and memory allocators. Blender, Unity, Unreal, PyTorch, and camera pipelines assume the accelerator appears through the normal device stack.</p>
+
+                <p>That is why the GPU has to feel local, and why that is much harder than it sounds: the mobile device now has to behave like a PCIe-attached host while the only practical link to the box is Wi-Fi &mdash; a network built for packets, not for the fine-grained, latency-sensitive chatter a local driver was designed to hide. We cover that boundary, what breaks when you try the obvious fixes, and how WiCi's protocol closes the gap, in <a href="/article/nearby-gpu-feel-local">Making a Nearby GPU Feel Local</a>.</p>
+
+                <div class="claim">If every application needs a special remote-GPU path, the system has already failed as a local GPU.</div>
+
+                <section class="related" aria-labelledby="related-title">
+                    <h2 class="related-title" id="related-title">Read next</h2>
+                    <ul class="related-cards">
+                        <li><a href="/article/keep-the-bytes-by-the-gpu"><figure><img src="/images/research/thumbnails/keep-the-bytes-by-the-gpu.webp" alt="" loading="lazy" decoding="async"></figure><strong>Bridge the bandwidth gap with a huge SSD cache</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/nearby-gpu-feel-local"><figure><img src="/images/research/thumbnails/nearby-gpu-feel-local.webp" alt="" loading="lazy" decoding="async"></figure><strong>Making a Nearby GPU Feel Local</strong><time datetime="2026-09">September 2026</time></a></li>
+                        <li><a href="/article/running-800b-models-with-inferssd"><figure><img src="/images/research/thumbnails/running-800b-models-with-inferssd.webp" alt="" loading="lazy" decoding="async"></figure><strong>Running 800B-Parameter LLMs on Consumer Hardware with InferSSD</strong><time datetime="2026-10">October 2026</time></a></li>
+                    </ul>
+                </section>
+                </div>
+            </div>
+        </article>
+
+    
